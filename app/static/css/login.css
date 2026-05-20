@@ -1,0 +1,408 @@
+@charset "UTF-8";
+body{
+    margin:0;
+    padding:0;
+    width: 100vw;
+    height: 100vh;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("../img/white.jpg");
+    backdrop-filter: blur(3px);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    overflow: hidden;
+    transition: 0.5s;
+}
+
+.flash{
+    margin-top: 5%;
+    color: red;
+    font-size: 16px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: 500;
+}
+
+body.dark{
+    background-image: url(../img/black.jpg);
+
+}
+
+
+/* Navigation */
+.navigation {
+    background: linear-gradient(to right, rgb(229, 250, 248) 0%, rgb(255, 232, 253) 100%);
+    height: 50px;
+    display: flex;
+    align-items: top;
+    justify-content: center;
+    position:absolute;
+    margin:0;
+    padding:0;
+    top:0;
+    position: fixed;
+    width: 100%;
+    z-index: 1;
+    right:0;
+    top: 0;
+
+  }
+
+  .navigation.dark{
+    background: linear-gradient(to right, rgb(0, 0, 0) 0%, rgb(255, 255, 255) 100%);
+  }
+
+  .navigationLi {
+    list-style: none;
+    display: inline-block;
+    padding: 1px 40px;
+    margin: 10px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #777;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    transition: color 0.5s;
+    text-align: center;
+    bottom: 10px;
+  }
+
+  .navigationLi::after {
+    content: '';
+    background: rgb(249, 252, 251);
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    opacity: 0;
+    transition: top 0.5s,opacity 0.5s;
+    }
+
+  .navigationLi:hover{
+    color: rgb(252, 243, 245);
+  }
+
+  .navigationLi:hover::after{
+    top: 50%;
+    opacity: 1;
+  }
+  .navigationLink
+  {
+    text-decoration:none;
+    transition:all 0.3s ease 0s;
+    color:rgb(25, 23, 23);
+    cursor:pointer;
+    font-family: "Lucida Calligraphy", cursive, serif, sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+
+  }
+
+/* CONTENT */
+#form{
+    width: 360px;
+    height: 350px;
+    position: relative;
+    padding: 20px;
+    border-radius: 4px;
+    font-size: 12px;
+    border-width: 100px;
+    flex-wrap: wrap;
+    background-color:rgba(225,225,225,0.7);
+    top:30px;
+    box-shadow: 0 25px 45px rgba(0,0,0,0.1);
+}
+
+#form.dark{
+    width: 360px;
+    height: 350px;
+    position: relative;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+    font-size: 12px;
+    border-width: 100px;
+    flex-wrap: wrap;
+    background-color: rgba(0,0,0,.5);
+    top: 30px;
+
+}
+.container{
+    display: flex;
+    flex-direction: column;
+}
+.container input{
+    outline: none;
+    padding: 10px;
+    width:100%;
+    height: 20%;
+    border: solid 2px #f0f0f0;
+    border-radius: 4px;
+    display: block;
+    margin-top: 10%;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.container img{
+    position: absolute;
+    width: 120px;
+    height: 95px;
+    top: -16%;
+    left: 50%;
+    transform:translate(-50%,0) ;
+}
+
+.username-section img,
+.password-section img{
+display: none;
+}
+.username-text:focus-within{
+    border-color: #007bff
+}
+.username-section:focus-within~img{
+    display: none;
+}
+.username-section:focus-within img{
+    display: block;
+    height: 112px;
+}
+.password-text:focus-within{
+    border-color: #007bff;
+}
+.password-section:focus-within~img{
+    display: none;
+}
+.password-section:focus-within img{
+    display:block;
+    width: 103px;
+    height: 83px;
+    top: -12%;
+}
+.container button {
+    padding: 10px;
+    margin: 10px 0;
+    margin-left: 25%;
+    width: 50%;
+    color: black;
+    background: linear-gradient(90deg,rgb(203, 255, 251) 0%,rgb(254, 206, 251)100%);
+    border: none;
+    margin-top: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.container.dark button{
+    color:white;
+    background:linear-gradient(90deg,rgb(14, 39, 114) 0%,rgb(64, 110, 210)100%);
+}
+.container.dark a{
+    color: white;
+    background:linear-gradient(90deg,rgb(14, 39, 114) 0%,rgb(54, 104, 212)100%);
+}
+.signup {
+    color: black;
+}
+.signup.dark{
+    color: white;
+}
+
+.signup p {
+    font-size: 14px;
+}
+
+#toggle{
+    position: absolute;
+    z-index: 4;
+    top: 2%;
+    left: 85%;
+    width: 60px;
+    height: 30px;
+    border-radius: 60px;
+    background-color: black;
+    cursor: pointer;
+    box-shadow: inset 2px 2px 10px rgb(194,194, 194);
+
+}
+
+.button{
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    display: flex;
+    top: 0;
+    left: 0;
+    transform: scale(0.9);
+    box-shadow: inset -7px -7px 7px 1px lightgrey;
+    transition: 0.5s;
+}
+
+#toggle.button.dark{
+    display: flex;
+    left:30px;
+    transition: 0.5s;
+}
+
+#toggle.dark{
+    background-color:white;
+}
+
+.username-section.success input{
+    border-color: #09c372;
+}
+
+.password-section.success input{
+    border-color: #09c372;
+}
+
+.username-section.error-message input{
+    outline: none;
+    padding: 5px;
+    width:100%;
+    border: solid 1px;
+    border-radius:2px;
+    margin-top:10%;
+    box-sizing: border-box;
+    font-size: 16px;
+    border-color: #ff3860;
+    background-color: #ffeb3b;
+}
+.password-section.error-message input{
+    outline: none;
+    padding: 5px;
+    width:100%;
+    border: solid 1px;
+    border-radius: 2px;
+    margin-top:10%;
+    box-sizing: border-box;
+    font-size: 16px;
+    border-color: #ff3860;
+    background-color: #ffeb3b;
+}
+.signup a{
+    margin-left: 280px;
+    position: absolute;
+    text-decoration: none;
+    left: 12%;
+    top: 68%;
+    transform: translate(-50%,-50%);
+    font-size: 12px;
+    background: linear-gradient(90deg,#a2dcf7,#fd99d1,#fdf5b4,#a0dffd);
+    background-size: 400%;
+    width: 90px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    color:rgb(34, 34, 34);
+    text-transform: uppercase;
+    border-radius: 50px;
+    z-index: 1;
+}
+a:hover{
+    animation: sun 8s infinite;
+}
+a::before{
+    content: "";
+    position: absolute;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: linear-gradient(90deg,#03a9f4,#f441a5,#ffeb3b,#03a9f4);
+    background-size: 400%;
+    border-radius: 50px;
+    filter: blur(20px);
+    z-index: -1;
+
+}
+@keyframes sun{
+    100%{
+        background-position: -400% 0;
+    }
+}
+.signup{
+    font-size: 13px;
+    margin-top: 12px;
+}
+
+.error-message{
+    color: #ff3860;
+}
+
+.li1 li{
+    position: absolute;
+    border: 1px solid #fff;
+    background-color: #fff;
+    width: 30px;
+    height: 30px;
+    list-style: none;
+    opacity: 0;
+
+}
+.square li{
+    top:40vh;
+    left: 60vw;
+    animation: square 10s linear infinite;
+}
+.square li:nth-child(2){
+    top: 80vh;
+    left: 10vw;
+    animation-delay: 2s;
+}
+.square li:nth-child(3){
+    top: 80vh;
+    left: 85vw;
+    animation-delay: 4s;
+}
+.square li:nth-child(4){
+    top: 10vh;
+    left: 70vw;
+    animation-delay: 6s;
+}
+.square li:nth-child(5){
+    top: 10vh;
+    left: 10vw;
+    animation-delay: 8s;
+}
+
+@keyframes square{
+    0%{
+        transform: scale(0) rotateY(0deg);
+        opacity: 1;
+    }
+    100%{
+        transform: scale(5) rotateY(1000deg);
+        opacity: 0;
+    }
+}
+  /* 尾页 */
+.footer, .footer h3 {
+    background: rgb(255, 242, 252);
+    width: 100%;
+    height: 20px;
+    text-align: center;
+    bottom: 0px;
+    position: absolute;
+  }
+
+  .footer.dark,.footer.dark h3{
+    background: rgb(58, 58, 58);
+    color: white;
+  }
+  /* 根据屏幕缩放 */
+@media only screen and (max-width:500px) {
+    .panel {
+      flex-direction: column;
+    }
+  }
+  h1 {
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+  }

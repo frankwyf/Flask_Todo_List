@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>register</title>
+    <link rel="stylesheet" href="../static/css/register.css">
+    <link rel="Shortcut Icon" href="../static/icon/register.ico" type="image/x-icon"/>
+    <script src="../static/js/jquery-3.6.1.min.js"></script>
+</head>
+
+<body>
+<div class="login-box">
+    <h1>Register</h1>
+    <div class="input-box">
+        <form class="input-group" action="/newAccount" method="POST" id="form">
+            <div class="input-text">
+                <svg class="w-6 h-6" fill="#fff" weight="20" height="20" stroke="#7f7f7f" viewBox="0 0 25 20">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                    </path>
+                </svg>
+                <input type="text" class="username-text" id="username" name="name" placeholder="Username">
+                <div class="error-message"></div>
+            </div>
+            <div class="input-text">
+                <svg class="w-6 h-6" fill="#fff" weight="20" height="20" stroke="#7f7f7f" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                    </path>
+                </svg>
+                <input type="text" class="e-mail" id="e-mail" name="mailenter" placeholder="e-mail">
+                <div class="error-message"></div>
+            </div>
+            <div class="input-text">
+                <svg class="w-6 h-6" fill="#fff" weight="20" height="20" stroke="#7f7f7f" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z">
+                    </path>
+                </svg>
+                <input type="password" class="password-text" id="password" name="psw" placeholder="Password">
+                <div class="error-message"></div>
+            </div>
+            <div class="input-text">
+                <svg class="w-6 h-6" fill="#fff" weight="20" height="20" stroke="#7f7f7f" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                    </path>
+                </svg>
+                <input type="password" class="comfirm-password" id="confirm" placeholder="confirm password">
+                <div class="error-message"></div>
+            </div>
+            <div class="input-btn">
+                <button type="submit" onclick="{{ url_for('auth.newAccount') }}">Register</button>
+                <button type="reset" onclick="formReset()">Reset</button>
+                <button type="button" id="back"><a id="fack-button"
+                                                   href="{{ url_for('auth.newlogin') }}">Back</a></button>
+            </div>
+        </form>
+        {% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<script src="../static/js/register.js"></script>
+</body>
+
+</html>

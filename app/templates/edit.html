@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Edit assessment</title>
+    <link rel="Shortcut Icon" href="../static/icon/Todolist.ico" type="image/x-icon"/>
+    <link rel="stylesheet" href="../static/css/Googlefonts.css">
+    <link rel="stylesheet" href="../static/css/bootstrap.css">
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <script type=text/javascript src="../static/js/jquery-3.6.1.min.js"></script>
+</head>
+<body id="gg">
+<main>
+&nbsp;
+    {% for task in data %}
+    <h1 class="text-center title">Editing task: {{ task.module }} -- {{ task.assessment }}</h1>
+        <form action="/subEdit" method="post" id="editIn">
+        <!--Dummy part used for data transfer-->
+            <input id="dummy" value="{{ id }}" name="host">
+            <input id="dummy" value="{{ user }}" name="uid">
+            <input id="dummy" value="{{ task.taskID }}" name="this_task">
+            <input id="dummy" value="{{ task.create_date }}" name="create">
+            <input id="dummy" value="{{ task.status }}" name="status">
+
+            <div class="task-wrap1">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="content-wrap">
+                            <div>
+                               <h4>Module name:</h4> <input id="create-list-input" class="input" type="text"
+                                                   name="editmoudle"
+                                                   value={{ task.module }}>
+                                <div class="error-message"></div>
+                            </div>
+                            <div>
+                               <h4>Assessment name:</h4> <input id="create-task-input" class="input" type="text"
+                                                       name="editass"
+                                                       value={{ task.assessment }}>
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="date-time1">
+                                <small class="remin1">
+                                    <small id="remind">Remind at: <input type="datetime-local" id="remind"
+                                                                             name="reminder"
+                                                                             value={{ target_remind }}></small>
+                                </small>
+                                <br>
+                                <p class="editdate" id="error-message-re"></p>
+                                <small class="ddl1">
+                                    <small id="dead">Deadline: <input type="datetime-local" id="dead"
+                                                                         name="deadline"
+                                                                         value={{ target_ddl }}></small>
+                                </small>
+                                <br>
+                                <p class="editdate" id="error-message-ddl"></p>
+                            </div>
+                            <!--Select the priority of this task-->
+                            <ul class="list-group" id="priority">
+                                <select class="input" name="priority" id="urgency">
+                                    {% if task.priority == 1 %}
+                                        <option value="1" id="low" selected>Low</option>
+                                    {% else %}
+                                        <option value="1" id="low">Low</option>
+                                    {% endif %}
+                                    {% if task.priority == 2 %}
+                                        <option value="2" id="medium" selected>Medium</option>
+                                    {% else %}
+                                        <option value="2" id="medium">Medium</option>
+                                    {% endif %}
+                                    {% if task.priority == 3 %}
+                                        <option value="3" id="sig" selected>Significant</option>
+                                    {% else %}
+                                        <option value="3" id="sig">Significant</option>
+                                    {% endif %}
+                                    {% if task.priority == 4 %}
+                                        <option value="4" id="urgent" selected>Urgent</option>
+                                    {% else %}
+                                        <option value="4" id="urgent">Urgent</option>
+                                    {% endif %}
+                                </select>
+                            </ul>
+                            <label id="hint">Modify the description below if you want:</label>
+                            <div class="form-floating">
+                                    <textarea class="form-control" placeholder="Leave a comment here"
+                                              id="floatingTextarea2" name="descri">{{ task.description }}</textarea>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Button section-->
+                    <div class="col align-vertical-center">
+                        <div class="inTask-button">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-danger">
+                                <a id="fake-button"
+                                   href="{{ url_for('task.discard',host=user,uid=id) }}">Discard
+                                </a></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% endfor %}
+</main>
+    <script type="text/javascript" src="../static/js/edit.js"></script>
+</body>
+</html>

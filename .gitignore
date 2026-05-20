@@ -1,0 +1,31 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+.env/
+
+# Flask instance and runtime
+instance/
+*.db
+*.sqlite3
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Test and build artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+*.log

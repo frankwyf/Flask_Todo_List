@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../static/css/login.css">
+    <link rel="Shortcut Icon" href="../static/icon/login.ico" type="image/x-icon"/>
+</head>
+<body>
+<div class="container">
+    <h1> Welcome to TodoList!</h1>
+    <form action="/doList" method="post" id="form">
+        <div class="username-section">
+            {% if username %}
+                <input type="text" class="username-text" id=username name="name" placeholder="Username"
+                       value={{ username }}>
+            {% else %}
+                <input type="text" class="username-text" id=username name="name" placeholder="Username">
+            {% endif %}
+            <img src="../static/img/username.png" alt="Username">
+            <div class="error-message"></div>
+        </div>
+        <div class="password-section">
+            {% if password %}
+                <input type="password" class="password-text" id=password name="psw" placeholder="Password"
+                       value={{ password }}>
+            {% else %}
+                <input type="password" class="password-text" id=password name="psw" placeholder="Password">
+            {% endif %}
+            <img src="../static/img/password.png" alt="Password">
+            <div class="error-message"></div>
+        </div>
+        <div class="input.btn">
+            <button type="submit">Login</button>
+        </div>
+        <div class="signup">
+            Don't have any account?<a href="{{ url_for('auth.register') }}">Register</a>
+        </div>
+        <div class="signup">
+            Portfolio Docs: <a href="{{ url_for('auth.portfolio_api_docs') }}">API</a> |
+            <a href="{{ url_for('auth.portfolio_architecture') }}">Architecture</a>
+        </div>
+        <img src="../static/img/normal.png" alt="Normal">
+        <div id="toggle">
+            <i class="button"></i>
+        </div>
+        {% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    </form>
+    <div class="square">
+        <ul class=li1>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+</div>
+<div class="footer">
+    <h3>Open source portfolio edition</h3>
+</div>
+<script src="../static/js/login.js"></script>
+</body>
+
+</html>

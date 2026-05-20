@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Error 404 - Page Not Found!</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/error.css" />
+    <link href="../static/img/favicon.png" rel="shortcut icon" type="image/x-icon" />
+</head>
+
+<body>
+    <div class="container">
+        <img class="ops" src="../static/img/404.svg" />
+        <br />
+        {% if errormessage %}
+                <h2 id="expected">{{ errormessage }}
+            <br />Please return to login and try again.</h2>
+        <br />
+            {% else %}
+                <h3>Some error has occured!
+            <br />Please return to login and try again.</h3>
+        <br />
+            {% endif %}
+        <a class="buton" href="login.html">Back to Login</a>
+    </div>
+</body>
+
+</html>

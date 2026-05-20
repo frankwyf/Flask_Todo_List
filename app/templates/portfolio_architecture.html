@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Architecture</title>
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"></script>
+</head>
+<body class="container py-4">
+<h1>System Architecture</h1>
+<p>Blueprint-oriented architecture for portfolio presentation.</p>
+
+<pre class="mermaid">
+flowchart TD
+    U[User Browser] --> A[Flask App]
+    A --> B1[auth blueprint]
+    A --> B2[task blueprint]
+    A --> B3[chart blueprint]
+
+    B1 --> T1[login/register templates]
+    B2 --> T2[dolist/edit templates]
+    B3 --> T3[chart blocks in dolist]
+
+    B1 --> D[(SQLite/MySQL via SQLAlchemy)]
+    B2 --> D
+    B3 --> D
+
+    B2 --> M[Flask-Mail Optional]
+</pre>
+
+<p><a href="/portfolio/api">Open API guide</a></p>
+<p><a href="/">Back to login</a></p>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio API Guide</title>
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+</head>
+<body class="container py-4">
+<h1>Portfolio API Guide</h1>
+<p>This page documents major route contracts for demo and interview walkthrough.</p>
+
+<h3>Authentication</h3>
+<ul>
+    <li><strong>GET /</strong>: Open login page.</li>
+    <li><strong>POST /newAccount</strong>: Register new user. Form fields: <code>name</code>, <code>mailenter</code>, <code>psw</code>.</li>
+    <li><strong>POST /doList</strong>: Login and open user dashboard. Form fields: <code>name</code>, <code>psw</code>.</li>
+</ul>
+
+<h3>Task Management</h3>
+<ul>
+    <li><strong>POST /createAss</strong>: Create a task.</li>
+    <li><strong>GET /completeTask</strong>: Mark task complete.</li>
+    <li><strong>GET /undoTask</strong>: Undo completion status.</li>
+    <li><strong>GET /deleteTask</strong>: Delete one task.</li>
+    <li><strong>POST /subEdit</strong>: Submit task edit.</li>
+</ul>
+
+<h3>Search and Analytics</h3>
+<ul>
+    <li><strong>POST /searchStatus</strong>, <strong>/searchmName</strong>, <strong>/searchaName</strong></li>
+    <li><strong>GET /searchOverdue</strong></li>
+    <li><strong>GET /visualCompletion</strong>, <strong>/visualPri</strong>, <strong>/visualModule</strong></li>
+</ul>
+
+<h3>Portfolio Support</h3>
+<ul>
+    <li><strong>GET /portfolio/api</strong>: This documentation page.</li>
+    <li><strong>GET /portfolio/architecture</strong>: System architecture diagram.</li>
+</ul>
+
+<p><a href="/">Back to login</a></p>
+</body>
+</html>
