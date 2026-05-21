@@ -171,6 +171,29 @@ def test_dashboard_contains_touch_target_classes(client):
     assert b"touch-action-btn" in dashboard.data
     assert b"mobile-action-dock" in dashboard.data
     assert b"mobile.js" in dashboard.data
+    assert b"dashboard-top" in dashboard.data
+    assert b"API Docs" not in dashboard.data
+    assert b"Architecture" not in dashboard.data
+    assert b"Open Tasks API" not in dashboard.data
+    assert b"bootstrap.min.js" not in dashboard.data
+    assert b"bootstrap.js" not in dashboard.data
+
+
+def test_login_contains_developer_zone_links(client):
+    page = client.get("/newlogin")
+    assert page.status_code == 200
+    assert b"Developer Zone" in page.data
+    assert b"REST API Reference" in page.data
+    assert b"System Architecture" in page.data
+    assert b"Portfolio Docs:" not in page.data
+
+
+def test_dashboard_shows_compact_empty_state_without_tasks(client):
+    user_id = _create_user(client, username="empty_state_user")
+
+    dashboard = client.get(f"/backhome?user_id={user_id}&user_name=empty_state_user")
+    assert dashboard.status_code == 200
+    assert b"No tasks yet. Create your first assessment from the left panel." in dashboard.data
 
 
 def test_dashboard_accessibility_hooks_present(client):
@@ -202,6 +225,33 @@ def test_chart_shells_are_keyboard_accessible(client):
     assert b"tabindex=\"0\"" in chart.data
     assert b"aria-describedby=\"chart-key-help\"" in chart.data
     assert b"id=\"chart-key-help\"" in chart.data
+
+
+def test_portfolio_css_contains_resolution_targeted_breakpoints(client):
+    response = client.get("/static/css/portfolio-upgrade.css")
+    assert response.status_code == 200
+
+    css = response.data
+    assert b"@media (min-width: 1000px) and (max-width: 1080px) and (max-height: 640px)" in css
+    assert b"@media (min-width: 1180px) and (max-width: 1310px) and (max-height: 760px)" in css
+    assert b"@media (min-width: 1320px) and (max-width: 1415px) and (max-height: 820px)" in css
+    assert b"@media (min-width: 1490px) and (max-width: 1605px) and (max-height: 920px)" in css
+    assert b"@media (max-height: 500px) and (max-width: 920px)" in css
+    assert b"@media (min-width: 1701px)" in css
+    assert b"@media (pointer: coarse) and (min-width: 900px)" in css
+    assert b"@supports (padding: max(0px))" in css
+    assert b"#todo_list .task-wrap:hover" in css
+    assert b"#todo_list .btn-primary" in css
+    assert b"#todo_list .mobile-action-dock" in css
+    assert b"#todo_list .dashboard-top" in css
+    assert b"#todo_list .container-fluid > .row" in css
+    assert b"#todo_list .left {" in css
+    assert b"--space-3" in css
+    assert b"#todo_list #show > h4" in css
+    assert b"body:not(#todo_list):not(#gg):not(#window):not(.error-page) #form" in css
+    assert b"body:not(#todo_list):not(#gg):not(#window):not(.error-page) .footer" in css
+    assert b".login-box .input-group" in css
+    assert b".login-box .input-btn #back" in css
 
 
 def test_no_nested_button_anchor_in_dashboard_and_edit(client):

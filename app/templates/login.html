@@ -39,10 +39,14 @@
         <div class="signup signup-register">
             Don't have any account?<a href="{{ url_for('auth.register') }}">Register</a>
         </div>
-        <div class="signup signup-docs">
-            Portfolio Docs: <a href="{{ url_for('auth.portfolio_api_docs') }}">API</a> |
-            <a href="{{ url_for('auth.portfolio_architecture') }}">Architecture</a>
-        </div>
+        <section class="developer-zone" aria-label="Developer zone">
+            <h3>Developer Zone</h3>
+            <p>Interested in extending the project? Start with the integration docs below.</p>
+            <div class="developer-zone-links">
+                <a href="{{ url_for('auth.portfolio_api_docs') }}">REST API Reference</a>
+                <a href="{{ url_for('auth.portfolio_architecture') }}">System Architecture</a>
+            </div>
+        </section>
         <img src="../static/img/normal.png" alt="Normal">
         <div id="toggle">
             <i class="button"></i>

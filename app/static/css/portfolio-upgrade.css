@@ -11,6 +11,13 @@
   --ui-warning: #b66e00;
   --ui-shadow-soft: 0 8px 25px rgba(22, 52, 75, 0.1);
   --ui-shadow-strong: 0 14px 42px rgba(22, 52, 75, 0.18);
+  --space-1: 6px;
+  --space-2: 10px;
+  --space-3: 14px;
+  --space-4: 18px;
+  --space-5: 24px;
+  --radius-shell: 18px;
+  --radius-card: 16px;
 }
 
 * {
@@ -128,6 +135,12 @@ textarea:focus-visible,
 /* Login page */
 body:not(#todo_list):not(#gg):not(#window):not(.error-page) {
   background: var(--ui-bg);
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 18px 12px 70px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 body:not(#todo_list):not(#gg):not(#window):not(.error-page)::before {
@@ -145,6 +158,119 @@ body:not(#todo_list):not(#gg):not(#window):not(.error-page)::before {
 body:not(#todo_list):not(#gg):not(#window):not(.error-page) .container {
   position: relative;
   z-index: 1;
+  width: min(94vw, 560px);
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .container h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4.3vw, 3.2rem);
+  line-height: 1.06;
+  letter-spacing: 0.35px;
+  text-wrap: balance;
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) #form {
+  width: min(94vw, 640px);
+  min-height: auto;
+  padding: 52px 26px 20px;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .container input {
+  margin-top: 0;
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .container button {
+  margin: 0;
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) #form > img[alt="Normal"] {
+  width: 108px;
+  height: 86px;
+  top: -58px;
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) #toggle {
+  top: 10px;
+  left: auto;
+  right: 10px;
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .signup-register {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .signup-register a {
+  margin-left: 0;
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .signup-docs {
+  margin-top: 0;
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .developer-zone {
+  width: 100%;
+  margin-top: 2px;
+  padding: 12px;
+  border: 1px solid rgba(15, 53, 78, 0.14);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.68);
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .developer-zone h3 {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: 0.3px;
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .developer-zone p {
+  margin: 6px 0 10px;
+  font-size: 0.9rem;
+  color: #35566f;
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .developer-zone-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .developer-zone-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  border-radius: 10px;
+  border: 1px solid rgba(15, 53, 78, 0.18);
+  background: rgba(242, 250, 247, 0.86);
+  color: #1f4965;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .developer-zone-links a:hover,
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .developer-zone-links a:focus-visible {
+  border-color: rgba(15, 141, 132, 0.42);
+  background: rgba(225, 246, 240, 0.92);
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .flash {
+  margin-top: 2px;
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .square,
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .li1 {
+  display: none;
 }
 
 #form {
@@ -221,9 +347,29 @@ body:not(#todo_list):not(#gg):not(#window):not(.error-page) .container {
 .footer,
 .footer h3 {
   height: auto;
-  min-height: 28px;
+  min-height: 30px;
   background: rgba(255, 255, 255, 0.9);
   color: var(--ui-muted);
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  border-top: 1px solid rgba(15, 53, 78, 0.12);
+  backdrop-filter: blur(5px);
+}
+
+body:not(#todo_list):not(#gg):not(#window):not(.error-page) .footer h3 {
+  margin: 0;
+  padding: 6px 10px;
+  font-size: clamp(1rem, 1.6vw, 1.6rem);
+  letter-spacing: 0.4px;
+  background: transparent;
 }
 
 /* Register page */
@@ -239,6 +385,13 @@ body:not(#todo_list):not(#gg):not(#window):not(.error-page) .container {
   animation: riseIn 420ms ease both;
 }
 
+body:has(.login-box) {
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 18px 12px;
+}
+
 .login-box h1 {
   color: var(--ui-ink);
   letter-spacing: 0.4px;
@@ -247,11 +400,38 @@ body:not(#todo_list):not(#gg):not(#window):not(.error-page) .container {
 .input-box {
   transform: none;
   align-items: flex-start;
+  width: 100%;
+}
+
+.login-box .input-group {
+  width: min(100%, 860px);
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
 }
 
 .input-text {
   width: 100%;
-  margin-top: 10px;
+  margin-top: 0;
+}
+
+.login-box .input-text {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.login-box .input-text svg {
+  width: 24px;
+  height: 24px;
+}
+
+.login-box .input-text .error-message {
+  grid-column: 2;
+  margin-top: 2px;
 }
 
 .input-text input {
@@ -272,6 +452,13 @@ body:not(#todo_list):not(#gg):not(#window):not(.error-page) .container {
   margin-top: 16px;
 }
 
+.login-box .input-btn {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
 .input-btn button,
 button[type="reset"],
 #back {
@@ -279,6 +466,37 @@ button[type="reset"],
   width: auto;
   min-width: 110px;
   height: 38px;
+}
+
+.login-box .input-btn button,
+.login-box .input-btn #back {
+  width: 100%;
+  min-height: 42px;
+}
+
+.login-box .input-btn #back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid rgba(19, 47, 67, 0.2);
+  background: rgba(255, 255, 255, 0.72);
+  color: #1f4965;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+
+.login-box .input-btn #back:hover,
+.login-box .input-btn #back:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(15, 141, 132, 0.42);
+  background: rgba(227, 248, 242, 0.82);
+}
+
+.login-box .flash {
+  width: 100%;
+  margin-top: 10px;
 }
 
 #back {
@@ -303,6 +521,109 @@ button[type="reset"],
   overflow: hidden;
 }
 
+#todo_list main {
+  padding: var(--space-2);
+}
+
+#todo_list .dashboard-top {
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr) auto;
+  grid-template-areas:
+    "clock title theme"
+    "weather title theme"
+    "kpi kpi kpi"
+    "links links links";
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid rgba(15, 53, 78, 0.1);
+  border-radius: var(--radius-shell);
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 22px rgba(15, 53, 78, 0.08);
+  margin-bottom: var(--space-3);
+}
+
+#todo_list .dashboard-top > #clock-weather {
+  grid-area: clock;
+}
+
+#todo_list .dashboard-top > .weather {
+  grid-area: weather;
+}
+
+#todo_list .dashboard-top > .title {
+  grid-area: title;
+  align-self: center;
+  margin: 0;
+}
+
+#todo_list .dashboard-top > .theme-toolbar {
+  grid-area: theme;
+  align-self: start;
+  margin: 0;
+}
+
+#todo_list .dashboard-top > .portfolio-panel {
+  grid-area: kpi;
+  margin-top: 2px;
+  margin-bottom: 0;
+}
+
+#todo_list .dashboard-top > .portfolio-links {
+  grid-area: links;
+  margin: 2px 0 0;
+}
+
+#todo_list .dashboard-top > .portfolio-empty-hint {
+  grid-area: kpi;
+  margin: 2px 0 0;
+}
+
+#todo_list .dashboard-top.no-weather {
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr) auto;
+  grid-template-areas:
+    "clock title theme"
+    "clock title theme"
+    "kpi kpi kpi"
+    "links links links";
+}
+
+#todo_list .dashboard-top.no-data {
+  row-gap: 10px;
+}
+
+#todo_list main > .container-fluid {
+  border: 1px solid rgba(15, 53, 78, 0.1);
+  border-radius: var(--radius-shell);
+  background: rgba(255, 255, 255, 0.56);
+  padding: var(--space-2);
+}
+
+#todo_list .container-fluid > .row {
+  display: grid;
+  grid-template-columns: minmax(290px, 360px) minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+}
+
+#todo_list main {
+  position: relative;
+}
+
+#todo_list main::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 8% 14%, rgba(15, 141, 132, 0.09), transparent 33%),
+    radial-gradient(circle at 91% 22%, rgba(240, 140, 59, 0.08), transparent 34%),
+    radial-gradient(circle at 74% 88%, rgba(87, 121, 255, 0.06), transparent 28%);
+}
+
+#todo_list main > * {
+  position: relative;
+}
+
 #todo_list .title,
 #gg .title {
   font-family: Staatliches, Raleway, sans-serif;
@@ -318,9 +639,27 @@ button[type="reset"],
   max-width: 100%;
 }
 
+#todo_list {
+  overflow-x: hidden;
+}
+
+#todo_list .row,
+#gg .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+#todo_list .left .container,
+#todo_list .right .container,
+#todo_list .left .container-fluid,
+#todo_list .right .container-fluid {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
 .portfolio-panel {
   display: grid;
-  grid-template-columns: repeat(4, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 12px;
   margin: 16px 0;
   animation: riseIn 500ms ease both;
@@ -344,6 +683,16 @@ button[type="reset"],
   margin: 7px 0 0;
   font-size: 1.3rem;
   font-weight: 700;
+}
+
+.portfolio-empty-hint {
+  margin: 10px 0 6px;
+  padding: 12px 14px;
+  border: 1px dashed rgba(19, 47, 67, 0.28);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ui-muted);
+  font-weight: 600;
 }
 
 .progress-line {
@@ -394,24 +743,70 @@ button[type="reset"],
 
 #todo_list .left,
 #todo_list .right {
-  padding: 14px 10px;
+  padding: var(--space-3) var(--space-2);
+  min-width: 0;
+}
+
+#todo_list .left {
+  position: sticky;
+  top: 12px;
+  align-self: start;
+  max-height: calc(100vh - 30px);
+  overflow: auto;
+  border: 1px solid rgba(15, 53, 78, 0.12);
+  border-radius: var(--radius-card);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(241, 250, 246, 0.84));
+}
+
+#todo_list .right {
+  border: 1px solid rgba(15, 53, 78, 0.1);
+  border-radius: var(--radius-card);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(248, 252, 255, 0.8));
+}
+
+#todo_list #show {
+  display: grid;
+  gap: var(--space-3);
+}
+
+#todo_list #show > h4 {
+  margin: 2px 0 0;
+  padding: 0 var(--space-1);
+  letter-spacing: 0.2px;
 }
 
 #todo_list .task-wrap,
 #gg .task-wrap1 {
   width: min(100%, 980px);
-  margin: 14px auto;
+  margin: 0 auto;
   border: 1px solid var(--ui-border);
-  border-radius: 16px;
+  border-radius: var(--radius-card);
   box-shadow: var(--ui-shadow-soft);
   background: rgba(255, 255, 255, 0.7);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+#todo_list .task-wrap .row,
+#gg .task-wrap1 .row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-2);
+  align-items: start;
+}
+
+#todo_list .task-wrap:hover,
+#gg .task-wrap1:hover {
+  transform: translateY(-2px);
+  border-color: rgba(15, 141, 132, 0.28);
+  box-shadow: 0 12px 28px rgba(14, 58, 86, 0.16);
 }
 
 #todo_list .content-wrap,
 #gg .content-wrap {
   background: var(--ui-panel-strong);
-  border-radius: 16px;
-  padding: 16px;
+  border-radius: var(--radius-card);
+  padding: var(--space-3);
+  border: 1px solid rgba(15, 53, 78, 0.08);
 }
 
 #todo_list #searchS-btn,
@@ -429,6 +824,63 @@ button[type="reset"],
   font-weight: 700;
   font-size: 0.95rem;
   transition: transform 0.08s ease, filter 0.12s ease;
+  white-space: normal;
+  word-break: break-word;
+}
+
+#todo_list .btn,
+#gg .btn {
+  border: 1px solid transparent;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+#todo_list .btn-primary,
+#gg .btn-primary {
+  color: #ffffff;
+  border-color: rgba(25, 95, 176, 0.35);
+  background: linear-gradient(135deg, #2f7cd9 0%, #255ec2 100%);
+}
+
+#todo_list .btn-success,
+#gg .btn-success {
+  color: #ffffff;
+  border-color: rgba(9, 120, 88, 0.35);
+  background: linear-gradient(135deg, #11a372 0%, #118d72 100%);
+}
+
+#todo_list .btn-warning,
+#gg .btn-warning {
+  color: #2b2925;
+  border-color: rgba(190, 131, 24, 0.42);
+  background: linear-gradient(135deg, #f4c149 0%, #e8af2f 100%);
+}
+
+#todo_list .btn-danger,
+#gg .btn-danger {
+  color: #ffffff;
+  border-color: rgba(153, 31, 58, 0.36);
+  background: linear-gradient(135deg, #d6526c 0%, #be3b56 100%);
+}
+
+#todo_list .btn-info,
+#gg .btn-info {
+  color: #ffffff;
+  border-color: rgba(32, 109, 144, 0.34);
+  background: linear-gradient(135deg, #34a6cd 0%, #278cb0 100%);
+}
+
+#todo_list .btn-green,
+#gg .btn-green {
+  color: #ffffff;
+  border-color: rgba(53, 67, 85, 0.32);
+  background: linear-gradient(135deg, #5d6f86 0%, #4a5b70 100%);
+}
+
+#todo_list .btn:hover,
+#gg .btn:hover {
+  transform: translateY(-1px);
+  filter: saturate(1.05);
 }
 
 #todo_list .touch-action-btn a {
@@ -449,7 +901,174 @@ button[type="reset"],
 #todo_list .mobile-action-dock {
   display: inline-flex;
   flex-wrap: wrap;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2);
+  border: 1px solid rgba(15, 53, 78, 0.12);
+  border-radius: var(--radius-card);
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.95), rgba(244, 252, 249, 0.94));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 8px 18px rgba(15, 53, 78, 0.08);
+}
+
+/* Override legacy offsets from style.css that break at odd desktop widths. */
+#todo_list #searchS-btn,
+#todo_list #showOverdue,
+#todo_list #backhome,
+#todo_list #liveToastBtn,
+#todo_list #daily-graph,
+#todo_list #priority-graph,
+#todo_list #module-graph,
+#todo_list #search-input,
+#todo_list #completion-select {
+  margin: 0;
+}
+
+#todo_list .left .row > .col {
+  display: block;
+  width: 100%;
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+#todo_list .left .accordion-body .form-input-grp {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
   gap: 10px;
+  margin-top: 10px;
+}
+
+#todo_list .left .accordion-body .input,
+#todo_list .left .accordion-body input[type="datetime-local"],
+#todo_list .left .accordion-body select {
+  width: 100%;
+  min-height: 44px;
+}
+
+#todo_list .left .accordion-body .input-grp-append {
+  width: 100%;
+}
+
+#todo_list .left .accordion-body .input-grp-append > button,
+#todo_list .left .accordion-body .btn-link-action,
+#todo_list .left .accordion-body .touch-action-btn,
+#todo_list .left .accordion-body form .btn {
+  width: 100%;
+  min-height: 46px;
+}
+
+#todo_list .left .accordion-body form {
+  margin-bottom: 10px;
+}
+
+#todo_list .left .accordion-item {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(19, 47, 67, 0.1);
+  margin-bottom: 10px;
+}
+
+#todo_list .left .accordion-button {
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.96), rgba(238, 249, 244, 0.92));
+}
+
+#todo_list .left .accordion-button h4 {
+  margin: 0;
+  font-size: clamp(1rem, 1vw + 0.5rem, 1.2rem);
+}
+
+#todo_list .left .accordion-button:not(.collapsed) {
+  color: #0e4255;
+  background: linear-gradient(140deg, rgba(223, 246, 240, 0.98), rgba(255, 242, 226, 0.96));
+}
+
+#todo_list .left .accordion-body {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+#todo_list .left .accordion {
+  display: grid;
+  gap: var(--space-2);
+}
+
+#todo_list .left .accordion-body label {
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.15px;
+  color: #24475f;
+}
+
+#todo_list .portfolio-links {
+  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, max-content));
+  justify-content: start;
+}
+
+#todo_list .portfolio-links a {
+  box-shadow: 0 2px 8px rgba(15, 53, 78, 0.08);
+  word-break: break-word;
+}
+
+#todo_list .inTask-button {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: flex-end;
+  margin: var(--space-1) 0 0;
+}
+
+#todo_list .inTask-button .btn {
+  min-width: 132px;
+  flex: 0 1 170px;
+}
+
+#todo_list .portfolio-kpi,
+#todo_list .task-wrap,
+#todo_list .panel {
+  backdrop-filter: blur(2px);
+}
+
+#todo_list .content-wrap {
+  display: flow-root;
+}
+
+#todo_list .content-wrap h4 {
+  margin-bottom: 8px;
+  font-size: 1.22rem;
+}
+
+#todo_list .date-time {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+#todo_list .setdate,
+#todo_list .ddl,
+#todo_list .remin {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(14, 58, 86, 0.16);
+}
+
+#todo_list #showdes,
+#gg #showdes {
+  width: 100%;
+  min-height: 108px;
+  margin-top: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 53, 78, 0.15);
+  background: rgba(248, 252, 255, 0.9);
+  padding: 10px 12px;
+}
+
+#todo_list .edit {
+  margin-top: 0;
 }
 
 #todo_list .in-task-link {
@@ -489,6 +1108,26 @@ button[type="reset"],
 
 #todo_list .chart-mobile-shell .panel-body {
   min-width: 680px;
+}
+
+#todo_list .panel {
+  border: 1px solid var(--ui-border);
+  border-radius: var(--radius-card);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: var(--ui-shadow-soft);
+}
+
+#todo_list .panel .panel-heading {
+  padding: 10px 14px 0;
+}
+
+#todo_list .panel .panel-title {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+#todo_list .panel .panel-body {
+  padding-top: 8px;
 }
 
 #todo_list .chart-scroll-hint {
@@ -535,11 +1174,28 @@ button[type="reset"],
   border: 1px solid var(--ui-border);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 6px 16px rgba(15, 53, 78, 0.1);
 }
 
 #todo_list .weather {
   float: none;
   margin-right: 0;
+}
+
+#todo_list .theme-toolbar,
+#todo_list .portfolio-links {
+  align-items: center;
+}
+
+#todo_list #theme-toggle {
+  border-color: rgba(15, 53, 78, 0.22);
+  background: rgba(255, 255, 255, 0.86);
+  color: #1f4965;
+}
+
+#todo_list #theme-toggle:hover {
+  border-color: rgba(15, 141, 132, 0.38);
+  color: #0f6f78;
 }
 
 #todo_list #setdead,
@@ -672,28 +1328,339 @@ body.dark textarea::placeholder {
 }
 
 @media (max-width: 1100px) {
+  #todo_list .dashboard-top {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "title title"
+      "clock weather"
+      "theme theme"
+      "kpi kpi"
+      "links links";
+  }
+
+  #todo_list .dashboard-top.no-weather {
+    grid-template-areas:
+      "title title"
+      "clock theme"
+      "kpi kpi"
+      "links links";
+  }
+
+  #todo_list main > .container-fluid {
+    padding: 8px;
+  }
+
+  #todo_list .container-fluid > .row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
   .portfolio-panel {
-    grid-template-columns: repeat(2, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
   }
 
   #todo_list .left,
   #todo_list .right {
+    position: static;
+    max-height: none;
     flex: 0 0 100%;
     max-width: 100%;
     border-right: none;
   }
+
+  #todo_list .inTask-button {
+    justify-content: flex-start;
+  }
+
+  #todo_list #clock-weather {
+    width: min(100%, 360px);
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1366px) {
+  #todo_list .left {
+    flex: 0 0 38%;
+    max-width: 38%;
+  }
+
+  #todo_list .right {
+    flex: 0 0 62%;
+    max-width: 62%;
+  }
+
+  #todo_list .mobile-action-dock {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #todo_list .portfolio-links {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  #todo_list .portfolio-links a {
+    text-align: center;
+  }
+
+  #todo_list .inTask-button .btn {
+    min-width: 118px;
+  }
+}
+
+@media (min-width: 1367px) and (max-width: 1700px) {
+  #todo_list main,
+  #gg main {
+    max-width: 94vw;
+  }
+
+  #todo_list .left {
+    flex: 0 0 32%;
+    max-width: 32%;
+  }
+
+  #todo_list .right {
+    flex: 0 0 68%;
+    max-width: 68%;
+  }
+
+  #todo_list .portfolio-panel {
+    grid-template-columns: repeat(4, minmax(120px, 1fr));
+  }
+}
+
+@media (min-width: 1701px) {
+  #todo_list main,
+  #gg main {
+    max-width: 1760px;
+  }
+
+  #todo_list .left {
+    flex: 0 0 29%;
+    max-width: 29%;
+  }
+
+  #todo_list .right {
+    flex: 0 0 71%;
+    max-width: 71%;
+  }
+
+  #todo_list .portfolio-panel {
+    grid-template-columns: repeat(4, minmax(160px, 1fr));
+    gap: 14px;
+  }
+
+  #todo_list .task-wrap {
+    max-width: 1100px;
+  }
+}
+
+/* 1024x600 and similar low-height laptops */
+@media (min-width: 1000px) and (max-width: 1080px) and (max-height: 640px) {
+  #todo_list main,
+  #gg main {
+    max-height: calc(100vh - 14px);
+    overflow: auto;
+  }
+
+  #todo_list .left {
+    flex: 0 0 40%;
+    max-width: 40%;
+  }
+
+  #todo_list .right {
+    flex: 0 0 60%;
+    max-width: 60%;
+  }
+
+  #todo_list .left,
+  #todo_list .right {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  #todo_list .portfolio-panel {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+
+  #todo_list .left .accordion-body {
+    max-height: 48vh;
+    overflow-y: auto;
+  }
+
+  #todo_list .left .accordion-body .touch-action-btn,
+  #todo_list .left .accordion-body form .btn {
+    min-height: 42px;
+  }
+}
+
+/* 1280x720 class devices */
+@media (min-width: 1180px) and (max-width: 1310px) and (max-height: 760px) {
+  #todo_list .left {
+    flex: 0 0 36%;
+    max-width: 36%;
+  }
+
+  #todo_list .right {
+    flex: 0 0 64%;
+    max-width: 64%;
+  }
+
+  #todo_list .left .accordion-body {
+    max-height: 51vh;
+    overflow-y: auto;
+  }
+
+  #todo_list .portfolio-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 1366x768 class devices */
+@media (min-width: 1320px) and (max-width: 1415px) and (max-height: 820px) {
+  #todo_list .left {
+    flex: 0 0 34%;
+    max-width: 34%;
+  }
+
+  #todo_list .right {
+    flex: 0 0 66%;
+    max-width: 66%;
+  }
+
+  #todo_list .left .accordion-body {
+    max-height: 53vh;
+    overflow-y: auto;
+  }
+
+  #todo_list .task-wrap {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}
+
+/* 1536x864 class devices */
+@media (min-width: 1490px) and (max-width: 1605px) and (max-height: 920px) {
+  #todo_list .left {
+    flex: 0 0 31%;
+    max-width: 31%;
+  }
+
+  #todo_list .right {
+    flex: 0 0 69%;
+    max-width: 69%;
+  }
+
+  #todo_list .portfolio-panel {
+    gap: 10px;
+  }
+
+  #todo_list .portfolio-kpi {
+    padding: 12px;
+  }
 }
 
 @media (max-width: 760px) {
-  #form {
+  body:not(#todo_list):not(#gg):not(#window):not(.error-page) {
+    padding: 12px 10px 64px;
+  }
+
+  body:not(#todo_list):not(#gg):not(#window):not(.error-page) .container {
+    width: min(96vw, 430px);
+    gap: 10px;
+  }
+
+  body:not(#todo_list):not(#gg):not(#window):not(.error-page) .container h1 {
+    font-size: clamp(1.8rem, 8vw, 2.3rem);
+  }
+
+  body:not(#todo_list):not(#gg):not(#window):not(.error-page) #form {
+    width: 100%;
+    padding: 48px 16px 16px;
+    gap: 10px;
+  }
+
+  body:not(#todo_list):not(#gg):not(#window):not(.error-page) #form > img[alt="Normal"] {
+    width: 96px;
+    height: 78px;
+    top: -52px;
+  }
+
+  body:not(#todo_list):not(#gg):not(#window):not(.error-page) .signup-register {
+    justify-content: flex-start;
+  }
+
+  body:not(#todo_list):not(#gg):not(#window):not(.error-page) .developer-zone-links {
+    grid-template-columns: 1fr;
+  }
+
+  body:not(#todo_list):not(#gg):not(#window):not(.error-page) .footer h3 {
+    font-size: clamp(0.95rem, 4.8vw, 1.3rem);
+  }
+
+  body:has(.login-box) {
+    padding: 10px 8px;
+  }
+
+  .login-box {
+    width: 100%;
+    min-height: auto;
+    padding: 16px 14px;
+  }
+
+  .login-box .input-group {
+    gap: 10px;
+  }
+
+  .login-box .input-text {
+    grid-template-columns: 20px 1fr;
+    gap: 8px;
+  }
+
+  .login-box .input-btn {
+    grid-template-columns: 1fr;
+  }
+
+  #todo_list main {
+    padding: var(--space-1);
+  }
+
+  #todo_list .dashboard-top {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "title"
+      "theme"
+      "clock"
+      "weather"
+      "kpi"
+      "links";
+    padding: var(--space-2);
+  }
+
+  #todo_list .dashboard-top.no-weather {
+    grid-template-areas:
+      "title"
+      "theme"
+      "clock"
+      "kpi"
+      "links";
+  }
+
+  #todo_list .task-wrap .row,
+  #gg .task-wrap1 .row {
+    grid-template-columns: 1fr;
+  }
+
+  #todo_list #form {
     padding: 20px 16px;
   }
 
-  .container button {
+  #todo_list .container button {
     min-height: 42px;
   }
 
-  .signup-register a {
+  #todo_list .signup-register a {
     margin-left: 4px;
     margin-top: 6px;
   }
@@ -727,6 +1694,10 @@ body.dark textarea::placeholder {
     justify-content: center;
   }
 
+  #todo_list .right {
+    padding: var(--space-2) var(--space-1);
+  }
+
   #todo_list .inTask-button .btn,
   #gg .inTask-button .btn {
     flex: 1;
@@ -738,7 +1709,7 @@ body.dark textarea::placeholder {
     min-height: 52px;
     padding: 12px 14px;
     font-size: 1rem;
-    margin-top: 10px;
+    margin-top: 6px;
   }
 
   #todo_list .mobile-action-dock {
@@ -756,6 +1727,21 @@ body.dark textarea::placeholder {
     box-shadow: 0 -8px 24px rgba(19, 47, 67, 0.12);
   }
 
+  #todo_list .content-wrap h4 {
+    font-size: 1.08rem;
+  }
+
+  #todo_list .portfolio-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  #todo_list .portfolio-links a {
+    text-align: center;
+    padding: 10px 10px;
+  }
+
   #todo_list .chart-mobile-shell {
     border-radius: 14px;
     border: 1px solid var(--ui-border);
@@ -764,7 +1750,7 @@ body.dark textarea::placeholder {
   }
 
   #todo_list .chart-mobile-shell .panel-body {
-    min-width: 620px;
+    min-width: min(620px, 165vw);
   }
 
   #todo_list .chart-scroll-hint {
@@ -774,6 +1760,76 @@ body.dark textarea::placeholder {
 
   #todo_list .chart-canvas {
     min-height: 320px;
+  }
+
+  #todo_list .setdate,
+  #todo_list .ddl,
+  #todo_list .remin {
+    font-size: 0.88rem;
+  }
+}
+
+/* Landscape phones and narrow-height tablets */
+@media (max-height: 500px) and (max-width: 920px) {
+  #todo_list .mobile-action-dock {
+    position: static;
+    padding: 8px;
+  }
+
+  #todo_list .touch-action-btn {
+    min-height: 44px;
+    font-size: 0.93rem;
+  }
+
+  #todo_list .chart-canvas {
+    min-height: 260px;
+  }
+}
+
+@media (pointer: coarse) and (min-width: 900px) {
+  #todo_list .touch-action-btn,
+  #todo_list .left .accordion-body form .btn {
+    min-height: 48px;
+  }
+
+  #todo_list .left .accordion-body .form-input-grp {
+    gap: 12px;
+  }
+}
+
+@supports (padding: max(0px)) {
+  @media (max-width: 760px) {
+    #todo_list .mobile-action-dock {
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
+    }
+  }
+}
+
+@media (max-width: 540px) {
+  #todo_list main > .container,
+  #todo_list main > .container-fluid {
+    border-radius: 14px;
+  }
+
+  #todo_list .left,
+  #todo_list .right {
+    padding: 10px 6px;
+  }
+
+  #todo_list .portfolio-links {
+    grid-template-columns: 1fr;
+  }
+
+  #todo_list .theme-toolbar {
+    justify-content: stretch;
+  }
+
+  #todo_list #theme-toggle {
+    width: 100%;
+  }
+
+  #todo_list .chart-canvas {
+    min-height: 300px;
   }
 }
 
@@ -826,11 +1882,44 @@ body.dark textarea::placeholder {
   }
 
   #todo_list .chart-mobile-shell .panel-body {
-    min-width: 560px;
+    min-width: min(560px, 180vw);
   }
 
   #todo_list .mobile-action-dock {
     grid-template-columns: 1fr;
+  }
+
+  #todo_list .left .accordion-body {
+    padding: 12px 10px;
+  }
+}
+
+@media (max-width: 340px) {
+  #todo_list .title,
+  #gg .title {
+    font-size: 1.45rem;
+  }
+
+  #todo_list .touch-action-btn,
+  #todo_list .left .accordion-body form .btn {
+    font-size: 0.92rem;
+    min-height: 48px;
+    padding: 10px 10px;
+  }
+}
+
+@media (max-height: 760px) and (min-width: 761px) {
+  #todo_list .mobile-action-dock {
+    position: static;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  #todo_list .left .accordion-button {
+    padding-top: 12px;
+    padding-bottom: 12px;
   }
 }
 

@@ -30,40 +30,45 @@
     {% else %}
         {% set progress = 0 %}
     {% endif %}
-    <div class="container">
+    <div class="container dashboard-top{% if not weather_widget_enabled %} no-weather{% endif %}{% if total_count == 0 %} no-data{% endif %}">
         <iframe id="clock-weather" scrolling="no" src="clock.html"></iframe>
-        <div class="weather">
-            <div id="he-plugin-standard"></div>
-        </div>
+        {% if weather_widget_enabled %}
+            <div class="weather">
+                <div id="he-plugin-standard"></div>
+            </div>
+        {% endif %}
         <h1 class="text-center title">Assessment Todo-List</h1>
         <div class="theme-toolbar">
             <button id="theme-toggle" class="btn btn-outline-secondary" type="button" aria-label="Toggle color theme">Switch Theme</button>
         </div>
-        <section class="portfolio-panel">
-            <div class="portfolio-kpi">
-                <h5>Total</h5>
-                <p>{{ total_count }}</p>
-            </div>
-            <div class="portfolio-kpi">
-                <h5>Completed</h5>
-                <p>{{ completed_count }}</p>
-            </div>
-            <div class="portfolio-kpi">
-                <h5>Pending</h5>
-                <p>{{ pending_count }}</p>
-            </div>
-            <div class="portfolio-kpi progress-kpi">
-                <h5>Progress</h5>
-                <div class="progress-line"><span style="width: {{ progress }}%"></span></div>
-                <p>{{ progress }}%</p>
-            </div>
-        </section>
+        {% if total_count > 0 %}
+            <section class="portfolio-panel">
+                <div class="portfolio-kpi">
+                    <h5>Total</h5>
+                    <p>{{ total_count }}</p>
+                </div>
+                <div class="portfolio-kpi">
+                    <h5>Completed</h5>
+                    <p>{{ completed_count }}</p>
+                </div>
+                <div class="portfolio-kpi">
+                    <h5>Pending</h5>
+                    <p>{{ pending_count }}</p>
+                </div>
+                <div class="portfolio-kpi progress-kpi">
+                    <h5>Progress</h5>
+                    <div class="progress-line"><span style="width: {{ progress }}%"></span></div>
+                    <p>{{ progress }}%</p>
+                </div>
+            </section>
+        {% else %}
+            <section class="portfolio-empty-hint" role="status" aria-live="polite">
+                No tasks yet. Create your first assessment from the left panel.
+            </section>
+        {% endif %}
         <section class="portfolio-links">
             <a href="{{ url_for('task.searchUpcoming', user_id=id, user_name=user, days=7) }}">Upcoming 7 Days</a>
             <a href="{{ url_for('task.exportTasks', user_id=id, user_name=user) }}">Export CSV</a>
-            <a href="{{ url_for('task.tasks_api', user_id=id) }}" target="_blank">Open Tasks API</a>
-            <a href="{{ url_for('auth.portfolio_api_docs') }}">API Docs</a>
-            <a href="{{ url_for('auth.portfolio_architecture') }}">Architecture</a>
         </section>
     </div>
     <div class="container-fluid" ng-app="myapp" ng-controller="dolist">
@@ -566,8 +571,6 @@
     <script src="https://widget.qweather.net/standard/static/js/he-standard-common.js?v=2.0"></script>
 {% endif %}
 <script type="text/javascript" src="../static/js/bootstrap.bundle.min.js"></script>
-<script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="../static/js/bootstrap.js"></script>
 <script type="text/javascript" src="../static/js/theme.js"></script>
 <script type="text/javascript" src="../static/js/home.js"></script>
 <script type="text/javascript" src="../static/js/mobile.js"></script>

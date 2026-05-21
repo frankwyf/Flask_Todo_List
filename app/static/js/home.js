@@ -72,7 +72,11 @@ function logout() {
 var liveToastBtn = document.querySelector("#liveToastBtn");
 if (liveToastBtn) {
     liveToastBtn.onclick = function () {
-        new bootstrap.Toast(document.querySelector('.toast')).show();
+        var toastEl = document.querySelector('.toast');
+        if (!toastEl) {
+            return;
+        }
+        new bootstrap.Toast(toastEl).show();
         window.setTimeout(function () {
             $(".toast").removeClass("show");
         }, 5000);
@@ -83,7 +87,11 @@ var inTaskButtons = document.querySelectorAll(".in-task-link");
 if (inTaskButtons.length > 0) {
     inTaskButtons.forEach(function (btn) {
         btn.addEventListener('click', function () {
-            new bootstrap.Toast(document.querySelector('.toast')).show();
+            var toastEl = document.querySelector('.toast');
+            if (!toastEl) {
+                return;
+            }
+            new bootstrap.Toast(toastEl).show();
         });
     });
 }
