@@ -18,7 +18,7 @@ Flask-WTF==1.0.1
 greenlet==3.1.1
 importlib-metadata==5.0.0
 importlib-resources==5.10.0
-itsdangerous==2.1.2
+itsdangerous==2.2.0
 jikan-sqlalchemy-utils==1.0.0
 Jinja2==3.1.2
 Mako==1.2.3
