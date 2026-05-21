@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template, request
+from flask import Blueprint, flash, jsonify, render_template, request
 
 from app import bcrypt, db
 from app.model import Task, Todoers
@@ -124,3 +124,8 @@ def portfolio_api_docs():
 @auth_bp.route("/portfolio/architecture")
 def portfolio_architecture():
     return render_template("portfolio_architecture.html")
+
+
+@auth_bp.route("/healthz")
+def healthz():
+    return jsonify({"status": "ok"})

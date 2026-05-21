@@ -87,6 +87,29 @@ def test_user_click_flow_end_to_end(client):
     assert response.status_code == 200
     assert b"Completed Assessments" in response.data
 
+    response = client.get(f"/searchUpcoming?user_id={uid}&user_name=alice&days=7")
+    assert response.status_code == 200
+    assert b"Upcoming in 7 days" in response.data
+
+    response = client.get(f"/api/tasks?user_id={uid}")
+    assert response.status_code == 200
+    assert response.is_json
+    assert len(response.get_json()) >= 1
+
+    response = client.get(f"/api/summary?user_id={uid}")
+    assert response.status_code == 200
+    assert response.is_json
+    assert "total" in response.get_json()
+
+    response = client.get(f"/exportTasks?user_id={uid}&user_name=alice")
+    assert response.status_code == 200
+    assert response.mimetype == "text/csv"
+
+    response = client.get("/healthz")
+    assert response.status_code == 200
+    assert response.is_json
+    assert response.get_json().get("status") == "ok"
+
     response = client.get(f"/deleteTask?aim={task_id}&host=alice&uid={uid}")
     assert response.status_code == 200
     assert b"is deleted" in response.data

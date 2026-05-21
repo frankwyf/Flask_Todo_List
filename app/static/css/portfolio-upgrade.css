@@ -1,0 +1,143 @@
+:root {
+  --portfolio-bg: linear-gradient(120deg, #f3f7ff 0%, #eff8f1 55%, #fff7e8 100%);
+  --portfolio-card: rgba(255, 255, 255, 0.88);
+  --portfolio-ink: #16344b;
+  --portfolio-accent: #0d8f7a;
+  --portfolio-accent-2: #f28f3b;
+  --portfolio-border: rgba(22, 52, 75, 0.12);
+}
+
+body {
+  background: var(--portfolio-bg);
+  color: var(--portfolio-ink);
+}
+
+#todo_list .container {
+  position: relative;
+}
+
+.portfolio-panel {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(130px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+  animation: fadeUp 500ms ease both;
+}
+
+.portfolio-kpi {
+  background: var(--portfolio-card);
+  border: 1px solid var(--portfolio-border);
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 6px 20px rgba(22, 52, 75, 0.08);
+  backdrop-filter: blur(6px);
+}
+
+.portfolio-kpi h5 {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #31546e;
+}
+
+.portfolio-kpi p {
+  margin: 6px 0 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.progress-line {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(22, 52, 75, 0.1);
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progress-line span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--portfolio-accent), var(--portfolio-accent-2));
+  transition: width 400ms ease;
+}
+
+.portfolio-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 18px;
+}
+
+.portfolio-links a {
+  text-decoration: none;
+  color: #0f3c56;
+  border: 1px solid var(--portfolio-border);
+  background: rgba(255, 255, 255, 0.82);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  transition: all 180ms ease;
+}
+
+.portfolio-links a:hover {
+  transform: translateY(-1px);
+  border-color: #0d8f7a;
+  color: #0d8f7a;
+}
+
+.theme-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 6px 0 10px;
+}
+
+[data-theme="dark"] body {
+  background: linear-gradient(120deg, #112132 0%, #132b22 55%, #2b2118 100%);
+  color: #e5eef8;
+}
+
+[data-theme="dark"] .portfolio-kpi,
+[data-theme="dark"] .portfolio-links a,
+[data-theme="dark"] #todo_list .content-wrap,
+[data-theme="dark"] #todo_list .task-wrap {
+  background: rgba(18, 33, 50, 0.88);
+  border-color: rgba(229, 238, 248, 0.14);
+  color: #e5eef8;
+}
+
+[data-theme="dark"] .portfolio-kpi h5,
+[data-theme="dark"] .portfolio-links a {
+  color: #b6d8f2;
+}
+
+[data-theme="dark"] .progress-line {
+  background: rgba(229, 238, 248, 0.2);
+}
+
+#todo_list .task-wrap {
+  border-radius: 16px;
+  border: 1px solid var(--portfolio-border);
+  box-shadow: 0 8px 22px rgba(22, 52, 75, 0.08);
+}
+
+#todo_list .content-wrap {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+}
+
+@media (max-width: 900px) {
+  .portfolio-panel {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

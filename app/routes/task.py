@@ -1,6 +1,8 @@
 import datetime
+import csv
+from io import StringIO
 
-from flask import Blueprint, current_app, flash, render_template, request
+from flask import Blueprint, Response, current_app, flash, jsonify, render_template, request
 from flask_mail import Message
 
 from app import db, mail
@@ -294,3 +296,83 @@ def searchOverdue():
     title = "Overdue Assessments"
     flash("These assessments are overdue!!! Pay more attetion next time", "error")
     return render_template("dolist.html", user=user, id=uid, tag=title, data=return_data)
+
+
+@task_bp.route("/searchUpcoming")
+def searchUpcoming():
+    user = request.args.get("user_name")
+    uid = request.args.get("user_id")
+    days = int(request.args.get("days", 7))
+    now = datetime.datetime.now()
+    end = now + datetime.timedelta(days=days)
+    return_data = Task.query.filter(Task.host == uid, Task.ddl >= now, Task.ddl <= end).all()
+    title = f"Upcoming in {days} days"
+    flash("Upcoming deadline list generated.", "error")
+    return render_template("dolist.html", user=user, id=uid, tag=title, data=return_data)
+
+
+@task_bp.route("/exportTasks")
+def exportTasks():
+    uid = request.args.get("user_id")
+    user = request.args.get("user_name", "user")
+    task_person = Task.query.filter_by(host=uid).all()
+
+    output = StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["taskID", "module", "assessment", "deadline", "remind", "priority", "status", "description"])
+    for task in task_person:
+        writer.writerow([
+            task.taskID,
+            task.module,
+            task.assessment,
+            task.ddl,
+            task.remind,
+            task.priority,
+            task.status,
+            task.description,
+        ])
+
+    csv_content = output.getvalue()
+    output.close()
+    return Response(
+        csv_content,
+        mimetype="text/csv",
+        headers={"Content-Disposition": f"attachment; filename={user}_tasks.csv"},
+    )
+
+
+@task_bp.route("/api/tasks")
+def tasks_api():
+    uid = request.args.get("user_id")
+    task_person = Task.query.filter_by(host=uid).all()
+    payload = [
+        {
+            "taskID": task.taskID,
+            "module": task.module,
+            "assessment": task.assessment,
+            "create_date": str(task.create_date),
+            "deadline": str(task.ddl),
+            "remind": str(task.remind),
+            "priority": task.priority,
+            "status": task.status,
+            "description": task.description,
+            "host": task.host,
+        }
+        for task in task_person
+    ]
+    return jsonify(payload)
+
+
+@task_bp.route("/api/summary")
+def tasks_summary_api():
+    uid = request.args.get("user_id")
+    task_person = Task.query.filter_by(host=uid).all()
+    total = len(task_person)
+    completed = len([task for task in task_person if task.status == 1])
+    pending = len([task for task in task_person if task.status == 0])
+    return jsonify({
+        "total": total,
+        "completed": completed,
+        "pending": pending,
+        "progress": int((completed * 100) / total) if total else 0,
+    })

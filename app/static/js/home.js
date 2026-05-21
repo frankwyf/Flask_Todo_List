@@ -24,18 +24,20 @@ const module = document.getElementById('create-list-input');
 const assessment = document.getElementById('create-task-input');
 
 
-form.addEventListener('submit', e => {
-    e.preventDefault();
-    const modulevalue = module.value.trim();
-    const assvalue = assessment.value.trim();
-    if (modulevalue === '') {
-        setError(module, "Module must be entered!");
-    } else if (assvalue === '') {
-        setError(assessment, "Assessment must be entered!");
-    } else {
-        form.submit();
-    }
-})
+if (form && module && assessment) {
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const modulevalue = module.value.trim();
+        const assvalue = assessment.value.trim();
+        if (modulevalue === '') {
+            setError(module, "Module must be entered!");
+        } else if (assvalue === '') {
+            setError(assessment, "Assessment must be entered!");
+        } else {
+            form.submit();
+        }
+    })
+}
 const setError = (element, message) => {
     const inputControl = element.parentElement;
     const errorDisplay = inputControl.querySelector('.error-message');
@@ -67,14 +69,21 @@ function logout() {
 }
 
 //show toast for more message
-document.querySelector("#liveToastBtn").onclick = function () {
-    new bootstrap.Toast(document.querySelector('.toast')).show();
-    window.setTimeout(function () {
-        $(".toast").removeClass("show");
-    }, 5000);
+var liveToastBtn = document.querySelector("#liveToastBtn");
+if (liveToastBtn) {
+    liveToastBtn.onclick = function () {
+        new bootstrap.Toast(document.querySelector('.toast')).show();
+        window.setTimeout(function () {
+            $(".toast").removeClass("show");
+        }, 5000);
+    }
 }
-document.querySelector("#intask").onclick = function () {
-    new bootstrap.Toast(document.querySelector('.toast')).show();
+
+var inTaskBtn = document.querySelector("#intask");
+if (inTaskBtn) {
+    inTaskBtn.onclick = function () {
+        new bootstrap.Toast(document.querySelector('.toast')).show();
+    }
 }
 
 //log out popover

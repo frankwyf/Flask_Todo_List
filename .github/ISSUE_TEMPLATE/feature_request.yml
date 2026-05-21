@@ -1,0 +1,24 @@
+name: Feature request
+description: Suggest a new feature
+title: "[Feature] "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: user_story
+    attributes:
+      label: User story
+      description: As a ..., I want ..., so that ...
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How should this work?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: What defines done?

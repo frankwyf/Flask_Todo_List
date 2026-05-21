@@ -9,6 +9,7 @@
     <title>Falsk Todo-List</title>
     <link rel="Shortcut Icon" href="../static/icon/Todolist.ico" type="image/x-icon"/>
     <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/portfolio-upgrade.css">
     <link rel="stylesheet" href="../static/css/Googlefonts.css">
     <link rel="stylesheet" href="../static/css/bootstrap.css">
     <link rel="stylesheet" href="../static/css/bootstrap.min.css">
@@ -18,12 +19,50 @@
 
 <body id="todo_list">
 <main>
+    {% set task_data = data|default([]) %}
+    {% set total_count = task_data|length %}
+    {% set completed_count = task_data|selectattr('status', 'equalto', 1)|list|length %}
+    {% set pending_count = task_data|selectattr('status', 'equalto', 0)|list|length %}
+    {% if total_count > 0 %}
+        {% set progress = ((completed_count * 100) // total_count) %}
+    {% else %}
+        {% set progress = 0 %}
+    {% endif %}
     <div class="container">
         <iframe id="clock-weather" scrolling="no" src="clock.html"></iframe>
         <div class="weather">
             <div id="he-plugin-standard"></div>
         </div>
         <h1 class="text-center title">Assessment Todo-List</h1>
+        <div class="theme-toolbar">
+            <button id="theme-toggle" class="btn btn-outline-secondary" type="button" aria-label="Toggle color theme">Switch Theme</button>
+        </div>
+        <section class="portfolio-panel">
+            <div class="portfolio-kpi">
+                <h5>Total</h5>
+                <p>{{ total_count }}</p>
+            </div>
+            <div class="portfolio-kpi">
+                <h5>Completed</h5>
+                <p>{{ completed_count }}</p>
+            </div>
+            <div class="portfolio-kpi">
+                <h5>Pending</h5>
+                <p>{{ pending_count }}</p>
+            </div>
+            <div class="portfolio-kpi progress-kpi">
+                <h5>Progress</h5>
+                <div class="progress-line"><span style="width: {{ progress }}%"></span></div>
+                <p>{{ progress }}%</p>
+            </div>
+        </section>
+        <section class="portfolio-links">
+            <a href="{{ url_for('task.searchUpcoming', user_id=id, user_name=user, days=7) }}">Upcoming 7 Days</a>
+            <a href="{{ url_for('task.exportTasks', user_id=id, user_name=user) }}">Export CSV</a>
+            <a href="{{ url_for('task.tasks_api', user_id=id) }}" target="_blank">Open Tasks API</a>
+            <a href="{{ url_for('auth.portfolio_api_docs') }}">API Docs</a>
+            <a href="{{ url_for('auth.portfolio_architecture') }}">Architecture</a>
+        </section>
     </div>
     <div class="container-fluid" ng-app="myapp" ng-controller="dolist">
         <div class="row">
@@ -513,5 +552,6 @@
 <script type="text/javascript" src="../static/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="../static/js/bootstrap.js"></script>
+<script type="text/javascript" src="../static/js/theme.js"></script>
 <script type="text/javascript" src="../static/js/home.js"></script>
 </html>

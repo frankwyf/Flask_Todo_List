@@ -6,6 +6,9 @@ A Flask-based task management web app refactored from an academic prototype into
 - User registration and login
 - Task CRUD, completion toggling, and editing
 - Search/filter by status, module, and task name
+- Upcoming deadline filter (`/searchUpcoming`)
+- CSV export and simple tasks API endpoint (`/exportTasks`, `/api/tasks`)
+- Task summary API and health endpoint (`/api/summary`, `/healthz`)
 - Basic analytics charts (ECharts)
 - Production-style Blueprint routing (`auth`, `task`, `chart`)
 - Click-flow test suite in isolated test directory
@@ -22,6 +25,17 @@ This release removes hardcoded secrets and private information.
 - Weather API key is environment-driven
 - Personal identifiers in templates were removed
 - `.gitignore` and `.env.example` added for safe open-source publishing
+
+## Open-Source Governance Files
+- `CODE_OF_CONDUCT.md`
+- `CONTRIBUTING.md`
+- `SECURITY.md`
+- `SUPPORT.md`
+- `CHANGELOG.md`
+- `.github/ISSUE_TEMPLATE/*`
+- `.github/pull_request_template.md`
+- `.github/dependabot.yml`
+- `.editorconfig` and `.gitattributes`
 
 ## Quick Start (Windows PowerShell)
 1. Create a virtual environment:
@@ -126,6 +140,12 @@ If mail settings are not configured, reminder email sending is not available.
 ## Portfolio Pages
 - API guide: `http://127.0.0.1:5000/portfolio/api`
 - Architecture diagram: `http://127.0.0.1:5000/portfolio/architecture`
+
+## UI Upgrade Notes
+- Added a portfolio visual layer (`app/static/css/portfolio-upgrade.css`)
+- Added dashboard KPI cards and progress bar on home page
+- Added quick links for docs, API, export, and upcoming tasks
+- Added light/dark theme toggle with preference persistence
 
 ## CI
 GitHub Actions workflow file: `.github/workflows/tests.yml`
