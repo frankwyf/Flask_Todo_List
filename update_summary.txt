@@ -1,0 +1,30 @@
+# 2026-05-21 移动端与无障碍升级总结
+
+## 主要内容
+1. 移动端体验大幅升级：
+   - 左侧功能区按钮触达区域加大，全部统一 touch-action-btn 风格。
+   - 360px 设备下表单间距、字号、按钮尺寸专项适配。
+   - 图表页横向滚动容器、渐隐提示、竖屏下可滑动体验。
+   - 图表区域支持键盘左右滚动，聚焦可见。
+2. 无障碍与可用性增强：
+   - 所有交互按钮/链接补 aria-label、aria-describedby、focus-visible 描边。
+   - 跳转主内容 skip-link，图表区域 role/aria-live/aria-describedby/sr-only 辅助文案。
+   - 所有 button+a 嵌套反模式已清理，统一 a.btn 语义。
+   - prefers-reduced-motion 兼容，减少动画影响。
+3. 自动化测试全覆盖：
+   - 新增/补充 5+ 项无障碍与移动端相关测试，所有主流程和 UI 钩子均有断言。
+   - pytest 全量通过（11 passed, 0 failed）。
+   - 关键文件无语法/模板/样式/JS 报错。
+
+## 主要涉及文件
+- app/templates/dolist.html
+- app/templates/edit.html
+- app/templates/register.html
+- app/static/css/portfolio-upgrade.css
+- app/static/js/mobile.js
+- app/static/js/home.js
+- tests/click/test_routes_coverage.py
+
+## 提交说明
+- 本次为移动端与无障碍专项升级，所有主流程和辅助功能均已自动化验证通过。
+- 建议推送云端后，进行一次真机体验和主流浏览器无障碍辅助工具回归。

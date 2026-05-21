@@ -56,8 +56,7 @@
             <div class="input-btn">
                 <button type="submit" onclick="{{ url_for('auth.newAccount') }}">Register</button>
                 <button type="reset" onclick="formReset()">Reset</button>
-                <button type="button" id="back"><a id="fack-button"
-                                                   href="{{ url_for('auth.newlogin') }}">Back</a></button>
+                <a id="back" class="btn-link-action" href="{{ url_for('auth.newlogin') }}">Back</a>
             </div>
         </form>
         {% for message in get_flashed_messages() %}

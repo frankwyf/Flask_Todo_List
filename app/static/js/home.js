@@ -79,11 +79,13 @@ if (liveToastBtn) {
     }
 }
 
-var inTaskBtn = document.querySelector("#intask");
-if (inTaskBtn) {
-    inTaskBtn.onclick = function () {
-        new bootstrap.Toast(document.querySelector('.toast')).show();
-    }
+var inTaskButtons = document.querySelectorAll(".in-task-link");
+if (inTaskButtons.length > 0) {
+    inTaskButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            new bootstrap.Toast(document.querySelector('.toast')).show();
+        });
+    });
 }
 
 //log out popover

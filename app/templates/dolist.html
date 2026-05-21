@@ -9,15 +9,17 @@
     <title>Falsk Todo-List</title>
     <link rel="Shortcut Icon" href="../static/icon/Todolist.ico" type="image/x-icon"/>
     <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/portfolio-upgrade.css">
     <link rel="stylesheet" href="../static/css/Googlefonts.css">
     <link rel="stylesheet" href="../static/css/bootstrap.css">
     <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/portfolio-upgrade.css">
     <script type=text/javascript src="../static/js/jquery-3.6.1.min.js"></script>
     <script type="text/javascript" src="../static/js/echarts.min.js"></script>
 </head>
 
 <body id="todo_list">
+<a class="skip-link" href="#show">Skip to task content</a>
+<p id="cta-help" class="sr-only">Action controls. Press Enter to activate links and buttons.</p>
 <main>
     {% set task_data = data|default([]) %}
     {% set total_count = task_data|length %}
@@ -78,16 +80,18 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <!-- Log out modal -->
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop">Log out
-                            </button>
-                            <!--Go back to hoem page-->
-                            <button class="btn btn-warning" id="backhome">
-                                <a id="fack-button"
-                                          href="{{ url_for('task.backhome',user_id=id, user_name=user) }}">
-                                    Home page</a>
-                            </button>
+                            <div class="mobile-action-dock">
+                                <!-- Log out modal -->
+                                <button type="button" class="btn btn-primary touch-action-btn" data-bs-toggle="modal"
+                                    aria-describedby="cta-help"
+                                    aria-label="Log out account"
+                                        data-bs-target="#staticBackdrop">Log out
+                                </button>
+                                <!--Go back to hoem page-->
+                                          <a class="btn btn-warning touch-action-btn btn-link-action" id="backhome" aria-label="Go back to home dashboard"
+                                              aria-describedby="cta-help"
+                                              href="{{ url_for('task.backhome',user_id=id, user_name=user) }}">Home page</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -191,7 +195,8 @@
                                                         <option value="1">Completed Assessments</option>
                                                         <option value="0">Undergoing Assessments</option>
                                                     </select>
-                                                    <button class="btn btn-success" type="submit" id="searchS-btn"
+                                                        <button class="btn btn-success touch-action-btn" type="submit" id="searchS-btn"
+                                                            aria-label="Search by completion status"
                                                             onclick="{{ url_for('task.searchStatus') }}">
                                                         Search
                                                     </button>
@@ -208,7 +213,8 @@
                                                     <input id="search-input" class="input" type="text"
                                                            name="listName" placeholder="Enter module">
                                                     <div class="input-grp-append">
-                                                        <button class="btn btn-primary"
+                                                        <button class="btn btn-primary touch-action-btn"
+                                                            aria-label="Search by module name"
                                                                 id="create-list-btn" type="submit"
                                                             onclick="{{ url_for('task.searchmName') }}">Search
                                                         </button>
@@ -226,7 +232,8 @@
                                                     <input id="search-input" class="input" type="text"
                                                            name="listName" placeholder="Enter assessment">
                                                     <div class="input-grp-append">
-                                                        <button class="btn btn-info"
+                                                        <button class="btn btn-info touch-action-btn"
+                                                            aria-label="Search by assessment name"
                                                                 id="create-list-btn" type="submit"
                                                             onclick="{{ url_for('task.searchaName') }}">Search
                                                         </button>
@@ -237,18 +244,16 @@
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <button class="btn btn-warning" id="showOverdue"><a id="fack-button"
-                                                                                                href="{{ url_for('task.searchOverdue',user_id=id, user_name=user) }}">Show
+                                            <a class="btn btn-warning touch-action-btn btn-link-action" aria-label="Show overdue assessments"
+                                               href="{{ url_for('task.searchOverdue',user_id=id, user_name=user) }}">Show
                                                 Overdue Assessments</a>
-                                            </button>
                                         </div>
                                     </div>
                                      <div class="row">
                                         <div class="col">
-                                            <button class="btn btn-warning" id="showOverdue"><a id="fack-button"
-                                                                                                href="{{ url_for('task.sendReminders',user_id=id, user_name=user) }}">
+                                            <a class="btn btn-warning touch-action-btn btn-link-action" aria-label="Send reminder emails for today"
+                                               href="{{ url_for('task.sendReminders',user_id=id, user_name=user) }}">
                                                 Send today's Remind E-mails</a>
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -270,15 +275,12 @@
                                     <!--Data visulization-->
                                     <div class="row">
                                         <div class="col">
-                                            <button class="btn btn-green" id="daily-graph"><a id="fack-button"
-                                                                                                                                                                                            href="{{ url_for('chart.visualCompletion',name=user,uid=id) }}">Completion</a>
-                                            </button>
-                                            <button class="btn btn-green" id="priority-graph"><a id="fack-button"
-                                                                                                                                                                                                 href="{{ url_for('chart.visualPri',name=user,uid=id) }}">Priority</a>
-                                            </button>
-                                            <button class="btn btn-green" id="module-graph"><a id="fack-button"
-                                                                                                                                                                                             href="{{ url_for('chart.visualModule',name=user,uid=id) }}">Module</a>
-                                            </button>
+                                                          <a class="btn btn-green touch-action-btn btn-link-action" id="daily-graph" aria-label="Open completion chart"
+                                                              href="{{ url_for('chart.visualCompletion',name=user,uid=id) }}">Completion</a>
+                                                          <a class="btn btn-green touch-action-btn btn-link-action" id="priority-graph" aria-label="Open priority chart"
+                                                              href="{{ url_for('chart.visualPri',name=user,uid=id) }}">Priority</a>
+                                                          <a class="btn btn-green touch-action-btn btn-link-action" id="module-graph" aria-label="Open module chart"
+                                                              href="{{ url_for('chart.visualModule',name=user,uid=id) }}">Module</a>
                                         </div>
                                     </div>
                                 </div>
@@ -315,9 +317,8 @@
                                     <div class="content-wrap">
                                         <h4>Moudle: {{ task.module }}</h4>
                                         <p id="assess">Assessment: {{ task.assessment }}</p>
-                                        <button title="Edit Task" class="edit" id="commit">
-                                            <a id="fake-button"
-                                               href="{{ url_for('task.edit',edit=task.taskID,host_return=user,uid_return=id) }}">
+                                        <a title="Edit Task" class="edit btn-link-action" id="commit"
+                                           href="{{ url_for('task.edit',edit=task.taskID,host_return=user,uid_return=id) }}">
                                                 <svg class="w-6 h-6" fill="none" stroke="currentColor"
                                                      viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -325,8 +326,7 @@
                                                           d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                                     </path>
                                                 </svg>
-                                            </a>
-                                        </button>
+                                        </a>
                                         <div class="date-time">
                                             <small class="setdate">Created at: {{ task.create_date }}</small>
                                             <small class="ddl">
@@ -373,21 +373,14 @@
                                 </div>
                                 <div class="col align-vertical-center">
                                     <div class="inTask-button">
-                                        <button type="button" class="btn btn-danger" id="intask">
-                                            <a id="fake-button"
-                                               href="{{ url_for('task.deleteTask',aim=task.taskID,host=user,uid=id) }}">Remove
-                                            </a></button>
+                                                     <a class="btn btn-danger in-task-link btn-link-action"
+                                                         href="{{ url_for('task.deleteTask',aim=task.taskID,host=user,uid=id) }}">Remove</a>
                                         {% if task.status == 0 %}
-                                            <button type="button" class="btn btn-primary" id="intask">
-                                                <a id="fake-button"
-                                                   href="{{ url_for('task.completeTask',aim=task.taskID,host=user,uid=id) }}">Complete
-                                                </a></button>
+                                                          <a class="btn btn-primary in-task-link btn-link-action"
+                                                              href="{{ url_for('task.completeTask',aim=task.taskID,host=user,uid=id) }}">Complete</a>
                                         {% else %}
-                                            <button type="button" class="btn btn-warning" id="intask">
-                                                <a id="fake-button"
-                                                   href="{{ url_for('task.undoTask',aim=task.taskID,host=user,uid=id) }}">Undo
-                                                    complete
-                                                </a></button>
+                                                          <a class="btn btn-warning in-task-link btn-link-action"
+                                                              href="{{ url_for('task.undoTask',aim=task.taskID,host=user,uid=id) }}">Undo complete</a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -396,12 +389,16 @@
                     {% endfor %}
                     <!--Graph priority section-->
                     {% if draw_pie %}
-                        <div class="panel panel-primary" id="picturewrap" >
+                        <div class="panel panel-primary chart-mobile-shell" id="picturewrap" data-chart-shell tabindex="0" role="region" aria-label="Priority chart scroll area" aria-describedby="chart-key-help">
                             <div class="panel-heading">
                                 <h3 class="panel-title">Priority distribution</h3>
                             </div>
                             <div class="panel-body">
-                                <div id="main" class="picture"></div>
+                                <div class="chart-scroll-hint" data-chart-hint role="status" aria-live="polite" aria-atomic="true">
+                                    <span>Swipe horizontally to view full chart</span>
+                                    <button type="button" class="chart-scroll-dismiss" data-chart-hint-dismiss aria-label="Dismiss chart hint">Got it</button>
+                                </div>
+                                <div id="main" class="picture chart-canvas"></div>
                             </div>
                         </div>
                         <!--draw a pie graph for the priority of all tasks-->
@@ -417,8 +414,9 @@
                                 var main = echarts.init(document.getElementById("main"));
                                 var option = {
                                     legend: {
-                                        orient: 'vertical',
-                                        left: 'left',
+                                        orient: window.innerWidth <= 720 ? 'horizontal' : 'vertical',
+                                        left: window.innerWidth <= 720 ? 'center' : 'left',
+                                        top: window.innerWidth <= 720 ? 'bottom' : 'top',
                                     },
                                     series: [
                                         {
@@ -431,18 +429,25 @@
                                     ]
                                 };
                                 main.setOption(option, true);
+                                window.addEventListener('resize', function () {
+                                    main.resize();
+                                });
                             };
                             display();
                         </script>
                     {% endif %}
                     <!--Graph Moudle section-->
                     {% if draw_m %}
-                        <div class="panel panel-primary" id="picturewrap">
+                        <div class="panel panel-primary chart-mobile-shell" id="picturewrap" data-chart-shell tabindex="0" role="region" aria-label="Module chart scroll area" aria-describedby="chart-key-help">
                             <div class="panel-heading">
                                 <h3 class="panel-title">Module -- assessment distribution</h3>
                             </div>
                             <div class="panel-body">
-                                <div id="main" class="picture"></div>
+                                <div class="chart-scroll-hint" data-chart-hint role="status" aria-live="polite" aria-atomic="true">
+                                    <span>Swipe horizontally to view full chart</span>
+                                    <button type="button" class="chart-scroll-dismiss" data-chart-hint-dismiss aria-label="Dismiss chart hint">Got it</button>
+                                </div>
+                                <div id="main" class="picture chart-canvas"></div>
                             </div>
                         </div>
                         <!--draw a pie graph for the priority of all tasks-->
@@ -458,8 +463,9 @@
                                 var main = echarts.init(document.getElementById("main"));
                                 var option = {
                                     legend: {
-                                        orient: 'vertical',
-                                        left: 'left',
+                                        orient: window.innerWidth <= 720 ? 'horizontal' : 'vertical',
+                                        left: window.innerWidth <= 720 ? 'center' : 'left',
+                                        top: window.innerWidth <= 720 ? 'bottom' : 'top',
                                     },
                                     series: [
                                         {
@@ -472,18 +478,25 @@
                                     ]
                                 };
                                 main.setOption(option, true);
+                                window.addEventListener('resize', function () {
+                                    main.resize();
+                                });
                             };
                             display();
                         </script>
                     {% endif %}
                     <!--Linear graph for completion distribution-->
                     {% if draw_d %}
-                        <div class="panel panel-primary" id="picturewrap">
+                        <div class="panel panel-primary chart-mobile-shell" id="picturewrap" data-chart-shell tabindex="0" role="region" aria-label="Completion chart scroll area" aria-describedby="chart-key-help">
                             <div class="panel-heading">
                                 <h3 class="panel-title">Completion analysis</h3>
                             </div>
                             <div class="panel-body">
-                                <div id="main1" class="picture"></div>
+                                <div class="chart-scroll-hint" data-chart-hint role="status" aria-live="polite" aria-atomic="true">
+                                    <span>Swipe horizontally to view full chart</span>
+                                    <button type="button" class="chart-scroll-dismiss" data-chart-hint-dismiss aria-label="Dismiss chart hint">Got it</button>
+                                </div>
+                                <div id="main1" class="picture chart-canvas"></div>
                             </div>
                         </div>
                         <script type="text/javascript" charset="UTF-8">
@@ -513,6 +526,9 @@
                                     }]
                                 };
                                 main1.setOption(option, true);
+                                window.addEventListener('resize', function () {
+                                    main1.resize();
+                                });
                             };
                             display();
                         </script>
@@ -536,9 +552,8 @@
                 {{ user }}, Do you confirming log out?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-info" data-bs-dismiss="modal"><a id="fake-button"
-                                                                                      href="{{ url_for('auth.logout',id=id) }}">Confirm</a>
-                </button>
+                     <a class="btn btn-info btn-link-action" data-bs-dismiss="modal"
+                         href="{{ url_for('auth.logout',id=id) }}">Confirm</a>
             </div>
         </div>
     </div>
@@ -546,6 +561,7 @@
 <script>
     window.WEATHER_WIDGET_KEY = "{{ weather_widget_key }}";
 </script>
+<p id="chart-key-help" class="sr-only">Use left and right arrow keys to scroll chart content on small screens.</p>
 {% if weather_widget_enabled %}
     <script src="https://widget.qweather.net/standard/static/js/he-standard-common.js?v=2.0"></script>
 {% endif %}
@@ -554,4 +570,5 @@
 <script type="text/javascript" src="../static/js/bootstrap.js"></script>
 <script type="text/javascript" src="../static/js/theme.js"></script>
 <script type="text/javascript" src="../static/js/home.js"></script>
+<script type="text/javascript" src="../static/js/mobile.js"></script>
 </html>

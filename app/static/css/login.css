@@ -287,7 +287,7 @@ display: none;
     border-color: #ff3860;
     background-color: #ffeb3b;
 }
-.signup a{
+.signup-register a{
     margin-left: 280px;
     position: absolute;
     text-decoration: none;
@@ -306,10 +306,10 @@ display: none;
     border-radius: 50px;
     z-index: 1;
 }
-a:hover{
+.signup-register a:hover{
     animation: sun 8s infinite;
 }
-a::before{
+.signup-register a::before{
     content: "";
     position: absolute;
     left: -5px;
@@ -330,6 +330,35 @@ a::before{
 .signup{
     font-size: 13px;
     margin-top: 12px;
+}
+
+.signup-docs {
+    margin-top: 16px;
+}
+
+.signup-docs a {
+    position: static;
+    margin-left: 0;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: auto;
+    height: auto;
+    line-height: normal;
+    text-transform: none;
+    border-radius: 0;
+    background: transparent;
+    color: #0d6efd;
+    padding: 0;
+}
+
+.signup-docs a::before {
+    content: none;
+}
+
+.signup-docs a:hover {
+    animation: none;
+    text-decoration: underline;
 }
 
 .error-message{

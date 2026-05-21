@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="../static/css/Googlefonts.css">
     <link rel="stylesheet" href="../static/css/bootstrap.css">
     <link rel="stylesheet" href="../static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../static/css/portfolio-upgrade.css">
     <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/portfolio-upgrade.css">
     <script type=text/javascript src="../static/js/jquery-3.6.1.min.js"></script>
 </head>
 <body id="gg">
@@ -96,10 +96,8 @@
                     <div class="col align-vertical-center">
                         <div class="inTask-button">
                             <button type="submit" class="btn btn-primary">Save</button>
-                            <button type="button" class="btn btn-danger">
-                                <a id="fake-button"
-                                   href="{{ url_for('task.discard',host=user,uid=id) }}">Discard
-                                </a></button>
+                            <a class="btn btn-danger btn-link-action"
+                               href="{{ url_for('task.discard',host=user,uid=id) }}">Discard</a>
                         </div>
                     </div>
                 </div>
