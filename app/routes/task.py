@@ -76,6 +76,10 @@ def _build_module_hotspots(tasks):
     return [{"name": name, "count": count} for name, count in ordered]
 
 
+def _api_error(message, status_code=400, code="bad_request"):
+    return jsonify({"error": message, "error_detail": {"code": code, "message": message}}), status_code
+
+
 @task_bp.route("/sendReminders")
 def sendReminders():
     user = request.args.get("user_name")
@@ -382,7 +386,7 @@ def searchUpcoming():
 def exportTasks():
     uid = _to_int_or_none(request.args.get("user_id"))
     if uid is None:
-        return jsonify({"error": "user_id is required"}), 400
+        return _api_error("user_id is required")
     user = request.args.get("user_name", "user")
     task_person = Task.query.filter_by(host=uid).all()
 
@@ -414,7 +418,7 @@ def exportTasks():
 def tasks_api():
     uid = _to_int_or_none(request.args.get("user_id"))
     if uid is None:
-        return jsonify({"error": "user_id is required"}), 400
+        return _api_error("user_id is required")
 
     task_person = Task.query.filter_by(host=uid).all()
     payload = [_serialize_task(task) for task in task_person]
@@ -425,7 +429,7 @@ def tasks_api():
 def tasks_summary_api():
     uid = _to_int_or_none(request.args.get("user_id"))
     if uid is None:
-        return jsonify({"error": "user_id is required"}), 400
+        return _api_error("user_id is required")
 
     task_person = Task.query.filter_by(host=uid).all()
     now = datetime.datetime.now()
@@ -463,7 +467,7 @@ def tasks_summary_api():
 def tasks_insights_api():
     uid = _to_int_or_none(request.args.get("user_id"))
     if uid is None:
-        return jsonify({"error": "user_id is required"}), 400
+        return _api_error("user_id is required")
 
     now = datetime.datetime.now()
     task_person = Task.query.filter_by(host=uid).all()
@@ -515,7 +519,7 @@ def tasks_insights_api():
 def tasks_timeline_api():
     uid = _to_int_or_none(request.args.get("user_id"))
     if uid is None:
-        return jsonify({"error": "user_id is required"}), 400
+        return _api_error("user_id is required")
 
     days = min(_to_positive_int(request.args.get("days"), 14), 120)
     start_date = datetime.date.today()
