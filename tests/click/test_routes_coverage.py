@@ -530,3 +530,5 @@ def test_dashboard_home_js_uses_summary_metadata_fallback(client):
     assert b"summary.progress_rate" in js
     assert b"summary.generated_at" in js
     assert b"setInsightSyncStampFromPayload" in js
+    assert b"resolveApiErrorMessage" in js
+    assert b"payload.error_detail.message" in js

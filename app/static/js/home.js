@@ -216,6 +216,19 @@ function setInsightSyncStampFromPayload(primaryTimestamp, fallbackTimestamp) {
     syncLine.classList.remove("is-degraded");
 }
 
+function resolveApiErrorMessage(response, payload) {
+    if (payload && payload.error_detail && payload.error_detail.message) {
+        return String(payload.error_detail.message);
+    }
+    if (payload && payload.error) {
+        return String(payload.error);
+    }
+    if (response && response.status) {
+        return "Request failed with status " + response.status + ".";
+    }
+    return "Failed to load dashboard insights.";
+}
+
 var priorityChartInstance = null;
 var timelineChartInstance = null;
 var chartResizeBound = false;
@@ -575,10 +588,12 @@ function loadInsightsBoard(board, userId) {
         .then(function (responses) {
             return Promise.all(
                 responses.map(function (response) {
-                    if (!response.ok) {
-                        throw new Error("Failed to load dashboard insights.");
-                    }
-                    return response.json();
+                    return response.json().then(function (payload) {
+                        if (!response.ok) {
+                            throw new Error(resolveApiErrorMessage(response, payload));
+                        }
+                        return payload;
+                    });
                 })
             );
         })
@@ -613,12 +628,13 @@ function loadInsightsBoard(board, userId) {
             }
             setInsightSyncStampFromPayload(summary.generated_at, insights.generated_at || timeline.generated_at);
         })
-        .catch(function () {
+        .catch(function (error) {
             setHealthBadge({ completion_rate: 0, overdue_rate: 100 });
             setRiskAlerts({ urgent_open: 0, overdue_rate: 100, completion_rate: 0, upcoming_7_days: 0 });
             setInsightSummary({ completion_rate: 0, urgent_open: 0, overdue_rate: 100 });
             if (statusLabel) {
-                statusLabel.textContent = "Unable to load live metrics right now.";
+                var message = (error && error.message) ? error.message : "Unable to load live metrics right now.";
+                statusLabel.textContent = "Unable to load live metrics right now. " + message;
             }
             setInsightSyncStamp(false);
         })
