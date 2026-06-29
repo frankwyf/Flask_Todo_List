@@ -1081,6 +1081,45 @@ button[type="reset"],
   line-height: 1.4;
 }
 
+#todo_list .insight-alert-list {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+
+#todo_list .insight-alert-list li {
+  color: #79423b;
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+#todo_list .insight-quick-actions {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+#todo_list .insight-quick-actions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(19, 47, 67, 0.18);
+  background: rgba(255, 255, 255, 0.9);
+  color: #1d4d67;
+  font-size: 0.83rem;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 6px 10px;
+}
+
+#todo_list .insight-quick-actions a:hover {
+  border-color: rgba(15, 141, 132, 0.45);
+  color: #0f6f78;
+}
+
 .theme-toolbar {
   display: flex;
   justify-content: flex-end;
@@ -1701,9 +1740,17 @@ body.dark #todo_list .insight-heatmap {
 
 [data-theme="dark"] #todo_list .insight-focus-list li,
 [data-theme="dark"] #todo_list .insight-module-list li,
+[data-theme="dark"] #todo_list .insight-alert-list li,
 body.dark #todo_list .insight-focus-list li,
 body.dark #todo_list .insight-module-list li {
   color: #d4e6f8;
+}
+
+[data-theme="dark"] #todo_list .insight-quick-actions a,
+body.dark #todo_list .insight-quick-actions a {
+  background: rgba(12, 29, 45, 0.88);
+  border-color: rgba(175, 210, 236, 0.3);
+  color: #d2e6f8;
 }
 
 [data-theme="dark"] #todo_list .insight-refresh-btn,

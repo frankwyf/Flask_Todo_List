@@ -395,6 +395,36 @@
                 <p class="endpoint-meta">Category: system health</p>
             </article>
         </div>
+
+        <section class="request-recipes" aria-label="Request examples">
+            <h3 class="category-heading">Request Recipes</h3>
+            <div class="recipe-grid">
+                <article class="recipe-card">
+                    <div class="recipe-top">
+                        <h4>Fetch Insights</h4>
+                        <button class="copy-btn" data-copy-value="GET /api/insights?user_id=1">Copy</button>
+                    </div>
+                    <p>Get KPI and distribution payload for a user.</p>
+                    <pre>curl -X GET "{{ request.host_url.rstrip('/') }}/api/insights?user_id=1"</pre>
+                </article>
+                <article class="recipe-card">
+                    <div class="recipe-top">
+                        <h4>Fetch Timeline</h4>
+                        <button class="copy-btn" data-copy-value="GET /api/timeline?user_id=1&days=14">Copy</button>
+                    </div>
+                    <p>Get timeline buckets for upcoming deadlines.</p>
+                    <pre>curl -X GET "{{ request.host_url.rstrip('/') }}/api/timeline?user_id=1&amp;days=14"</pre>
+                </article>
+                <article class="recipe-card">
+                    <div class="recipe-top">
+                        <h4>Export CSV</h4>
+                        <button class="copy-btn" data-copy-value="GET /exportTasks?user_id=1&user_name=demo">Copy</button>
+                    </div>
+                    <p>Export tasks for reporting and offline analysis.</p>
+                    <pre>curl -X GET "{{ request.host_url.rstrip('/') }}/exportTasks?user_id=1&amp;user_name=demo" -o tasks.csv</pre>
+                </article>
+            </div>
+        </section>
     </section>
 </main>
 <script src="../static/js/theme.js"></script>

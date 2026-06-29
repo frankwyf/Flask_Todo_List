@@ -333,6 +333,43 @@ function setFocusRecommendations(kpis) {
     });
 }
 
+function setRiskAlerts(kpis) {
+    var list = document.getElementById("insight-alert-list");
+    if (!list) {
+        return;
+    }
+
+    var alerts = [];
+    var urgentOpen = Number(kpis.urgent_open || 0);
+    var overdueRate = Number(kpis.overdue_rate || 0);
+    var completionRate = Number(kpis.completion_rate || 0);
+    var upcoming = Number(kpis.upcoming_7_days || 0);
+
+    if (urgentOpen >= 2) {
+        alerts.push("High urgency load detected: " + urgentOpen + " urgent task(s) open.");
+    }
+    if (overdueRate >= 20) {
+        alerts.push("Overdue risk elevated: " + overdueRate.toFixed(1) + "% overdue rate.");
+    }
+    if (completionRate <= 40) {
+        alerts.push("Execution throughput low: completion rate at " + completionRate.toFixed(1) + "%.");
+    }
+    if (upcoming >= 5) {
+        alerts.push("Deadline congestion ahead: " + upcoming + " items due in 7 days.");
+    }
+
+    if (!alerts.length) {
+        alerts.push("No critical risk detected. Current delivery rhythm is stable.");
+    }
+
+    list.innerHTML = "";
+    alerts.slice(0, 3).forEach(function (text) {
+        var li = document.createElement("li");
+        li.textContent = text;
+        list.appendChild(li);
+    });
+}
+
 function renderPriorityMiniChart(priorityDistribution) {
     var chartEl = document.getElementById("insight-priority-chart");
     if (!chartEl || !window.echarts) {
@@ -457,6 +494,7 @@ function loadInsightsBoard(board, userId) {
             renderTrendStrip(timeline.timeline || []);
             renderHeatmap(timeline.timeline || []);
             setFocusRecommendations(kpis);
+            setRiskAlerts(kpis);
             setHealthBadge(kpis);
             renderModuleSpotlight(insights.module_distribution || {});
 
@@ -466,6 +504,7 @@ function loadInsightsBoard(board, userId) {
         })
         .catch(function () {
             setHealthBadge({ completion_rate: 0, overdue_rate: 100 });
+            setRiskAlerts({ urgent_open: 0, overdue_rate: 100, completion_rate: 0, upcoming_7_days: 0 });
             if (statusLabel) {
                 statusLabel.textContent = "Unable to load live metrics right now.";
             }

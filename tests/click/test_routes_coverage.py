@@ -251,6 +251,10 @@ def test_dashboard_contains_touch_target_classes(client):
     assert b"id=\"insight-refresh\"" in dashboard.data
     assert b"id=\"insight-module-list\"" in dashboard.data
     assert b"Module Hotspots" in dashboard.data
+    assert b"id=\"insight-alert-list\"" in dashboard.data
+    assert b"Risk Alerts" in dashboard.data
+    assert b"insight-quick-actions" in dashboard.data
+    assert b"Open Overdue Queue" in dashboard.data
     assert b"id=\"insight-heatmap\"" in dashboard.data
     assert b"Workload Heatmap" in dashboard.data
 
@@ -415,6 +419,10 @@ def test_portfolio_api_page_has_filterable_endpoint_cards(client):
     assert b"href=\"#cat-system\"" in page.data
     assert b"data-copy-value=\"GET /api/insights?user_id=<id>\"" in page.data
     assert b"data-copy-value=\"GET /healthz\"" in page.data
+    assert b"Request Recipes" in page.data
+    assert b"Fetch Insights" in page.data
+    assert b"curl -X GET" in page.data
+    assert b"data-copy-value=\"GET /api/timeline?user_id=1&days=14\"" in page.data
     assert b"portfolio-pages.css" in page.data
     assert b"portfolio-pages.js" in page.data
 
@@ -440,3 +448,6 @@ def test_portfolio_pages_css_contains_new_toolbar_and_expand_hooks(client):
     assert b".endpoint-card.is-expanded" in css
     assert b".jump-chip" in css
     assert b".category-heading" in css
+    assert b".request-recipes" in css
+    assert b".recipe-grid" in css
+    assert b".recipe-card" in css

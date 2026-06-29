@@ -126,6 +126,16 @@
                     <ul id="insight-module-list" class="insight-module-list">
                         <li>Loading module distribution...</li>
                     </ul>
+                    <h5 class="insight-subhead">Risk Alerts</h5>
+                    <ul id="insight-alert-list" class="insight-alert-list">
+                        <li>Scanning risk signals...</li>
+                    </ul>
+                    <h5 class="insight-subhead">Quick Actions</h5>
+                    <div class="insight-quick-actions">
+                        <a href="{{ url_for('task.searchOverdue', user_id=id, user_name=user) }}">Open Overdue Queue</a>
+                        <a href="{{ url_for('task.searchUpcoming', user_id=id, user_name=user, days=7) }}">Review 7-Day Plan</a>
+                        <a href="{{ url_for('chart.visualCompletion', name=user, uid=id) }}">Open Completion Chart</a>
+                    </div>
                 </article>
             </div>
         </section>
