@@ -172,6 +172,50 @@ function setInsightSyncStamp(isSuccess) {
     syncLine.classList.toggle("is-degraded", !isSuccess);
 }
 
+function parseIsoLikeTimestamp(raw) {
+    if (!raw || typeof raw !== "string") {
+        return null;
+    }
+
+    var normalized = raw.endsWith("Z") ? raw : raw + "Z";
+    var parsed = new Date(normalized);
+    if (Number.isNaN(parsed.getTime())) {
+        return null;
+    }
+    return parsed;
+}
+
+function formatSyncTimeForDisplay(raw) {
+    var parsed = parseIsoLikeTimestamp(raw);
+    if (!parsed) {
+        return null;
+    }
+
+    return (
+        addZero(parsed.getHours()) +
+        ":" +
+        addZero(parsed.getMinutes()) +
+        ":" +
+        addZero(parsed.getSeconds())
+    );
+}
+
+function setInsightSyncStampFromPayload(primaryTimestamp, fallbackTimestamp) {
+    var syncLine = document.getElementById("insight-last-sync");
+    if (!syncLine) {
+        return;
+    }
+
+    var display = formatSyncTimeForDisplay(primaryTimestamp) || formatSyncTimeForDisplay(fallbackTimestamp);
+    if (!display) {
+        setInsightSyncStamp(true);
+        return;
+    }
+
+    syncLine.textContent = "Last synced: " + display;
+    syncLine.classList.remove("is-degraded");
+}
+
 var priorityChartInstance = null;
 var timelineChartInstance = null;
 var chartResizeBound = false;
@@ -525,8 +569,9 @@ function loadInsightsBoard(board, userId) {
 
     var insightsUrl = "/api/insights?user_id=" + encodeURIComponent(userId);
     var timelineUrl = "/api/timeline?user_id=" + encodeURIComponent(userId) + "&days=14";
+    var summaryUrl = "/api/summary?user_id=" + encodeURIComponent(userId);
 
-    Promise.all([fetch(insightsUrl), fetch(timelineUrl)])
+    Promise.all([fetch(insightsUrl), fetch(timelineUrl), fetch(summaryUrl)])
         .then(function (responses) {
             return Promise.all(
                 responses.map(function (response) {
@@ -540,7 +585,13 @@ function loadInsightsBoard(board, userId) {
         .then(function (payloads) {
             var insights = payloads[0];
             var timeline = payloads[1];
+            var summary = payloads[2];
             var kpis = insights.kpis || {};
+            var effectiveCompletionRate = Number(kpis.completion_rate || summary.progress_rate || 0);
+
+            if (kpis.completion_rate === undefined || kpis.completion_rate === null) {
+                kpis.completion_rate = effectiveCompletionRate;
+            }
 
             setMetricValue("insight-productivity", Number(kpis.productivity_score || 0).toFixed(2));
             setMetricValue("insight-stability", Number(kpis.stability_rate || 0).toFixed(2), "%");
@@ -560,7 +611,7 @@ function loadInsightsBoard(board, userId) {
             if (statusLabel) {
                 statusLabel.textContent = "Live metrics synced successfully.";
             }
-            setInsightSyncStamp(true);
+            setInsightSyncStampFromPayload(summary.generated_at, insights.generated_at || timeline.generated_at);
         })
         .catch(function () {
             setHealthBadge({ completion_rate: 0, overdue_rate: 100 });

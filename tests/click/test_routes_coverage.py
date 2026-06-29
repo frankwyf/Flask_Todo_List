@@ -502,3 +502,14 @@ def test_dashboard_home_js_supports_module_hotspots_payload(client):
 
     assert b"function renderModuleSpotlight(moduleDistribution, moduleHotspots)" in js
     assert b"insights.module_hotspots || []" in js
+
+
+def test_dashboard_home_js_uses_summary_metadata_fallback(client):
+    response = client.get("/static/js/home.js")
+    assert response.status_code == 200
+    js = response.data
+
+    assert b"/api/summary?user_id=" in js
+    assert b"summary.progress_rate" in js
+    assert b"summary.generated_at" in js
+    assert b"setInsightSyncStampFromPayload" in js
