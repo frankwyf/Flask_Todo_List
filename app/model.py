@@ -1,23 +1,22 @@
 from app import db
 
+
 # defining objects for database
 class Todoers(db.Model):
+    __tablename__ = "todoers"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(200))
     Email = db.Column(db.String(200), nullable=False)
     status = db.Column(db.Integer, default=False)
 
-
-
-    def __int__(self, username, Email, status, password):
-        self.username = username
-        self.Email = Email
-        self.status = status
-        self.password = password
-
+    def __repr__(self):
+        return f"<Todoers id={self.id} username={self.username!r} status={self.status}>"
 
 class Task(db.Model):
+    __tablename__ = "task"
+
     taskID = db.Column(
         db.Integer,
         primary_key=True,
@@ -33,25 +32,10 @@ class Task(db.Model):
     # mark as uncomplete (0) as default
     status = db.Column(db.Integer, default=0)
     # build the foreign key between two tables
-    host = db.Column(db.Integer, db.ForeignKey('todoers.id'), nullable=False)
+    host = db.Column(db.Integer, db.ForeignKey("todoers.id"), nullable=False)
 
-    def __int__(
-            self,
-            taskID,
-            module,
-            assessment,
-            create_date,
-            ddl,
-            status,
-            remind,
-            description,
-            prority):
-        self.taskID = taskID
-        self.module = module
-        self.assessment = assessment
-        self.create_date = create_date
-        self.ddl = ddl
-        self.status = status
-        self.remind = remind
-        self.description = description
-        self.priority = prority
+    def __repr__(self):
+        return (
+            f"<Task taskID={self.taskID} module={self.module!r} "
+            f"assessment={self.assessment!r} status={self.status}>"
+        )
