@@ -44,6 +44,14 @@
 
     <section class="panel-card reveal">
         <h2 class="panel-title">Endpoint Explorer</h2>
+        <div class="toolbar-chips" role="navigation" aria-label="Quick jump categories">
+            <a class="chip-btn jump-chip" href="#cat-auth">Auth</a>
+            <a class="chip-btn jump-chip" href="#cat-task">Task</a>
+            <a class="chip-btn jump-chip" href="#cat-search">Search</a>
+            <a class="chip-btn jump-chip" href="#cat-api">API</a>
+            <a class="chip-btn jump-chip" href="#cat-chart">Charts</a>
+            <a class="chip-btn jump-chip" href="#cat-system">System</a>
+        </div>
         <div class="endpoint-toolbar">
             <input
                 id="endpoint-filter"
@@ -71,6 +79,7 @@
         </div>
 
         <div class="endpoint-grid">
+            <h3 id="cat-auth" class="category-heading">Authentication</h3>
             <article class="endpoint-card" data-endpoint-card data-category="auth">
                 <div class="endpoint-top">
                     <span class="method-badge method-get">GET</span>
@@ -131,6 +140,7 @@
                 <p class="endpoint-meta">Category: authentication</p>
             </article>
 
+            <h3 id="cat-task" class="category-heading">Task Workflow</h3>
             <article class="endpoint-card" data-endpoint-card data-category="task">
                 <div class="endpoint-top">
                     <span class="method-badge method-post">POST</span>
@@ -211,6 +221,7 @@
                 <p class="endpoint-meta">Category: task workflow</p>
             </article>
 
+            <h3 id="cat-search" class="category-heading">Search Views</h3>
             <article class="endpoint-card" data-endpoint-card data-category="search">
                 <div class="endpoint-top">
                     <span class="method-badge method-post">POST</span>
@@ -261,6 +272,7 @@
                 <p class="endpoint-meta">Category: search</p>
             </article>
 
+            <h3 id="cat-api" class="category-heading">Public APIs</h3>
             <article class="endpoint-card" data-endpoint-card data-category="api">
                 <div class="endpoint-top">
                     <span class="method-badge method-get">GET</span>
@@ -311,6 +323,7 @@
                 <p class="endpoint-meta">Category: analytics API</p>
             </article>
 
+            <h3 id="cat-chart" class="category-heading">Chart Views</h3>
             <article class="endpoint-card" data-endpoint-card data-category="chart">
                 <div class="endpoint-top">
                     <span class="method-badge method-get">GET</span>
@@ -341,6 +354,7 @@
                 <p class="endpoint-meta">Category: charts</p>
             </article>
 
+            <h3 id="cat-system" class="category-heading">System Utilities</h3>
             <article class="endpoint-card" data-endpoint-card data-category="system">
                 <div class="endpoint-top">
                     <span class="method-badge method-get">GET</span>

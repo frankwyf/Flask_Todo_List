@@ -251,6 +251,8 @@ def test_dashboard_contains_touch_target_classes(client):
     assert b"id=\"insight-refresh\"" in dashboard.data
     assert b"id=\"insight-module-list\"" in dashboard.data
     assert b"Module Hotspots" in dashboard.data
+    assert b"id=\"insight-heatmap\"" in dashboard.data
+    assert b"Workload Heatmap" in dashboard.data
 
 
 def test_login_contains_developer_zone_links(client):
@@ -324,6 +326,8 @@ def test_portfolio_css_contains_resolution_targeted_breakpoints(client):
     assert b"#todo_list .insight-health-badge" in css
     assert b"#todo_list .insight-refresh-btn" in css
     assert b"#todo_list .insight-module-list" in css
+    assert b"#todo_list .insight-heatmap" in css
+    assert b"#todo_list .heat-cell.lvl-4" in css
     assert b"#todo_list .left {" in css
     assert b"--space-3" in css
     assert b"#todo_list #show > h4" in css
@@ -406,6 +410,9 @@ def test_portfolio_api_page_has_filterable_endpoint_cards(client):
     assert b"id=\"endpoint-clear\"" in page.data
     assert b"id=\"endpoint-expand\"" in page.data
     assert b"Expand All" in page.data
+    assert b"id=\"cat-auth\"" in page.data
+    assert b"id=\"cat-api\"" in page.data
+    assert b"href=\"#cat-system\"" in page.data
     assert b"data-copy-value=\"GET /api/insights?user_id=<id>\"" in page.data
     assert b"data-copy-value=\"GET /healthz\"" in page.data
     assert b"portfolio-pages.css" in page.data
@@ -431,3 +438,5 @@ def test_portfolio_pages_css_contains_new_toolbar_and_expand_hooks(client):
     assert b".toolbar-actions" in css
     assert b".clear-chip" in css
     assert b".endpoint-card.is-expanded" in css
+    assert b".jump-chip" in css
+    assert b".category-heading" in css

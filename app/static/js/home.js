@@ -250,6 +250,52 @@ function renderTrendStrip(timelineItems) {
     });
 }
 
+function renderHeatmap(timelineItems) {
+    var heatmap = document.getElementById("insight-heatmap");
+    if (!heatmap) {
+        return;
+    }
+
+    heatmap.innerHTML = "";
+    var items = timelineItems || [];
+    if (!items.length) {
+        var empty = document.createElement("p");
+        empty.className = "insight-trend-empty";
+        empty.textContent = "No heatmap data yet.";
+        heatmap.appendChild(empty);
+        return;
+    }
+
+    var max = 0;
+    items.forEach(function (item) {
+        if (item.count > max) {
+            max = item.count;
+        }
+    });
+    if (!max) {
+        max = 1;
+    }
+
+    items.forEach(function (item) {
+        var cell = document.createElement("span");
+        var ratio = item.count / max;
+        var level = 0;
+        if (ratio > 0.75) {
+            level = 4;
+        } else if (ratio > 0.5) {
+            level = 3;
+        } else if (ratio > 0.25) {
+            level = 2;
+        } else if (ratio > 0) {
+            level = 1;
+        }
+        cell.className = "heat-cell lvl-" + level;
+        cell.setAttribute("title", item.date + " : " + item.count + " task(s)");
+        cell.setAttribute("aria-label", item.date + " workload level " + level);
+        heatmap.appendChild(cell);
+    });
+}
+
 function setFocusRecommendations(kpis) {
     var list = document.getElementById("insight-focus-list");
     if (!list) {
@@ -409,6 +455,7 @@ function loadInsightsBoard(board, userId) {
             renderPriorityMiniChart(insights.priority_distribution || {});
             renderTimelineMiniChart(timeline.timeline || []);
             renderTrendStrip(timeline.timeline || []);
+            renderHeatmap(timeline.timeline || []);
             setFocusRecommendations(kpis);
             setHealthBadge(kpis);
             renderModuleSpotlight(insights.module_distribution || {});

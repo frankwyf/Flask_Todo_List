@@ -154,6 +154,18 @@ body::before {
   gap: 8px;
 }
 
+.jump-chip {
+  text-decoration: none;
+}
+
+.category-heading {
+  grid-column: 1 / -1;
+  margin: 6px 0 0;
+  font-size: 0.98rem;
+  color: #2b556f;
+  letter-spacing: 0.2px;
+}
+
 .toolbar-actions {
   display: inline-flex;
   flex-wrap: wrap;
@@ -382,9 +394,11 @@ body.dark .chip-btn.is-active {
 
 [data-theme="dark"] .endpoint-desc,
 [data-theme="dark"] .endpoint-meta,
+[data-theme="dark"] .category-heading,
 [data-theme="dark"] .arch-note-list,
 body.dark .endpoint-desc,
 body.dark .endpoint-meta,
+body.dark .category-heading,
 body.dark .arch-note-list {
   color: #b4cce0;
 }
