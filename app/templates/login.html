@@ -11,7 +11,18 @@
 </head>
 <body>
 <div class="container">
-    <h1> Welcome to TodoList!</h1>
+    <section class="login-brand-shell" aria-label="Product brand overview">
+        <p class="brand-kicker">Portfolio Grade Flask App</p>
+        <h1> Welcome to TodoList!</h1>
+        <p class="brand-summary">
+            Plan assessments, track deadlines, and review execution insights in one focused workspace.
+        </p>
+        <div class="brand-pills" aria-label="Product highlights">
+            <span class="brand-pill">Live Insight Board</span>
+            <span class="brand-pill">CSV Export</span>
+            <span class="brand-pill">Visualization Suite</span>
+        </div>
+    </section>
     <form action="/doList" method="post" id="form">
         <div class="username-section">
             {% if username %}
@@ -46,6 +57,16 @@
                 <a href="{{ url_for('auth.portfolio_api_docs') }}">REST API Reference</a>
                 <a href="{{ url_for('auth.portfolio_architecture') }}">System Architecture</a>
             </div>
+        </section>
+        <section class="proof-strip" aria-label="Engineering credibility highlights">
+            <article class="proof-item">
+                <h4>Quality Pipeline</h4>
+                <p>Lint, test, and security scan checks are automated with GitHub Actions.</p>
+            </article>
+            <article class="proof-item">
+                <h4>Modern Frontend Layer</h4>
+                <p>Responsive components, dark theme support, and chart-driven insights.</p>
+            </article>
         </section>
         <img src="../static/img/normal.png" alt="Normal">
         <div id="toggle">

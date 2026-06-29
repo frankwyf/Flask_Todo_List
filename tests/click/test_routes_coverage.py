@@ -244,11 +244,16 @@ def test_dashboard_contains_touch_target_classes(client):
     assert b"data-insight-board" in dashboard.data
     assert b"insight-priority-chart" in dashboard.data
     assert b"insight-timeline-chart" in dashboard.data
+    assert b"insight-trend-strip" in dashboard.data
+    assert b"insight-focus-list" in dashboard.data
+    assert b"Suggested Focus Today" in dashboard.data
 
 
 def test_login_contains_developer_zone_links(client):
     page = client.get("/newlogin")
     assert page.status_code == 200
+    assert b"Portfolio Grade Flask App" in page.data
+    assert b"Live Insight Board" in page.data
     assert b"Developer Zone" in page.data
     assert b"REST API Reference" in page.data
     assert b"System Architecture" in page.data

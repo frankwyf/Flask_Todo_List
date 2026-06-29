@@ -129,6 +129,80 @@ function setMetricValue(elementId, value, suffix) {
     target.textContent = String(value) + finalSuffix;
 }
 
+function renderTrendStrip(timelineItems) {
+    var strip = document.getElementById("insight-trend-strip");
+    if (!strip) {
+        return;
+    }
+
+    strip.innerHTML = "";
+
+    var items = timelineItems || [];
+    if (!items.length) {
+        var emptyHint = document.createElement("p");
+        emptyHint.className = "insight-trend-empty";
+        emptyHint.textContent = "No recent deadline activity.";
+        strip.appendChild(emptyHint);
+        return;
+    }
+
+    var maxCount = 0;
+    items.forEach(function (item) {
+        if (item.count > maxCount) {
+            maxCount = item.count;
+        }
+    });
+    if (!maxCount) {
+        maxCount = 1;
+    }
+
+    items.forEach(function (item) {
+        var point = document.createElement("span");
+        point.className = "trend-point";
+        point.style.setProperty("--bar-height", Math.max(9, Math.round((item.count / maxCount) * 100)) + "%");
+        point.setAttribute("title", item.date + ": " + item.count + " task(s)");
+        point.setAttribute("aria-label", item.date + " has " + item.count + " task(s)");
+        strip.appendChild(point);
+    });
+}
+
+function setFocusRecommendations(kpis) {
+    var list = document.getElementById("insight-focus-list");
+    if (!list) {
+        return;
+    }
+
+    var recommendations = [];
+    var urgentOpen = Number(kpis.urgent_open || 0);
+    var upcoming = Number(kpis.upcoming_7_days || 0);
+    var completionRate = Number(kpis.completion_rate || 0);
+    var overdueRate = Number(kpis.overdue_rate || 0);
+
+    if (urgentOpen > 0) {
+        recommendations.push("Prioritize " + urgentOpen + " urgent open task(s) before adding new items.");
+    }
+    if (upcoming >= 3) {
+        recommendations.push("Review upcoming deadlines and pre-split complex tasks into smaller chunks.");
+    }
+    if (completionRate < 45) {
+        recommendations.push("Completion rate is low. Reserve one uninterrupted focus block today.");
+    }
+    if (overdueRate > 20) {
+        recommendations.push("Overdue rate is elevated. Clear oldest overdue item first to recover momentum.");
+    }
+    if (!recommendations.length) {
+        recommendations.push("Execution looks healthy. Keep a steady cadence and protect deep-work windows.");
+        recommendations.push("Use the visualization tools to spot the next bottleneck early.");
+    }
+
+    list.innerHTML = "";
+    recommendations.slice(0, 3).forEach(function (text) {
+        var li = document.createElement("li");
+        li.textContent = text;
+        list.appendChild(li);
+    });
+}
+
 function renderPriorityMiniChart(priorityDistribution) {
     var chartEl = document.getElementById("insight-priority-chart");
     if (!chartEl || !window.echarts) {
@@ -244,6 +318,8 @@ function initInsightsBoard() {
 
             renderPriorityMiniChart(insights.priority_distribution || {});
             renderTimelineMiniChart(timeline.timeline || []);
+            renderTrendStrip(timeline.timeline || []);
+            setFocusRecommendations(kpis);
 
             if (statusLabel) {
                 statusLabel.textContent = "Live metrics synced successfully.";
