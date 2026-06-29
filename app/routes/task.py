@@ -441,7 +441,14 @@ def tasks_summary_api():
         ]
     )
     progress_rate = round((completed * 100.0) / total, 2) if total else 0.0
+    generated_at = (
+        datetime.datetime.now(datetime.timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z")
+    )
     return jsonify({
+        "generated_at": generated_at,
         "total": total,
         "completed": completed,
         "pending": pending,

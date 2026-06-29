@@ -130,6 +130,7 @@ def test_search_export_and_api_summary(client):
     assert summary["pending"] == 1
     assert summary["progress"] == 50
     assert summary["progress_rate"] == 50.0
+    assert summary["generated_at"].endswith("Z")
     assert "overdue" in summary
     assert "upcoming_7_days" in summary
 
