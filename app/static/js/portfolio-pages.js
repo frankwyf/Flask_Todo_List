@@ -1,33 +1,141 @@
 (function () {
+    var cards = [];
+    var activeCategory = "all";
+    var activeQuery = "";
+
+    function fallbackCopyText(value) {
+        var temp = document.createElement("textarea");
+        temp.value = value;
+        temp.setAttribute("readonly", "readonly");
+        temp.style.position = "fixed";
+        temp.style.top = "-9999px";
+        document.body.appendChild(temp);
+        temp.focus();
+        temp.select();
+        var copied = false;
+
+        try {
+            copied = document.execCommand("copy");
+        } catch (_error) {
+            copied = false;
+        }
+
+        document.body.removeChild(temp);
+        return copied;
+    }
+
+    function getCounterElement() {
+        return document.getElementById("filter-count");
+    }
+
+    function updateMetrics() {
+        if (!cards.length) {
+            return;
+        }
+
+        var totalElement = document.getElementById("metric-total");
+        var apiElement = document.getElementById("metric-api");
+        var workflowElement = document.getElementById("metric-workflow");
+        var chartElement = document.getElementById("metric-chart");
+
+        var apiCount = cards.filter(function (card) {
+            return card.getAttribute("data-category") === "api";
+        }).length;
+
+        var workflowCount = cards.filter(function (card) {
+            var category = card.getAttribute("data-category") || "";
+            return category === "task" || category === "search";
+        }).length;
+
+        var chartCount = cards.filter(function (card) {
+            return card.getAttribute("data-category") === "chart";
+        }).length;
+
+        if (totalElement) {
+            totalElement.textContent = String(cards.length);
+        }
+        if (apiElement) {
+            apiElement.textContent = String(apiCount);
+        }
+        if (workflowElement) {
+            workflowElement.textContent = String(workflowCount);
+        }
+        if (chartElement) {
+            chartElement.textContent = String(chartCount);
+        }
+    }
+
+    function applyFilters() {
+        var visible = 0;
+
+        cards.forEach(function (card) {
+            var text = (card.textContent || "").toLowerCase();
+            var category = (card.getAttribute("data-category") || "").toLowerCase();
+            var matchesQuery = !activeQuery || text.indexOf(activeQuery) >= 0;
+            var matchesCategory = activeCategory === "all" || category === activeCategory;
+            var show = matchesQuery && matchesCategory;
+
+            card.classList.toggle("is-hidden", !show);
+            if (show) {
+                visible += 1;
+            }
+        });
+
+        var counter = getCounterElement();
+        if (counter) {
+            counter.textContent = visible + " endpoint(s) visible";
+        }
+    }
+
     function bindEndpointFilter() {
         var filterInput = document.getElementById("endpoint-filter");
-        var cards = Array.prototype.slice.call(document.querySelectorAll("[data-endpoint-card]"));
-        var counter = document.getElementById("filter-count");
-
         if (!filterInput || !cards.length) {
             return;
         }
 
-        function applyFilter() {
-            var query = (filterInput.value || "").toLowerCase().trim();
-            var visible = 0;
+        filterInput.addEventListener("input", function () {
+            activeQuery = (filterInput.value || "").toLowerCase().trim();
+            applyFilters();
+        });
 
-            cards.forEach(function (card) {
-                var text = (card.textContent || "").toLowerCase();
-                var show = !query || text.indexOf(query) >= 0;
-                card.classList.toggle("is-hidden", !show);
-                if (show) {
-                    visible += 1;
-                }
-            });
-
-            if (counter) {
-                counter.textContent = visible + " endpoint(s) visible";
+        document.addEventListener("keydown", function (event) {
+            if (event.key !== "/") {
+                return;
             }
+
+            var target = event.target;
+            var isTypingContext = target && (
+                target.tagName === "INPUT" ||
+                target.tagName === "TEXTAREA" ||
+                target.tagName === "SELECT" ||
+                target.isContentEditable
+            );
+
+            if (!isTypingContext) {
+                event.preventDefault();
+                filterInput.focus();
+                filterInput.select();
+            }
+        });
+    }
+
+    function bindCategoryFilter() {
+        var categoryButtons = document.querySelectorAll("[data-filter-category]");
+        if (!categoryButtons.length) {
+            return;
         }
 
-        filterInput.addEventListener("input", applyFilter);
-        applyFilter();
+        categoryButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                activeCategory = (button.getAttribute("data-filter-category") || "all").toLowerCase();
+                categoryButtons.forEach(function (btn) {
+                    var isActive = btn === button;
+                    btn.classList.toggle("is-active", isActive);
+                    btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+                });
+                applyFilters();
+            });
+        });
     }
 
     function bindCopyButtons() {
@@ -46,9 +154,15 @@
 
                 var copyPromise;
                 if (navigator.clipboard && navigator.clipboard.writeText) {
-                    copyPromise = navigator.clipboard.writeText(value);
+                    copyPromise = navigator.clipboard.writeText(value).catch(function () {
+                        if (!fallbackCopyText(value)) {
+                            throw new Error("Copy failed");
+                        }
+                    });
                 } else {
-                    copyPromise = Promise.reject(new Error("Clipboard API unavailable"));
+                    copyPromise = fallbackCopyText(value)
+                        ? Promise.resolve()
+                        : Promise.reject(new Error("Clipboard unavailable"));
                 }
 
                 copyPromise
@@ -95,8 +209,12 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
+        cards = Array.prototype.slice.call(document.querySelectorAll("[data-endpoint-card]"));
+        updateMetrics();
         bindEndpointFilter();
+        bindCategoryFilter();
         bindCopyButtons();
         bindRevealAnimation();
+        applyFilters();
     });
 })();

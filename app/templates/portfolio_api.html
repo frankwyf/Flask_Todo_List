@@ -25,32 +25,48 @@
 
     <section class="metrics-grid reveal">
         <article class="metric-card">
-            <h3>Total endpoints</h3>
-            <p>22</p>
+            <h3>Total documented routes</h3>
+            <p id="metric-total">0</p>
         </article>
         <article class="metric-card">
-            <h3>Public API routes</h3>
-            <p>4</p>
+            <h3>Public JSON APIs</h3>
+            <p id="metric-api">0</p>
         </article>
         <article class="metric-card">
-            <h3>Search and analytics</h3>
-            <p>8</p>
+            <h3>Workflow and search</h3>
+            <p id="metric-workflow">0</p>
         </article>
         <article class="metric-card">
-            <h3>Portfolio support pages</h3>
-            <p>2</p>
+            <h3>Chart endpoints</h3>
+            <p id="metric-chart">0</p>
         </article>
     </section>
 
     <section class="panel-card reveal">
         <h2 class="panel-title">Endpoint Explorer</h2>
         <div class="endpoint-toolbar">
-            <input id="endpoint-filter" type="text" placeholder="Filter by path, method, or keyword...">
-            <small id="filter-count">0 endpoint(s) visible</small>
+            <input
+                id="endpoint-filter"
+                type="text"
+                autocomplete="off"
+                aria-label="Filter endpoints"
+                placeholder="Filter by path, method, or keyword..."
+            >
+            <small class="filter-shortcut">Press <kbd>/</kbd> to focus search</small>
+            <small id="filter-count" aria-live="polite">0 endpoint(s) visible</small>
+            <div class="toolbar-chips" role="group" aria-label="Filter endpoint category">
+                <button class="chip-btn is-active" data-filter-category="all" aria-pressed="true" type="button">All</button>
+                <button class="chip-btn" data-filter-category="auth" aria-pressed="false" type="button">Auth</button>
+                <button class="chip-btn" data-filter-category="task" aria-pressed="false" type="button">Task</button>
+                <button class="chip-btn" data-filter-category="search" aria-pressed="false" type="button">Search</button>
+                <button class="chip-btn" data-filter-category="api" aria-pressed="false" type="button">API</button>
+                <button class="chip-btn" data-filter-category="chart" aria-pressed="false" type="button">Charts</button>
+                <button class="chip-btn" data-filter-category="system" aria-pressed="false" type="button">System</button>
+            </div>
         </div>
 
         <div class="endpoint-grid">
-            <article class="endpoint-card" data-endpoint-card>
+            <article class="endpoint-card" data-endpoint-card data-category="auth">
                 <div class="endpoint-top">
                     <span class="method-badge method-get">GET</span>
                     <button class="copy-btn" data-copy-value="GET /">Copy</button>
@@ -60,7 +76,7 @@
                 <p class="endpoint-meta">Category: authentication</p>
             </article>
 
-            <article class="endpoint-card" data-endpoint-card>
+            <article class="endpoint-card" data-endpoint-card data-category="auth">
                 <div class="endpoint-top">
                     <span class="method-badge method-get">GET</span>
                     <button class="copy-btn" data-copy-value="GET /register">Copy</button>
@@ -70,7 +86,17 @@
                 <p class="endpoint-meta">Category: authentication</p>
             </article>
 
-            <article class="endpoint-card" data-endpoint-card>
+            <article class="endpoint-card" data-endpoint-card data-category="auth">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /newlogin">Copy</button>
+                </div>
+                <p class="endpoint-path">/newlogin</p>
+                <p class="endpoint-desc">Render the refreshed authentication page.</p>
+                <p class="endpoint-meta">Category: authentication</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="auth">
                 <div class="endpoint-top">
                     <span class="method-badge method-post">POST</span>
                     <button class="copy-btn" data-copy-value="POST /newAccount">Copy</button>
@@ -80,7 +106,7 @@
                 <p class="endpoint-meta">Category: authentication</p>
             </article>
 
-            <article class="endpoint-card" data-endpoint-card>
+            <article class="endpoint-card" data-endpoint-card data-category="auth">
                 <div class="endpoint-top">
                     <span class="method-badge method-post">POST</span>
                     <button class="copy-btn" data-copy-value="POST /doList">Copy</button>
@@ -90,7 +116,17 @@
                 <p class="endpoint-meta">Category: authentication</p>
             </article>
 
-            <article class="endpoint-card" data-endpoint-card>
+            <article class="endpoint-card" data-endpoint-card data-category="auth">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /logout/<id>">Copy</button>
+                </div>
+                <p class="endpoint-path">/logout/&lt;id&gt;</p>
+                <p class="endpoint-desc">Sign out and return to the login screen.</p>
+                <p class="endpoint-meta">Category: authentication</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="task">
                 <div class="endpoint-top">
                     <span class="method-badge method-post">POST</span>
                     <button class="copy-btn" data-copy-value="POST /createAss">Copy</button>
@@ -100,7 +136,7 @@
                 <p class="endpoint-meta">Category: task management</p>
             </article>
 
-            <article class="endpoint-card" data-endpoint-card>
+            <article class="endpoint-card" data-endpoint-card data-category="task">
                 <div class="endpoint-top">
                     <span class="method-badge method-post">POST</span>
                     <button class="copy-btn" data-copy-value="POST /subEdit">Copy</button>
@@ -110,7 +146,97 @@
                 <p class="endpoint-meta">Category: task management</p>
             </article>
 
-            <article class="endpoint-card" data-endpoint-card>
+            <article class="endpoint-card" data-endpoint-card data-category="task">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /backhome?user_id=<id>&user_name=<name>">Copy</button>
+                </div>
+                <p class="endpoint-path">/backhome</p>
+                <p class="endpoint-desc">Render dashboard with all task lists and intelligence board.</p>
+                <p class="endpoint-meta">Query: user_id, user_name</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="task">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /edit?edit=<task_id>&host_return=<name>&uid_return=<id>">Copy</button>
+                </div>
+                <p class="endpoint-path">/edit</p>
+                <p class="endpoint-desc">Open task edit screen with return context.</p>
+                <p class="endpoint-meta">Query: edit, host_return, uid_return</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="task">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /completeTask?task_id=<task_id>&host=<id>&name=<name>">Copy</button>
+                </div>
+                <p class="endpoint-path">/completeTask</p>
+                <p class="endpoint-desc">Mark selected task as complete.</p>
+                <p class="endpoint-meta">Category: task workflow</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="task">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /undoTask?task_id=<task_id>&host=<id>&name=<name>">Copy</button>
+                </div>
+                <p class="endpoint-path">/undoTask</p>
+                <p class="endpoint-desc">Move task back into pending state.</p>
+                <p class="endpoint-meta">Category: task workflow</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="task">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /deleteTask?task_id=<task_id>&host=<id>&name=<name>">Copy</button>
+                </div>
+                <p class="endpoint-path">/deleteTask</p>
+                <p class="endpoint-desc">Delete selected task and refresh dashboard.</p>
+                <p class="endpoint-meta">Category: task workflow</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="task">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /discard?host=<id>&uid=<name>">Copy</button>
+                </div>
+                <p class="endpoint-path">/discard</p>
+                <p class="endpoint-desc">Cancel edit mode and jump back to dashboard.</p>
+                <p class="endpoint-meta">Category: task workflow</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="search">
+                <div class="endpoint-top">
+                    <span class="method-badge method-post">POST</span>
+                    <button class="copy-btn" data-copy-value="POST /searchStatus">Copy</button>
+                </div>
+                <p class="endpoint-path">/searchStatus</p>
+                <p class="endpoint-desc">Filter tasks by completion value.</p>
+                <p class="endpoint-meta">Category: search</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="search">
+                <div class="endpoint-top">
+                    <span class="method-badge method-post">POST</span>
+                    <button class="copy-btn" data-copy-value="POST /searchmName">Copy</button>
+                </div>
+                <p class="endpoint-path">/searchmName</p>
+                <p class="endpoint-desc">Find tasks by module name.</p>
+                <p class="endpoint-meta">Category: search</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="search">
+                <div class="endpoint-top">
+                    <span class="method-badge method-post">POST</span>
+                    <button class="copy-btn" data-copy-value="POST /searchaName">Copy</button>
+                </div>
+                <p class="endpoint-path">/searchaName</p>
+                <p class="endpoint-desc">Find tasks by assessment name.</p>
+                <p class="endpoint-meta">Category: search</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="search">
                 <div class="endpoint-top">
                     <span class="method-badge method-get">GET</span>
                     <button class="copy-btn" data-copy-value="GET /searchUpcoming?user_id=<id>&user_name=<name>&days=7">Copy</button>
@@ -120,7 +246,7 @@
                 <p class="endpoint-meta">Query: user_id, user_name, days</p>
             </article>
 
-            <article class="endpoint-card" data-endpoint-card>
+            <article class="endpoint-card" data-endpoint-card data-category="search">
                 <div class="endpoint-top">
                     <span class="method-badge method-get">GET</span>
                     <button class="copy-btn" data-copy-value="GET /searchOverdue?user_id=<id>&user_name=<name>">Copy</button>
@@ -130,7 +256,17 @@
                 <p class="endpoint-meta">Category: search</p>
             </article>
 
-            <article class="endpoint-card" data-endpoint-card>
+            <article class="endpoint-card" data-endpoint-card data-category="api">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /exportTasks?user_id=<id>&user_name=<name>">Copy</button>
+                </div>
+                <p class="endpoint-path">/exportTasks</p>
+                <p class="endpoint-desc">Export task data as CSV for external analysis.</p>
+                <p class="endpoint-meta">Category: data export</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="api">
                 <div class="endpoint-top">
                     <span class="method-badge method-get">GET</span>
                     <button class="copy-btn" data-copy-value="GET /api/tasks?user_id=<id>">Copy</button>
@@ -140,7 +276,7 @@
                 <p class="endpoint-meta">Category: public API</p>
             </article>
 
-            <article class="endpoint-card" data-endpoint-card>
+            <article class="endpoint-card" data-endpoint-card data-category="api">
                 <div class="endpoint-top">
                     <span class="method-badge method-get">GET</span>
                     <button class="copy-btn" data-copy-value="GET /api/summary?user_id=<id>">Copy</button>
@@ -150,7 +286,7 @@
                 <p class="endpoint-meta">Category: analytics API</p>
             </article>
 
-            <article class="endpoint-card" data-endpoint-card>
+            <article class="endpoint-card" data-endpoint-card data-category="api">
                 <div class="endpoint-top">
                     <span class="method-badge method-get">GET</span>
                     <button class="copy-btn" data-copy-value="GET /api/insights?user_id=<id>">Copy</button>
@@ -160,7 +296,7 @@
                 <p class="endpoint-meta">Category: analytics API</p>
             </article>
 
-            <article class="endpoint-card" data-endpoint-card>
+            <article class="endpoint-card" data-endpoint-card data-category="api">
                 <div class="endpoint-top">
                     <span class="method-badge method-get">GET</span>
                     <button class="copy-btn" data-copy-value="GET /api/timeline?user_id=<id>&days=14">Copy</button>
@@ -168,6 +304,76 @@
                 <p class="endpoint-path">/api/timeline</p>
                 <p class="endpoint-desc">Return deadline distribution timeline for charts.</p>
                 <p class="endpoint-meta">Category: analytics API</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="chart">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /visualPri?name=<name>&uid=<id>">Copy</button>
+                </div>
+                <p class="endpoint-path">/visualPri</p>
+                <p class="endpoint-desc">Render priority distribution chart page.</p>
+                <p class="endpoint-meta">Category: charts</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="chart">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /visualModule?name=<name>&uid=<id>">Copy</button>
+                </div>
+                <p class="endpoint-path">/visualModule</p>
+                <p class="endpoint-desc">Render module distribution chart page.</p>
+                <p class="endpoint-meta">Category: charts</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="chart">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /visualCompletion?name=<name>&uid=<id>">Copy</button>
+                </div>
+                <p class="endpoint-path">/visualCompletion</p>
+                <p class="endpoint-desc">Render completion status chart page.</p>
+                <p class="endpoint-meta">Category: charts</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="system">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /portfolio/api">Copy</button>
+                </div>
+                <p class="endpoint-path">/portfolio/api</p>
+                <p class="endpoint-desc">Open this API reference page.</p>
+                <p class="endpoint-meta">Category: system docs</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="system">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /portfolio/architecture">Copy</button>
+                </div>
+                <p class="endpoint-path">/portfolio/architecture</p>
+                <p class="endpoint-desc">Open the architecture blueprint page.</p>
+                <p class="endpoint-meta">Category: system docs</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="system">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /sendReminders?user_id=<id>&user_name=<name>">Copy</button>
+                </div>
+                <p class="endpoint-path">/sendReminders</p>
+                <p class="endpoint-desc">Send reminder emails for tasks scheduled today.</p>
+                <p class="endpoint-meta">Category: system utility</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card data-category="system">
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /healthz">Copy</button>
+                </div>
+                <p class="endpoint-path">/healthz</p>
+                <p class="endpoint-desc">Readiness and liveness probe endpoint for CI and hosting.</p>
+                <p class="endpoint-meta">Category: system health</p>
             </article>
         </div>
     </section>

@@ -382,7 +382,16 @@ def test_portfolio_api_page_has_filterable_endpoint_cards(client):
     assert b"REST API Playbook" in page.data
     assert b"id=\"endpoint-filter\"" in page.data
     assert b"data-endpoint-card" in page.data
+    assert b"data-filter-category=\"all\"" in page.data
+    assert b"data-filter-category=\"api\"" in page.data
+    assert b"id=\"metric-total\"" in page.data
+    assert b"id=\"metric-api\"" in page.data
+    assert b"id=\"metric-workflow\"" in page.data
+    assert b"id=\"metric-chart\"" in page.data
+    assert b"id=\"filter-count\" aria-live=\"polite\"" in page.data
+    assert b"Press <kbd>/</kbd> to focus search" in page.data
     assert b"data-copy-value=\"GET /api/insights?user_id=<id>\"" in page.data
+    assert b"data-copy-value=\"GET /healthz\"" in page.data
     assert b"portfolio-pages.css" in page.data
     assert b"portfolio-pages.js" in page.data
 

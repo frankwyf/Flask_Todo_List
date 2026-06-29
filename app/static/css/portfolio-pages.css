@@ -148,6 +148,33 @@ body::before {
   margin-bottom: 10px;
 }
 
+.toolbar-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip-btn {
+  border: 1px solid var(--pp-border);
+  background: var(--pp-surface-strong);
+  color: #1d4f69;
+  border-radius: 999px;
+  padding: 5px 11px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.chip-btn:hover {
+  border-color: rgba(18, 127, 142, 0.44);
+  color: #0e7b84;
+}
+
+.chip-btn.is-active {
+  background: rgba(18, 127, 142, 0.15);
+  border-color: rgba(18, 127, 142, 0.55);
+  color: #0f7480;
+}
+
 .endpoint-toolbar input {
   min-width: min(420px, 100%);
   width: 100%;
@@ -162,6 +189,19 @@ body::before {
 .endpoint-toolbar small {
   color: var(--pp-muted);
   font-weight: 600;
+}
+
+.filter-shortcut {
+  font-weight: 700;
+  color: #2d5b75;
+}
+
+.filter-shortcut kbd {
+  border: 1px solid rgba(26, 66, 92, 0.22);
+  border-radius: 5px;
+  font-size: 0.74rem;
+  padding: 0 5px;
+  background: rgba(255, 255, 255, 0.94);
 }
 
 .endpoint-grid {
@@ -246,6 +286,15 @@ body::before {
   color: #0e767f;
 }
 
+.hero-actions a:focus-visible,
+.hero-actions button:focus-visible,
+.chip-btn:focus-visible,
+.copy-btn:focus-visible,
+.endpoint-toolbar input:focus-visible {
+  outline: 2px solid #0d8b95;
+  outline-offset: 2px;
+}
+
 .arch-grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
@@ -296,11 +345,20 @@ body.dark {
 [data-theme="dark"] .hero-actions a,
 [data-theme="dark"] .hero-actions button,
 [data-theme="dark"] .copy-btn,
+[data-theme="dark"] .chip-btn,
 body.dark .hero-actions a,
 body.dark .hero-actions button,
-body.dark .copy-btn {
+body.dark .copy-btn,
+body.dark .chip-btn {
   background: rgba(13, 28, 44, 0.92);
   color: #d5e9fb;
+}
+
+[data-theme="dark"] .chip-btn.is-active,
+body.dark .chip-btn.is-active {
+  background: rgba(19, 128, 142, 0.24);
+  border-color: rgba(114, 216, 226, 0.68);
+  color: #d2f9ff;
 }
 
 [data-theme="dark"] .endpoint-desc,
@@ -340,5 +398,17 @@ body.dark .arch-note-list {
 
   .endpoint-toolbar input {
     min-width: 100%;
+  }
+
+  .endpoint-toolbar {
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
