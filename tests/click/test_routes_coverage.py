@@ -463,8 +463,13 @@ def test_portfolio_api_page_has_filterable_endpoint_cards(client):
     assert b"data-copy-value=\"GET /healthz\"" in page.data
     assert b"Request Recipes" in page.data
     assert b"Fetch Insights" in page.data
+    assert b"Fetch Summary" in page.data
     assert b"curl -X GET" in page.data
+    assert b"data-copy-value=\"GET /api/summary?user_id=1\"" in page.data
     assert b"data-copy-value=\"GET /api/timeline?user_id=1&days=14\"" in page.data
+    assert b"progress_rate" in page.data
+    assert b"generated_at" in page.data
+    assert b"window_start/window_end" in page.data
     assert b"portfolio-pages.css" in page.data
     assert b"portfolio-pages.js" in page.data
 

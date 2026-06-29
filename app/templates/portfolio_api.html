@@ -301,7 +301,7 @@
                     <button class="copy-btn" data-copy-value="GET /api/summary?user_id=<id>">Copy</button>
                 </div>
                 <p class="endpoint-path">/api/summary</p>
-                <p class="endpoint-desc">Return summary metrics with completion progress.</p>
+                <p class="endpoint-desc">Return summary metrics with completion progress, precise progress_rate, and generated_at timestamp.</p>
                 <p class="endpoint-meta">Category: analytics API</p>
             </article>
 
@@ -413,10 +413,18 @@
                 </article>
                 <article class="recipe-card">
                     <div class="recipe-top">
+                        <h4>Fetch Summary</h4>
+                        <button class="copy-btn" data-copy-value="GET /api/summary?user_id=1">Copy</button>
+                    </div>
+                    <p>Get completion totals and progress_rate with generated_at metadata.</p>
+                    <pre>curl -X GET "{{ request.host_url.rstrip('/') }}/api/summary?user_id=1"</pre>
+                </article>
+                <article class="recipe-card">
+                    <div class="recipe-top">
                         <h4>Fetch Timeline</h4>
                         <button class="copy-btn" data-copy-value="GET /api/timeline?user_id=1&days=14">Copy</button>
                     </div>
-                    <p>Get timeline buckets for upcoming deadlines.</p>
+                    <p>Get timeline buckets with window_start/window_end metadata.</p>
                     <pre>curl -X GET "{{ request.host_url.rstrip('/') }}/api/timeline?user_id=1&amp;days=14"</pre>
                 </article>
                 <article class="recipe-card">
