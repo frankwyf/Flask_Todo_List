@@ -161,12 +161,26 @@ def test_insights_and_timeline_api(client):
     assert insights_response.status_code == 200
     insights = insights_response.get_json()
 
+    assert "generated_at" in insights
+    assert insights["generated_at"].endswith("Z")
     assert "kpis" in insights
     assert insights["kpis"]["total"] == 3
     assert insights["kpis"]["completed"] == 1
     assert "productivity_score" in insights["kpis"]
     assert "priority_distribution" in insights
     assert "module_distribution" in insights
+    assert "module_hotspots" in insights
+    assert list(insights["priority_distribution"].keys()) == ["Low", "Medium", "Significant", "Urgent"]
+    assert insights["priority_distribution"]["Low"] == 0
+    assert insights["priority_distribution"]["Medium"] == 3
+    assert insights["priority_distribution"]["Significant"] == 0
+    assert insights["priority_distribution"]["Urgent"] == 0
+    assert insights["module_distribution"]["Cloud"] == 2
+    assert insights["module_distribution"]["AI"] == 1
+    assert insights["module_hotspots"] == [
+        {"name": "Cloud", "count": 2},
+        {"name": "AI", "count": 1},
+    ]
 
     timeline_response = client.get(f"/api/timeline?user_id={user_id}&days=14")
     assert timeline_response.status_code == 200

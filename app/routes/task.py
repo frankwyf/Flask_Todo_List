@@ -57,6 +57,25 @@ def _parse_datetime(value):
     return None
 
 
+def _build_priority_distribution(tasks):
+    priority_labels = {1: "Low", 2: "Medium", 3: "Significant", 4: "Urgent"}
+    counter = Counter([priority_labels.get(task.priority, "Low") for task in tasks])
+    ordered_labels = ["Low", "Medium", "Significant", "Urgent"]
+    return {label: counter.get(label, 0) for label in ordered_labels}
+
+
+def _build_module_distribution(tasks):
+    module_counter = Counter([task.module for task in tasks if task.module])
+    ordered = sorted(module_counter.items(), key=lambda item: (-item[1], item[0].lower()))
+    return {name: count for name, count in ordered}
+
+
+def _build_module_hotspots(tasks):
+    module_counter = Counter([task.module for task in tasks if task.module])
+    ordered = sorted(module_counter.items(), key=lambda item: (-item[1], item[0].lower()))
+    return [{"name": name, "count": count} for name, count in ordered]
+
+
 @task_bp.route("/sendReminders")
 def sendReminders():
     user = request.args.get("user_name")
@@ -448,16 +467,23 @@ def tasks_insights_api():
         [task for task in pending_tasks if task.ddl and now <= task.ddl <= (now + datetime.timedelta(days=7))]
     )
 
-    module_counter = Counter([task.module for task in task_person if task.module])
-    priority_labels = {1: "Low", 2: "Medium", 3: "Significant", 4: "Urgent"}
-    priority_counter = Counter([priority_labels.get(task.priority, "Unknown") for task in task_person])
+    priority_distribution = _build_priority_distribution(task_person)
+    module_distribution = _build_module_distribution(task_person)
+    module_hotspots = _build_module_hotspots(task_person)
 
     completion_rate = round((completed / total) * 100, 2) if total else 0.0
     stability_rate = round(((len(pending_tasks) - overdue) / len(pending_tasks)) * 100, 2) if pending_tasks else 100.0
     productivity_score = round((completion_rate * 0.65) + (stability_rate * 0.35), 2)
+    generated_at = (
+        datetime.datetime.now(datetime.timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z")
+    )
 
     return jsonify(
         {
+            "generated_at": generated_at,
             "kpis": {
                 "total": total,
                 "completed": completed,
@@ -469,8 +495,9 @@ def tasks_insights_api():
                 "stability_rate": stability_rate,
                 "productivity_score": productivity_score,
             },
-            "priority_distribution": dict(priority_counter),
-            "module_distribution": dict(module_counter),
+            "priority_distribution": priority_distribution,
+            "module_distribution": module_distribution,
+            "module_hotspots": module_hotspots,
         }
     )
 
