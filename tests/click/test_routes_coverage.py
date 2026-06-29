@@ -486,3 +486,12 @@ def test_portfolio_pages_css_contains_new_toolbar_and_expand_hooks(client):
     assert b".request-recipes" in css
     assert b".recipe-grid" in css
     assert b".recipe-card" in css
+
+
+def test_dashboard_home_js_supports_module_hotspots_payload(client):
+    response = client.get("/static/js/home.js")
+    assert response.status_code == 200
+    js = response.data
+
+    assert b"function renderModuleSpotlight(moduleDistribution, moduleHotspots)" in js
+    assert b"insights.module_hotspots || []" in js

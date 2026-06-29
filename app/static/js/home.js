@@ -228,18 +228,33 @@ function setHealthBadge(kpis) {
     badge.classList.add(statusClass);
 }
 
-function renderModuleSpotlight(moduleDistribution) {
+function renderModuleSpotlight(moduleDistribution, moduleHotspots) {
     var list = document.getElementById("insight-module-list");
     if (!list) {
         return;
     }
 
-    var rows = Object.keys(moduleDistribution || {}).map(function (name) {
-        return { name: name, count: Number(moduleDistribution[name] || 0) };
+    var hotspots = (moduleHotspots || []).map(function (item) {
+        return {
+            name: item && item.name ? String(item.name) : "",
+            count: Number(item && item.count ? item.count : 0),
+        };
+    }).filter(function (item) {
+        return item.name;
     });
-    rows.sort(function (a, b) {
-        return b.count - a.count;
-    });
+
+    var rows = hotspots;
+    if (!rows.length) {
+        rows = Object.keys(moduleDistribution || {}).map(function (name) {
+            return { name: name, count: Number(moduleDistribution[name] || 0) };
+        });
+        rows.sort(function (a, b) {
+            if (b.count !== a.count) {
+                return b.count - a.count;
+            }
+            return a.name.localeCompare(b.name);
+        });
+    }
 
     list.innerHTML = "";
     if (!rows.length) {
@@ -540,7 +555,7 @@ function loadInsightsBoard(board, userId) {
             setRiskAlerts(kpis);
             setInsightSummary(kpis);
             setHealthBadge(kpis);
-            renderModuleSpotlight(insights.module_distribution || {});
+            renderModuleSpotlight(insights.module_distribution || {}, insights.module_hotspots || []);
 
             if (statusLabel) {
                 statusLabel.textContent = "Live metrics synced successfully.";
