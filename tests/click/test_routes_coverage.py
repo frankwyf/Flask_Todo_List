@@ -402,6 +402,10 @@ def test_portfolio_api_page_has_filterable_endpoint_cards(client):
     assert b"id=\"metric-chart\"" in page.data
     assert b"id=\"filter-count\" aria-live=\"polite\"" in page.data
     assert b"Press <kbd>/</kbd> to focus search" in page.data
+    assert b"Press <kbd>Esc</kbd> to clear filters" in page.data
+    assert b"id=\"endpoint-clear\"" in page.data
+    assert b"id=\"endpoint-expand\"" in page.data
+    assert b"Expand All" in page.data
     assert b"data-copy-value=\"GET /api/insights?user_id=<id>\"" in page.data
     assert b"data-copy-value=\"GET /healthz\"" in page.data
     assert b"portfolio-pages.css" in page.data
@@ -417,3 +421,13 @@ def test_portfolio_architecture_page_has_dual_diagrams(client):
     assert page.data.count(b'class="mermaid"') >= 2
     assert b"portfolio-pages.css" in page.data
     assert b"portfolio-pages.js" in page.data
+
+
+def test_portfolio_pages_css_contains_new_toolbar_and_expand_hooks(client):
+    response = client.get("/static/css/portfolio-pages.css")
+    assert response.status_code == 200
+    css = response.data
+
+    assert b".toolbar-actions" in css
+    assert b".clear-chip" in css
+    assert b".endpoint-card.is-expanded" in css

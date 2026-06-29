@@ -53,6 +53,7 @@
                 placeholder="Filter by path, method, or keyword..."
             >
             <small class="filter-shortcut">Press <kbd>/</kbd> to focus search</small>
+            <small class="filter-shortcut">Press <kbd>Esc</kbd> to clear filters</small>
             <small id="filter-count" aria-live="polite">0 endpoint(s) visible</small>
             <div class="toolbar-chips" role="group" aria-label="Filter endpoint category">
                 <button class="chip-btn is-active" data-filter-category="all" aria-pressed="true" type="button">All</button>
@@ -62,6 +63,10 @@
                 <button class="chip-btn" data-filter-category="api" aria-pressed="false" type="button">API</button>
                 <button class="chip-btn" data-filter-category="chart" aria-pressed="false" type="button">Charts</button>
                 <button class="chip-btn" data-filter-category="system" aria-pressed="false" type="button">System</button>
+            </div>
+            <div class="toolbar-actions">
+                <button id="endpoint-clear" class="chip-btn clear-chip" type="button">Clear</button>
+                <button id="endpoint-expand" class="chip-btn" type="button" aria-pressed="false">Expand All</button>
             </div>
         </div>
 

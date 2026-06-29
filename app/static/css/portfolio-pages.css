@@ -154,6 +154,16 @@ body::before {
   gap: 8px;
 }
 
+.toolbar-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.clear-chip {
+  border-style: dashed;
+}
+
 .chip-btn {
   border: 1px solid var(--pp-border);
   background: var(--pp-surface-strong);
@@ -217,6 +227,15 @@ body::before {
   padding: 12px;
   display: grid;
   gap: 8px;
+  cursor: pointer;
+  max-height: 124px;
+  overflow: hidden;
+  transition: max-height 0.2s ease, border-color 0.2s ease;
+}
+
+.endpoint-card.is-expanded {
+  max-height: 260px;
+  border-color: rgba(18, 127, 142, 0.45);
 }
 
 .endpoint-card.is-hidden {
@@ -402,6 +421,15 @@ body.dark .arch-note-list {
 
   .endpoint-toolbar {
     align-items: flex-start;
+  }
+
+  .toolbar-actions {
+    width: 100%;
+  }
+
+  .toolbar-actions .chip-btn {
+    flex: 1 1 120px;
+    text-align: center;
   }
 }
 

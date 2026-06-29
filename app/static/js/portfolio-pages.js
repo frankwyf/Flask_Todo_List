@@ -2,6 +2,7 @@
     var cards = [];
     var activeCategory = "all";
     var activeQuery = "";
+    var expanded = false;
 
     function fallbackCopyText(value) {
         var temp = document.createElement("textarea");
@@ -87,8 +88,22 @@
         }
     }
 
+    function setExpandedState(isExpanded) {
+        expanded = isExpanded;
+        cards.forEach(function (card) {
+            card.classList.toggle("is-expanded", expanded);
+        });
+
+        var expandBtn = document.getElementById("endpoint-expand");
+        if (expandBtn) {
+            expandBtn.textContent = expanded ? "Collapse All" : "Expand All";
+            expandBtn.setAttribute("aria-pressed", expanded ? "true" : "false");
+        }
+    }
+
     function bindEndpointFilter() {
         var filterInput = document.getElementById("endpoint-filter");
+        var clearBtn = document.getElementById("endpoint-clear");
         if (!filterInput || !cards.length) {
             return;
         }
@@ -100,6 +115,18 @@
 
         document.addEventListener("keydown", function (event) {
             if (event.key !== "/") {
+                if (event.key === "Escape") {
+                    activeQuery = "";
+                    activeCategory = "all";
+                    filterInput.value = "";
+                    var categoryButtons = document.querySelectorAll("[data-filter-category]");
+                    categoryButtons.forEach(function (btn) {
+                        var isAll = (btn.getAttribute("data-filter-category") || "") === "all";
+                        btn.classList.toggle("is-active", isAll);
+                        btn.setAttribute("aria-pressed", isAll ? "true" : "false");
+                    });
+                    applyFilters();
+                }
                 return;
             }
 
@@ -117,6 +144,22 @@
                 filterInput.select();
             }
         });
+
+        if (clearBtn) {
+            clearBtn.addEventListener("click", function () {
+                filterInput.value = "";
+                activeQuery = "";
+                activeCategory = "all";
+                var categoryButtons = document.querySelectorAll("[data-filter-category]");
+                categoryButtons.forEach(function (btn) {
+                    var isAll = (btn.getAttribute("data-filter-category") || "") === "all";
+                    btn.classList.toggle("is-active", isAll);
+                    btn.setAttribute("aria-pressed", isAll ? "true" : "false");
+                });
+                applyFilters();
+                filterInput.focus();
+            });
+        }
     }
 
     function bindCategoryFilter() {
@@ -182,6 +225,28 @@
         });
     }
 
+    function bindExpandToggle() {
+        var button = document.getElementById("endpoint-expand");
+        if (!button) {
+            return;
+        }
+
+        button.addEventListener("click", function () {
+            setExpandedState(!expanded);
+        });
+    }
+
+    function bindCardExpand() {
+        cards.forEach(function (card) {
+            card.addEventListener("click", function (event) {
+                if (event.target && event.target.closest("button")) {
+                    return;
+                }
+                card.classList.toggle("is-expanded");
+            });
+        });
+    }
+
     function bindRevealAnimation() {
         var elements = document.querySelectorAll(".reveal");
         if (!elements.length || !window.IntersectionObserver) {
@@ -214,7 +279,10 @@
         bindEndpointFilter();
         bindCategoryFilter();
         bindCopyButtons();
+        bindExpandToggle();
+        bindCardExpand();
         bindRevealAnimation();
         applyFilters();
+        setExpandedState(false);
     });
 })();
