@@ -482,25 +482,28 @@ def tasks_timeline_api():
         return jsonify({"error": "user_id is required"}), 400
 
     days = min(_to_positive_int(request.args.get("days"), 14), 120)
-    now = datetime.datetime.now()
-    end = now + datetime.timedelta(days=days)
+    start_date = datetime.date.today()
+    end_date = start_date + datetime.timedelta(days=days - 1)
+    start_dt = datetime.datetime.combine(start_date, datetime.time.min)
+    end_dt = datetime.datetime.combine(end_date + datetime.timedelta(days=1), datetime.time.min)
 
     timeline_tasks = Task.query.filter(
         Task.host == uid,
         Task.ddl.isnot(None),
-        Task.ddl >= now,
-        Task.ddl <= end,
+        Task.ddl >= start_dt,
+        Task.ddl < end_dt,
     ).order_by(Task.ddl.asc()).all()
 
-    buckets = {}
-    for task in timeline_tasks:
-        bucket_key = task.ddl.strftime("%Y-%m-%d")
-        buckets[bucket_key] = buckets.get(bucket_key, 0) + 1
+    buckets = Counter(task.ddl.strftime("%Y-%m-%d") for task in timeline_tasks)
+    dense_timeline = []
+    for offset in range(days):
+        date_key = (start_date + datetime.timedelta(days=offset)).strftime("%Y-%m-%d")
+        dense_timeline.append({"date": date_key, "count": buckets.get(date_key, 0)})
 
     return jsonify(
         {
             "window_days": days,
             "total_deadlines": len(timeline_tasks),
-            "timeline": [{"date": date_key, "count": count} for date_key, count in sorted(buckets.items())],
+            "timeline": dense_timeline,
         }
     )

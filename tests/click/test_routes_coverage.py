@@ -173,9 +173,25 @@ def test_insights_and_timeline_api(client):
     timeline = timeline_response.get_json()
 
     assert timeline["window_days"] == 14
-    assert timeline["total_deadlines"] >= 1
+    assert timeline["total_deadlines"] == 3
     assert isinstance(timeline["timeline"], list)
+    assert len(timeline["timeline"]) == 14
     assert all("date" in item and "count" in item for item in timeline["timeline"])
+    assert sum(item["count"] for item in timeline["timeline"]) == timeline["total_deadlines"]
+
+
+def test_timeline_api_returns_dense_zero_filled_window(client):
+    user_id = _create_user(client, username="timeline_empty")
+
+    response = client.get(f"/api/timeline?user_id={user_id}&days=7")
+    assert response.status_code == 200
+    payload = response.get_json()
+
+    assert payload["window_days"] == 7
+    assert payload["total_deadlines"] == 0
+    assert isinstance(payload["timeline"], list)
+    assert len(payload["timeline"]) == 7
+    assert all(item["count"] == 0 for item in payload["timeline"])
 
 
 def test_search_overdue_scoped_to_user(client):
