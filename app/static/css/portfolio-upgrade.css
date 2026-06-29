@@ -825,6 +825,69 @@ button[type="reset"],
   margin-bottom: 10px;
 }
 
+#todo_list .insight-head-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#todo_list .insight-health-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  border: 1px solid rgba(19, 47, 67, 0.18);
+  background: rgba(255, 255, 255, 0.78);
+  color: #224f66;
+}
+
+#todo_list .insight-health-badge.is-good {
+  color: #0f6d4d;
+  border-color: rgba(16, 129, 90, 0.35);
+  background: rgba(227, 250, 238, 0.84);
+}
+
+#todo_list .insight-health-badge.is-warn {
+  color: #8a5b12;
+  border-color: rgba(196, 138, 31, 0.42);
+  background: rgba(255, 245, 215, 0.84);
+}
+
+#todo_list .insight-health-badge.is-risk {
+  color: #a0364b;
+  border-color: rgba(186, 63, 88, 0.45);
+  background: rgba(255, 230, 236, 0.86);
+}
+
+#todo_list .insight-refresh-btn {
+  border: 1px solid rgba(19, 47, 67, 0.2);
+  border-radius: 999px;
+  min-height: 28px;
+  padding: 4px 11px;
+  background: rgba(255, 255, 255, 0.86);
+  color: #1f4f68;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+#todo_list .insight-refresh-btn:hover {
+  border-color: rgba(15, 141, 132, 0.45);
+  color: #0d6f77;
+}
+
+#todo_list .insight-refresh-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+#todo_list .insight-lab.is-loading {
+  opacity: 0.94;
+}
+
 #todo_list .insight-lab-head h4 {
   margin: 0;
   font-size: clamp(1rem, 1.1vw + 0.35rem, 1.25rem);
@@ -962,6 +1025,25 @@ button[type="reset"],
   color: #2f546a;
   font-size: 0.87rem;
   line-height: 1.45;
+}
+
+#todo_list .insight-subhead {
+  margin: 10px 0 0;
+  font-size: 0.84rem;
+  color: #3b6178;
+}
+
+#todo_list .insight-module-list {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+
+#todo_list .insight-module-list li {
+  color: #2f546a;
+  font-size: 0.84rem;
+  line-height: 1.4;
 }
 
 .theme-toolbar {
@@ -1563,7 +1645,8 @@ body.dark textarea::placeholder {
 [data-theme="dark"] #todo_list .insight-kpi-label,
 [data-theme="dark"] #todo_list .insight-chart-card h5,
 [data-theme="dark"] #todo_list .insight-ops-card h5,
-[data-theme="dark"] #todo_list .insight-ops-sub {
+[data-theme="dark"] #todo_list .insight-ops-sub,
+[data-theme="dark"] #todo_list .insight-subhead {
   color: #b8d2e8;
 }
 
@@ -1580,8 +1663,23 @@ body.dark #todo_list .insight-trend-strip {
 }
 
 [data-theme="dark"] #todo_list .insight-focus-list li,
-body.dark #todo_list .insight-focus-list li {
+[data-theme="dark"] #todo_list .insight-module-list li,
+body.dark #todo_list .insight-focus-list li,
+body.dark #todo_list .insight-module-list li {
   color: #d4e6f8;
+}
+
+[data-theme="dark"] #todo_list .insight-refresh-btn,
+body.dark #todo_list .insight-refresh-btn {
+  background: rgba(12, 29, 45, 0.9);
+  border-color: rgba(175, 210, 236, 0.3);
+  color: #d2e6f8;
+}
+
+[data-theme="dark"] #todo_list .insight-health-badge,
+body.dark #todo_list .insight-health-badge {
+  background: rgba(11, 28, 43, 0.86);
+  color: #d2e5f7;
 }
 
 @media (max-width: 1100px) {

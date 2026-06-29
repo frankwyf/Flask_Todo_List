@@ -247,6 +247,10 @@ def test_dashboard_contains_touch_target_classes(client):
     assert b"insight-trend-strip" in dashboard.data
     assert b"insight-focus-list" in dashboard.data
     assert b"Suggested Focus Today" in dashboard.data
+    assert b"id=\"insight-health\"" in dashboard.data
+    assert b"id=\"insight-refresh\"" in dashboard.data
+    assert b"id=\"insight-module-list\"" in dashboard.data
+    assert b"Module Hotspots" in dashboard.data
 
 
 def test_login_contains_developer_zone_links(client):
@@ -317,6 +321,9 @@ def test_portfolio_css_contains_resolution_targeted_breakpoints(client):
     assert b"#todo_list .mobile-action-dock" in css
     assert b"#todo_list .dashboard-top" in css
     assert b"#todo_list .container-fluid > .row" in css
+    assert b"#todo_list .insight-health-badge" in css
+    assert b"#todo_list .insight-refresh-btn" in css
+    assert b"#todo_list .insight-module-list" in css
     assert b"#todo_list .left {" in css
     assert b"--space-3" in css
     assert b"#todo_list #show > h4" in css

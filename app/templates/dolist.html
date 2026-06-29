@@ -72,8 +72,14 @@
         </section>
         <section class="insight-lab" data-insight-board data-user-id="{{ id }}" aria-live="polite">
             <div class="insight-lab-head">
-                <h4>Performance Intelligence Board</h4>
-                <p id="insight-status">Loading strategic metrics...</p>
+                <div>
+                    <h4>Performance Intelligence Board</h4>
+                    <p id="insight-status">Loading strategic metrics...</p>
+                </div>
+                <div class="insight-head-actions">
+                    <span id="insight-health" class="insight-health-badge" aria-live="polite">Evaluating</span>
+                    <button id="insight-refresh" type="button" class="insight-refresh-btn" aria-label="Refresh insight data">Refresh</button>
+                </div>
             </div>
             <div class="insight-kpis">
                 <article class="insight-kpi-card">
@@ -113,6 +119,10 @@
                     <h5>Suggested Focus Today</h5>
                     <ul id="insight-focus-list" class="insight-focus-list">
                         <li>Analyzing workload...</li>
+                    </ul>
+                    <h5 class="insight-subhead">Module Hotspots</h5>
+                    <ul id="insight-module-list" class="insight-module-list">
+                        <li>Loading module distribution...</li>
                     </ul>
                 </article>
             </div>

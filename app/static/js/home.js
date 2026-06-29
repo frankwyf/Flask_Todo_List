@@ -129,6 +129,90 @@ function setMetricValue(elementId, value, suffix) {
     target.textContent = String(value) + finalSuffix;
 }
 
+var priorityChartInstance = null;
+var timelineChartInstance = null;
+var chartResizeBound = false;
+var isInsightsLoading = false;
+
+function bindChartResize() {
+    if (chartResizeBound || !window.echarts) {
+        return;
+    }
+
+    window.addEventListener("resize", function () {
+        if (priorityChartInstance) {
+            priorityChartInstance.resize();
+        }
+        if (timelineChartInstance) {
+            timelineChartInstance.resize();
+        }
+    });
+    chartResizeBound = true;
+}
+
+function getChartInstance(chartEl, previousInstance) {
+    if (!chartEl || !window.echarts) {
+        return null;
+    }
+
+    if (previousInstance) {
+        previousInstance.dispose();
+    }
+    return echarts.init(chartEl);
+}
+
+function setHealthBadge(kpis) {
+    var badge = document.getElementById("insight-health");
+    if (!badge) {
+        return;
+    }
+
+    var completionRate = Number(kpis.completion_rate || 0);
+    var overdueRate = Number(kpis.overdue_rate || 0);
+    var statusText = "Healthy";
+    var statusClass = "is-good";
+
+    if (overdueRate > 25 || completionRate < 35) {
+        statusText = "Needs Attention";
+        statusClass = "is-risk";
+    } else if (overdueRate > 10 || completionRate < 55) {
+        statusText = "Watchlist";
+        statusClass = "is-warn";
+    }
+
+    badge.textContent = statusText;
+    badge.classList.remove("is-good", "is-warn", "is-risk");
+    badge.classList.add(statusClass);
+}
+
+function renderModuleSpotlight(moduleDistribution) {
+    var list = document.getElementById("insight-module-list");
+    if (!list) {
+        return;
+    }
+
+    var rows = Object.keys(moduleDistribution || {}).map(function (name) {
+        return { name: name, count: Number(moduleDistribution[name] || 0) };
+    });
+    rows.sort(function (a, b) {
+        return b.count - a.count;
+    });
+
+    list.innerHTML = "";
+    if (!rows.length) {
+        var empty = document.createElement("li");
+        empty.textContent = "No module activity yet.";
+        list.appendChild(empty);
+        return;
+    }
+
+    rows.slice(0, 3).forEach(function (row) {
+        var li = document.createElement("li");
+        li.textContent = row.name + " : " + row.count + " task(s)";
+        list.appendChild(li);
+    });
+}
+
 function renderTrendStrip(timelineItems) {
     var strip = document.getElementById("insight-trend-strip");
     if (!strip) {
@@ -214,8 +298,12 @@ function renderPriorityMiniChart(priorityDistribution) {
         chartData.push({ name: key, value: priorityDistribution[key] });
     });
 
-    var chart = echarts.init(chartEl);
-    chart.setOption({
+    priorityChartInstance = getChartInstance(chartEl, priorityChartInstance);
+    if (!priorityChartInstance) {
+        return;
+    }
+
+    priorityChartInstance.setOption({
         tooltip: { trigger: "item" },
         legend: { bottom: 0, icon: "circle" },
         series: [
@@ -228,9 +316,7 @@ function renderPriorityMiniChart(priorityDistribution) {
         ],
     });
 
-    window.addEventListener("resize", function () {
-        chart.resize();
-    });
+    bindChartResize();
 }
 
 function renderTimelineMiniChart(timelineItems) {
@@ -246,8 +332,12 @@ function renderTimelineMiniChart(timelineItems) {
         yAxisData.push(item.count);
     });
 
-    var chart = echarts.init(chartEl);
-    chart.setOption({
+    timelineChartInstance = getChartInstance(chartEl, timelineChartInstance);
+    if (!timelineChartInstance) {
+        return;
+    }
+
+    timelineChartInstance.setOption({
         tooltip: { trigger: "axis" },
         grid: { left: 30, right: 16, top: 20, bottom: 30 },
         xAxis: {
@@ -271,23 +361,23 @@ function renderTimelineMiniChart(timelineItems) {
         ],
     });
 
-    window.addEventListener("resize", function () {
-        chart.resize();
-    });
+    bindChartResize();
 }
 
-function initInsightsBoard() {
-    var board = document.querySelector("[data-insight-board]");
-    if (!board) {
-        return;
-    }
-
-    var userId = board.getAttribute("data-user-id");
-    if (!userId) {
+function loadInsightsBoard(board, userId) {
+    if (isInsightsLoading) {
         return;
     }
 
     var statusLabel = document.getElementById("insight-status");
+    var refreshBtn = document.getElementById("insight-refresh");
+
+    isInsightsLoading = true;
+    board.classList.add("is-loading");
+    if (refreshBtn) {
+        refreshBtn.disabled = true;
+    }
+
     if (statusLabel) {
         statusLabel.textContent = "Computing performance intelligence...";
     }
@@ -320,16 +410,47 @@ function initInsightsBoard() {
             renderTimelineMiniChart(timeline.timeline || []);
             renderTrendStrip(timeline.timeline || []);
             setFocusRecommendations(kpis);
+            setHealthBadge(kpis);
+            renderModuleSpotlight(insights.module_distribution || {});
 
             if (statusLabel) {
                 statusLabel.textContent = "Live metrics synced successfully.";
             }
         })
         .catch(function () {
+            setHealthBadge({ completion_rate: 0, overdue_rate: 100 });
             if (statusLabel) {
                 statusLabel.textContent = "Unable to load live metrics right now.";
             }
+        })
+        .finally(function () {
+            isInsightsLoading = false;
+            board.classList.remove("is-loading");
+            if (refreshBtn) {
+                refreshBtn.disabled = false;
+            }
         });
+}
+
+function initInsightsBoard() {
+    var board = document.querySelector("[data-insight-board]");
+    if (!board) {
+        return;
+    }
+
+    var userId = board.getAttribute("data-user-id");
+    if (!userId) {
+        return;
+    }
+
+    var refreshBtn = document.getElementById("insight-refresh");
+    if (refreshBtn) {
+        refreshBtn.addEventListener("click", function () {
+            loadInsightsBoard(board, userId);
+        });
+    }
+
+    loadInsightsBoard(board, userId);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
