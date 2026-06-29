@@ -527,8 +527,18 @@ def tasks_timeline_api():
         date_key = (start_date + datetime.timedelta(days=offset)).strftime("%Y-%m-%d")
         dense_timeline.append({"date": date_key, "count": buckets.get(date_key, 0)})
 
+    generated_at = (
+        datetime.datetime.now(datetime.timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z")
+    )
+
     return jsonify(
         {
+            "generated_at": generated_at,
+            "window_start": start_date.strftime("%Y-%m-%d"),
+            "window_end": end_date.strftime("%Y-%m-%d"),
             "window_days": days,
             "total_deadlines": len(timeline_tasks),
             "timeline": dense_timeline,

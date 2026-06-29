@@ -186,6 +186,10 @@ def test_insights_and_timeline_api(client):
     assert timeline_response.status_code == 200
     timeline = timeline_response.get_json()
 
+    assert "generated_at" in timeline
+    assert timeline["generated_at"].endswith("Z")
+    assert "window_start" in timeline
+    assert "window_end" in timeline
     assert timeline["window_days"] == 14
     assert timeline["total_deadlines"] == 3
     assert isinstance(timeline["timeline"], list)
@@ -203,6 +207,7 @@ def test_timeline_api_returns_dense_zero_filled_window(client):
 
     assert payload["window_days"] == 7
     assert payload["total_deadlines"] == 0
+    assert payload["window_start"] <= payload["window_end"]
     assert isinstance(payload["timeline"], list)
     assert len(payload["timeline"]) == 7
     assert all(item["count"] == 0 for item in payload["timeline"])
