@@ -1,0 +1,38 @@
+name: release-artifact
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Smoke test install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Build source archive
+        run: |
+          ARCHIVE_NAME=flask-todo-list-${GITHUB_REF_NAME:-manual}-${GITHUB_SHA::7}.zip
+          git archive --format=zip --output "$ARCHIVE_NAME" HEAD
+          echo "ARCHIVE_NAME=$ARCHIVE_NAME" >> $GITHUB_ENV
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-archive
+          path: ${{ env.ARCHIVE_NAME }}

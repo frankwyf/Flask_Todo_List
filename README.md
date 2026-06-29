@@ -8,12 +8,14 @@ A Flask-based task management web app refactored from an academic prototype into
 - Search/filter by status, module, and task name
 - Upcoming deadline filter (`/searchUpcoming`)
 - CSV export and simple tasks API endpoint (`/exportTasks`, `/api/tasks`)
-- Task summary API and health endpoint (`/api/summary`, `/healthz`)
+- Task summary, intelligence, and timeline APIs (`/api/summary`, `/api/insights`, `/api/timeline`)
 - Basic analytics charts (ECharts)
+- Live "Performance Intelligence Board" with dynamic KPI cards and mini charts
 - Production-style Blueprint routing (`auth`, `task`, `chart`)
 - Click-flow test suite in isolated test directory
 - Portfolio API docs page and architecture diagram page
-- GitHub Actions test pipeline
+- Security response headers baseline (CSP, frame and MIME protections)
+- GitHub Actions quality pipeline (lint + matrix tests + security scan)
 - Optional email reminder integration
 - Optional weather widget integration
 
@@ -137,6 +139,14 @@ If mail settings are not configured, reminder email sending is not available.
 .\.venv\Scripts\python.exe -m pytest
 ```
 
+## Engineering Quality Gate (Local)
+Install dev tooling and run lint + tests + dependency scan:
+
+```powershell
+python -m pip install -r requirements-dev.txt
+powershell -ExecutionPolicy Bypass -File .\scripts\quality-gate.ps1
+```
+
 ## Portfolio Pages
 - API guide: `http://127.0.0.1:5000/portfolio/api`
 - Architecture diagram: `http://127.0.0.1:5000/portfolio/architecture`
@@ -148,8 +158,17 @@ If mail settings are not configured, reminder email sending is not available.
 - Added light/dark theme toggle with preference persistence
 
 ## CI
-GitHub Actions workflow file: `.github/workflows/tests.yml`
-It runs click-flow tests on pushes and pull requests.
+This project now has two automated pipelines:
+
+- `.github/workflows/tests.yml`:
+	- Ruff lint checks
+	- Python compile sanity checks
+	- pytest matrix on Python 3.11 / 3.12 / 3.13
+	- coverage artifact upload
+	- dependency vulnerability scan with pip-audit (report artifact)
+- `.github/workflows/release.yml`:
+	- tag/dispatch triggered release archive packaging
+	- source artifact upload for distribution
 
 ## Multilingual Documentation
 - English detailed guide: [docs/README.en.md](docs/README.en.md)
