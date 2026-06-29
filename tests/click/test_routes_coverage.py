@@ -249,6 +249,7 @@ def test_dashboard_contains_touch_target_classes(client):
     assert b"Suggested Focus Today" in dashboard.data
     assert b"id=\"insight-health\"" in dashboard.data
     assert b"id=\"insight-refresh\"" in dashboard.data
+    assert b"id=\"insight-summary\"" in dashboard.data
     assert b"id=\"insight-module-list\"" in dashboard.data
     assert b"Module Hotspots" in dashboard.data
     assert b"id=\"insight-alert-list\"" in dashboard.data
@@ -411,8 +412,10 @@ def test_portfolio_api_page_has_filterable_endpoint_cards(client):
     assert b"id=\"filter-count\" aria-live=\"polite\"" in page.data
     assert b"Press <kbd>/</kbd> to focus search" in page.data
     assert b"Press <kbd>Esc</kbd> to clear filters" in page.data
+    assert b"Press <kbd>E</kbd> to expand or collapse all cards" in page.data
     assert b"id=\"endpoint-clear\"" in page.data
     assert b"id=\"endpoint-expand\"" in page.data
+    assert b"id=\"endpoint-empty\"" in page.data
     assert b"Expand All" in page.data
     assert b"id=\"cat-auth\"" in page.data
     assert b"id=\"cat-api\"" in page.data

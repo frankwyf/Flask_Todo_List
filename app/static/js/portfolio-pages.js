@@ -83,8 +83,12 @@
         });
 
         var counter = getCounterElement();
+        var emptyState = document.getElementById("endpoint-empty");
         if (counter) {
             counter.textContent = visible + " endpoint(s) visible";
+        }
+        if (emptyState) {
+            emptyState.hidden = visible !== 0;
         }
     }
 
@@ -115,6 +119,18 @@
 
         document.addEventListener("keydown", function (event) {
             if (event.key !== "/") {
+                if (event.key && event.key.toLowerCase() === "e") {
+                    var target = event.target;
+                    var isTypingContext = target && (
+                        target.tagName === "INPUT" ||
+                        target.tagName === "TEXTAREA" ||
+                        target.tagName === "SELECT" ||
+                        target.isContentEditable
+                    );
+                    if (!isTypingContext) {
+                        setExpandedState(!expanded);
+                    }
+                }
                 if (event.key === "Escape") {
                     activeQuery = "";
                     activeCategory = "all";

@@ -129,6 +129,31 @@ function setMetricValue(elementId, value, suffix) {
     target.textContent = String(value) + finalSuffix;
 }
 
+function setInsightSummary(kpis) {
+    var summary = document.getElementById("insight-summary");
+    if (!summary) {
+        return;
+    }
+
+    var completionRate = Number(kpis.completion_rate || 0);
+    var urgentOpen = Number(kpis.urgent_open || 0);
+    var overdueRate = Number(kpis.overdue_rate || 0);
+    var tone = "Execution is balanced";
+
+    if (urgentOpen >= 2 || overdueRate > 20) {
+        tone = "Risk pressure is elevated";
+    } else if (completionRate >= 65 && overdueRate <= 10) {
+        tone = "Delivery momentum is strong";
+    }
+
+    summary.textContent =
+        tone +
+        " - completion " + completionRate.toFixed(1) +
+        "%, urgent " + urgentOpen +
+        ", overdue " + overdueRate.toFixed(1) +
+        "%.";
+}
+
 var priorityChartInstance = null;
 var timelineChartInstance = null;
 var chartResizeBound = false;
@@ -495,6 +520,7 @@ function loadInsightsBoard(board, userId) {
             renderHeatmap(timeline.timeline || []);
             setFocusRecommendations(kpis);
             setRiskAlerts(kpis);
+            setInsightSummary(kpis);
             setHealthBadge(kpis);
             renderModuleSpotlight(insights.module_distribution || {});
 
@@ -505,6 +531,7 @@ function loadInsightsBoard(board, userId) {
         .catch(function () {
             setHealthBadge({ completion_rate: 0, overdue_rate: 100 });
             setRiskAlerts({ urgent_open: 0, overdue_rate: 100, completion_rate: 0, upcoming_7_days: 0 });
+            setInsightSummary({ completion_rate: 0, urgent_open: 0, overdue_rate: 100 });
             if (statusLabel) {
                 statusLabel.textContent = "Unable to load live metrics right now.";
             }

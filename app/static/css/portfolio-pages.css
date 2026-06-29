@@ -279,6 +279,16 @@ body::before {
   background: rgba(255, 255, 255, 0.94);
 }
 
+.endpoint-empty {
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border: 1px dashed rgba(19, 56, 79, 0.3);
+  border-radius: 10px;
+  color: #3a6078;
+  background: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
+}
+
 .endpoint-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -62,6 +62,7 @@
             >
             <small class="filter-shortcut">Press <kbd>/</kbd> to focus search</small>
             <small class="filter-shortcut">Press <kbd>Esc</kbd> to clear filters</small>
+            <small class="filter-shortcut">Press <kbd>E</kbd> to expand or collapse all cards</small>
             <small id="filter-count" aria-live="polite">0 endpoint(s) visible</small>
             <div class="toolbar-chips" role="group" aria-label="Filter endpoint category">
                 <button class="chip-btn is-active" data-filter-category="all" aria-pressed="true" type="button">All</button>
@@ -395,6 +396,8 @@
                 <p class="endpoint-meta">Category: system health</p>
             </article>
         </div>
+
+        <p id="endpoint-empty" class="endpoint-empty" hidden>No endpoints match the current filter set.</p>
 
         <section class="request-recipes" aria-label="Request examples">
             <h3 class="category-heading">Request Recipes</h3>
