@@ -5,31 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Architecture</title>
     <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/portfolio-pages.css">
     <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"></script>
 </head>
-<body class="container py-4">
-<h1>System Architecture</h1>
-<p>Blueprint-oriented architecture for portfolio presentation.</p>
+<body>
+<main class="portfolio-shell">
+    <section class="hero-card reveal">
+        <p class="hero-kicker">Engineering Design</p>
+        <h1 class="hero-title">System Architecture Blueprint</h1>
+        <p class="hero-desc">
+            Blueprint-oriented Flask design with route modules, persistence layer, and optional integrations
+            organized for maintainability and portfolio readability.
+        </p>
+        <div class="hero-actions">
+            <a href="/portfolio/api">Open API guide</a>
+            <a href="/">Back to login</a>
+            <button id="theme-toggle" type="button" aria-label="Toggle color theme">Switch Theme</button>
+        </div>
+    </section>
 
-<pre class="mermaid">
+    <section class="arch-grid reveal">
+        <article class="panel-card">
+            <h2 class="panel-title">Component Topology</h2>
+            <div class="mermaid-shell">
+                <pre class="mermaid">
 flowchart TD
     U[User Browser] --> A[Flask App]
     A --> B1[auth blueprint]
     A --> B2[task blueprint]
     A --> B3[chart blueprint]
 
-    B1 --> T1[login/register templates]
-    B2 --> T2[dolist/edit templates]
-    B3 --> T3[chart blocks in dolist]
+    B1 --> T1[login and register templates]
+    B2 --> T2[dashboard and edit templates]
+    B3 --> T3[chart rendering blocks]
 
-    B1 --> D[(SQLite/MySQL via SQLAlchemy)]
+    B1 --> D[(SQLAlchemy persistence)]
     B2 --> D
     B3 --> D
 
-    B2 --> M[Flask-Mail Optional]
-</pre>
+    B2 --> M[Optional mail integration]
+                </pre>
+            </div>
+        </article>
 
-<p><a href="/portfolio/api">Open API guide</a></p>
-<p><a href="/">Back to login</a></p>
+        <article class="panel-card section-stack">
+            <div>
+                <h2 class="panel-title">Design Highlights</h2>
+                <ul class="arch-note-list">
+                    <li>Route responsibilities are separated by domain-focused blueprints.</li>
+                    <li>Task APIs expose JSON payloads for dashboard analytics and extensions.</li>
+                    <li>Security headers are appended globally at response level.</li>
+                    <li>Data model is intentionally minimal for easy migration to production RDBMS.</li>
+                </ul>
+            </div>
+
+            <div>
+                <h2 class="panel-title">Runtime Request Flow</h2>
+                <div class="mermaid-shell">
+                    <pre class="mermaid">
+sequenceDiagram
+    actor User
+    participant Browser
+    participant Flask
+    participant Blueprint
+    participant DB as SQLAlchemy DB
+
+    User->>Browser: Submit action
+    Browser->>Flask: HTTP request
+    Flask->>Blueprint: Route dispatch
+    Blueprint->>DB: Query or mutate entities
+    DB-->>Blueprint: Persisted state
+    Blueprint-->>Flask: Template or JSON payload
+    Flask-->>Browser: Response + security headers
+                    </pre>
+                </div>
+            </div>
+        </article>
+    </section>
+</main>
+<script src="../static/js/theme.js"></script>
+<script src="../static/js/portfolio-pages.js"></script>
 </body>
 </html>

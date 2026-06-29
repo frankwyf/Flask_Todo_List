@@ -374,3 +374,25 @@ def test_security_headers_exist_on_html_response(client):
     assert response.headers.get("X-Frame-Options") == "SAMEORIGIN"
     assert response.headers.get("Referrer-Policy") == "strict-origin-when-cross-origin"
     assert "Content-Security-Policy" in response.headers
+
+
+def test_portfolio_api_page_has_filterable_endpoint_cards(client):
+    page = client.get("/portfolio/api")
+    assert page.status_code == 200
+    assert b"REST API Playbook" in page.data
+    assert b"id=\"endpoint-filter\"" in page.data
+    assert b"data-endpoint-card" in page.data
+    assert b"data-copy-value=\"GET /api/insights?user_id=<id>\"" in page.data
+    assert b"portfolio-pages.css" in page.data
+    assert b"portfolio-pages.js" in page.data
+
+
+def test_portfolio_architecture_page_has_dual_diagrams(client):
+    page = client.get("/portfolio/architecture")
+    assert page.status_code == 200
+    assert b"System Architecture Blueprint" in page.data
+    assert b"Component Topology" in page.data
+    assert b"Runtime Request Flow" in page.data
+    assert page.data.count(b'class="mermaid"') >= 2
+    assert b"portfolio-pages.css" in page.data
+    assert b"portfolio-pages.js" in page.data

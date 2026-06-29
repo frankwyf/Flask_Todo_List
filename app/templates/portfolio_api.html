@@ -5,44 +5,174 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio API Guide</title>
     <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/portfolio-pages.css">
 </head>
-<body class="container py-4">
-<h1>Portfolio API Guide</h1>
-<p>This page documents major route contracts for demo and interview walkthrough.</p>
+<body>
+<main class="portfolio-shell">
+    <section class="hero-card reveal">
+        <p class="hero-kicker">Flask Todo Portfolio</p>
+        <h1 class="hero-title">REST API Playbook</h1>
+        <p class="hero-desc">
+            This page documents the application contract used for interview walkthroughs,
+            integration demos, and future extension work.
+        </p>
+        <div class="hero-actions">
+            <a href="/">Back to login</a>
+            <a href="/portfolio/architecture">System architecture</a>
+            <button id="theme-toggle" type="button" aria-label="Toggle color theme">Switch Theme</button>
+        </div>
+    </section>
 
-<h3>Authentication</h3>
-<ul>
-    <li><strong>GET /</strong>: Open login page.</li>
-    <li><strong>POST /newAccount</strong>: Register new user. Form fields: <code>name</code>, <code>mailenter</code>, <code>psw</code>.</li>
-    <li><strong>POST /doList</strong>: Login and open user dashboard. Form fields: <code>name</code>, <code>psw</code>.</li>
-</ul>
+    <section class="metrics-grid reveal">
+        <article class="metric-card">
+            <h3>Total endpoints</h3>
+            <p>22</p>
+        </article>
+        <article class="metric-card">
+            <h3>Public API routes</h3>
+            <p>4</p>
+        </article>
+        <article class="metric-card">
+            <h3>Search and analytics</h3>
+            <p>8</p>
+        </article>
+        <article class="metric-card">
+            <h3>Portfolio support pages</h3>
+            <p>2</p>
+        </article>
+    </section>
 
-<h3>Task Management</h3>
-<ul>
-    <li><strong>POST /createAss</strong>: Create a task.</li>
-    <li><strong>GET /completeTask</strong>: Mark task complete.</li>
-    <li><strong>GET /undoTask</strong>: Undo completion status.</li>
-    <li><strong>GET /deleteTask</strong>: Delete one task.</li>
-    <li><strong>POST /subEdit</strong>: Submit task edit.</li>
-</ul>
+    <section class="panel-card reveal">
+        <h2 class="panel-title">Endpoint Explorer</h2>
+        <div class="endpoint-toolbar">
+            <input id="endpoint-filter" type="text" placeholder="Filter by path, method, or keyword...">
+            <small id="filter-count">0 endpoint(s) visible</small>
+        </div>
 
-<h3>Search and Analytics</h3>
-<ul>
-    <li><strong>POST /searchStatus</strong>, <strong>/searchmName</strong>, <strong>/searchaName</strong></li>
-    <li><strong>GET /searchOverdue</strong></li>
-    <li><strong>GET /visualCompletion</strong>, <strong>/visualPri</strong>, <strong>/visualModule</strong></li>
-    <li><strong>GET /api/summary?user_id=&lt;id&gt;</strong>: Dashboard summary metrics.</li>
-    <li><strong>GET /api/insights?user_id=&lt;id&gt;</strong>: KPI + priority/module distribution snapshot.</li>
-    <li><strong>GET /api/timeline?user_id=&lt;id&gt;&amp;days=14</strong>: Deadline timeline aggregation.</li>
-    <li><strong>GET /api/tasks?user_id=&lt;id&gt;</strong>: User task list as JSON.</li>
-</ul>
+        <div class="endpoint-grid">
+            <article class="endpoint-card" data-endpoint-card>
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /">Copy</button>
+                </div>
+                <p class="endpoint-path">/</p>
+                <p class="endpoint-desc">Open login page.</p>
+                <p class="endpoint-meta">Category: authentication</p>
+            </article>
 
-<h3>Portfolio Support</h3>
-<ul>
-    <li><strong>GET /portfolio/api</strong>: This documentation page.</li>
-    <li><strong>GET /portfolio/architecture</strong>: System architecture diagram.</li>
-</ul>
+            <article class="endpoint-card" data-endpoint-card>
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /register">Copy</button>
+                </div>
+                <p class="endpoint-path">/register</p>
+                <p class="endpoint-desc">Open account registration page.</p>
+                <p class="endpoint-meta">Category: authentication</p>
+            </article>
 
-<p><a href="/">Back to login</a></p>
+            <article class="endpoint-card" data-endpoint-card>
+                <div class="endpoint-top">
+                    <span class="method-badge method-post">POST</span>
+                    <button class="copy-btn" data-copy-value="POST /newAccount">Copy</button>
+                </div>
+                <p class="endpoint-path">/newAccount</p>
+                <p class="endpoint-desc">Register a user with fields name, mailenter, psw.</p>
+                <p class="endpoint-meta">Category: authentication</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card>
+                <div class="endpoint-top">
+                    <span class="method-badge method-post">POST</span>
+                    <button class="copy-btn" data-copy-value="POST /doList">Copy</button>
+                </div>
+                <p class="endpoint-path">/doList</p>
+                <p class="endpoint-desc">Authenticate and render the main dashboard.</p>
+                <p class="endpoint-meta">Category: authentication</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card>
+                <div class="endpoint-top">
+                    <span class="method-badge method-post">POST</span>
+                    <button class="copy-btn" data-copy-value="POST /createAss">Copy</button>
+                </div>
+                <p class="endpoint-path">/createAss</p>
+                <p class="endpoint-desc">Create a task entry with priority, deadline, and reminder.</p>
+                <p class="endpoint-meta">Category: task management</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card>
+                <div class="endpoint-top">
+                    <span class="method-badge method-post">POST</span>
+                    <button class="copy-btn" data-copy-value="POST /subEdit">Copy</button>
+                </div>
+                <p class="endpoint-path">/subEdit</p>
+                <p class="endpoint-desc">Persist edited task content and status.</p>
+                <p class="endpoint-meta">Category: task management</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card>
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /searchUpcoming?user_id=<id>&user_name=<name>&days=7">Copy</button>
+                </div>
+                <p class="endpoint-path">/searchUpcoming</p>
+                <p class="endpoint-desc">Show upcoming tasks for a time window.</p>
+                <p class="endpoint-meta">Query: user_id, user_name, days</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card>
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /searchOverdue?user_id=<id>&user_name=<name>">Copy</button>
+                </div>
+                <p class="endpoint-path">/searchOverdue</p>
+                <p class="endpoint-desc">Return overdue tasks scoped to the current user.</p>
+                <p class="endpoint-meta">Category: search</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card>
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /api/tasks?user_id=<id>">Copy</button>
+                </div>
+                <p class="endpoint-path">/api/tasks</p>
+                <p class="endpoint-desc">Return full task list payload in JSON.</p>
+                <p class="endpoint-meta">Category: public API</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card>
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /api/summary?user_id=<id>">Copy</button>
+                </div>
+                <p class="endpoint-path">/api/summary</p>
+                <p class="endpoint-desc">Return summary metrics with completion progress.</p>
+                <p class="endpoint-meta">Category: analytics API</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card>
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /api/insights?user_id=<id>">Copy</button>
+                </div>
+                <p class="endpoint-path">/api/insights</p>
+                <p class="endpoint-desc">Return KPI model including productivity and stability score.</p>
+                <p class="endpoint-meta">Category: analytics API</p>
+            </article>
+
+            <article class="endpoint-card" data-endpoint-card>
+                <div class="endpoint-top">
+                    <span class="method-badge method-get">GET</span>
+                    <button class="copy-btn" data-copy-value="GET /api/timeline?user_id=<id>&days=14">Copy</button>
+                </div>
+                <p class="endpoint-path">/api/timeline</p>
+                <p class="endpoint-desc">Return deadline distribution timeline for charts.</p>
+                <p class="endpoint-meta">Category: analytics API</p>
+            </article>
+        </div>
+    </section>
+</main>
+<script src="../static/js/theme.js"></script>
+<script src="../static/js/portfolio-pages.js"></script>
 </body>
 </html>
