@@ -125,7 +125,70 @@ def test_search_export_and_api_summary(client):
     summary_api = client.get(f"/api/summary?user_id={user_id}")
     assert summary_api.status_code == 200
     summary = summary_api.get_json()
-    assert summary == {"total": 2, "completed": 1, "pending": 1, "progress": 50}
+    assert summary["total"] == 2
+    assert summary["completed"] == 1
+    assert summary["pending"] == 1
+    assert summary["progress"] == 50
+    assert "overdue" in summary
+    assert "upcoming_7_days" in summary
+
+
+def test_summary_and_tasks_api_require_user_id(client):
+    summary = client.get("/api/summary")
+    assert summary.status_code == 400
+    assert summary.get_json()["error"] == "user_id is required"
+
+    tasks = client.get("/api/tasks")
+    assert tasks.status_code == 400
+    assert tasks.get_json()["error"] == "user_id is required"
+
+    insights = client.get("/api/insights")
+    assert insights.status_code == 400
+    assert insights.get_json()["error"] == "user_id is required"
+
+    timeline = client.get("/api/timeline")
+    assert timeline.status_code == 400
+    assert timeline.get_json()["error"] == "user_id is required"
+
+
+def test_insights_and_timeline_api(client):
+    user_id = _create_user(client, username="insights_user")
+    _create_task(client, user_id=user_id, module="Cloud", assessment="Migrate", status=0, days=2)
+    _create_task(client, user_id=user_id, module="Cloud", assessment="Deploy", status=1, days=5)
+    _create_task(client, user_id=user_id, module="AI", assessment="Report", status=0, days=9)
+
+    insights_response = client.get(f"/api/insights?user_id={user_id}")
+    assert insights_response.status_code == 200
+    insights = insights_response.get_json()
+
+    assert "kpis" in insights
+    assert insights["kpis"]["total"] == 3
+    assert insights["kpis"]["completed"] == 1
+    assert "productivity_score" in insights["kpis"]
+    assert "priority_distribution" in insights
+    assert "module_distribution" in insights
+
+    timeline_response = client.get(f"/api/timeline?user_id={user_id}&days=14")
+    assert timeline_response.status_code == 200
+    timeline = timeline_response.get_json()
+
+    assert timeline["window_days"] == 14
+    assert timeline["total_deadlines"] >= 1
+    assert isinstance(timeline["timeline"], list)
+    assert all("date" in item and "count" in item for item in timeline["timeline"])
+
+
+def test_search_overdue_scoped_to_user(client):
+    user_a = _create_user(client, username="scope_a")
+    user_b = _create_user(client, username="scope_b", email="scopeb@example.com")
+
+    _create_task(client, user_id=user_a, module="A", assessment="Old A", status=0, days=-2)
+    _create_task(client, user_id=user_b, module="B", assessment="Old B", status=0, days=-3)
+
+    response = client.get(f"/searchOverdue?user_id={user_a}&user_name=scope_a")
+    assert response.status_code == 200
+    assert b"Old A" in response.data
+    assert b"Old B" not in response.data
 
 
 def test_chart_routes_render(client):
@@ -276,7 +339,7 @@ def test_send_reminders_sends_mail_for_today_tasks(client, monkeypatch):
         task = Task(
             module="SE",
             assessment="Presentation",
-            create_date=dt.datetime.utcnow(),
+            create_date=dt.datetime.now(),
             ddl=dt.datetime.now() + dt.timedelta(days=2),
             remind=dt.datetime.now() + dt.timedelta(days=1),
             description="notify",
@@ -298,3 +361,12 @@ def test_send_reminders_sends_mail_for_today_tasks(client, monkeypatch):
     assert response.status_code == 200
     assert sent["count"] == 1
     assert b"Check you E-mail box for remind messages" in response.data
+
+
+def test_security_headers_exist_on_html_response(client):
+    response = client.get("/newlogin")
+    assert response.status_code == 200
+    assert response.headers.get("X-Content-Type-Options") == "nosniff"
+    assert response.headers.get("X-Frame-Options") == "SAMEORIGIN"
+    assert response.headers.get("Referrer-Policy") == "strict-origin-when-cross-origin"
+    assert "Content-Security-Policy" in response.headers

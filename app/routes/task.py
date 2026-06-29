@@ -1,5 +1,6 @@
 import datetime
 import csv
+from collections import Counter
 from io import StringIO
 
 from flask import Blueprint, Response, current_app, flash, jsonify, render_template, request
@@ -10,6 +11,38 @@ from app.model import Task, Todoers
 
 
 task_bp = Blueprint("task", __name__)
+
+
+def _to_positive_int(raw_value, default):
+    try:
+        parsed = int(raw_value)
+        if parsed <= 0:
+            return default
+        return parsed
+    except (TypeError, ValueError):
+        return default
+
+
+def _to_int_or_none(raw_value):
+    try:
+        return int(raw_value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _serialize_task(task):
+    return {
+        "taskID": task.taskID,
+        "module": task.module,
+        "assessment": task.assessment,
+        "create_date": str(task.create_date),
+        "deadline": str(task.ddl),
+        "remind": str(task.remind),
+        "priority": task.priority,
+        "status": task.status,
+        "description": task.description,
+        "host": task.host,
+    }
 
 
 def _parse_datetime(value):
@@ -27,17 +60,21 @@ def _parse_datetime(value):
 @task_bp.route("/sendReminders")
 def sendReminders():
     user = request.args.get("user_name")
-    uid = request.args.get("user_id")
-    send = Task.query.filter(
-        Task.host == uid,
-        db.cast(Task.create_date, db.DATE) == db.cast(datetime.datetime.utcnow(), db.DATE),
-    ).all()
+    uid = _to_int_or_none(request.args.get("user_id"))
+    user_record = Todoers.query.filter_by(username=user).first()
+    if not user_record or uid is None:
+        flash("Unable to find the user email address.", "error")
+        return render_template("error.html", errormessage="User account is not available.")
+
+    today = datetime.date.today()
+    send = Task.query.filter(Task.host == uid).all()
     for task_today in send:
-        email_address = Todoers.query.filter_by(username=user).first().Email
+        if not task_today.create_date or task_today.create_date.date() != today:
+            continue
         msg = Message(
             subject="Todolist Reminder!",
             sender=current_app.config.get("MAIL_DEFAULT_SENDER"),
-            recipients=[email_address],
+            recipients=[user_record.Email],
         )
         msg.body = "This is a kindly remind of your Assement today: " + task_today.module + " : " + task_today.assessment
         mail.send(msg)
@@ -50,7 +87,9 @@ def sendReminders():
 @task_bp.route("/backhome")
 def backhome():
     user_name = request.args.get("user_name")
-    user_id = request.args.get("user_id")
+    user_id = _to_int_or_none(request.args.get("user_id"))
+    if user_id is None:
+        return render_template("error.html", errormessage="Invalid user id.")
     task_person = Task.query.filter_by(host=user_id).all()
     return render_template("dolist.html", user=user_name, id=user_id, data=task_person)
 
@@ -60,13 +99,18 @@ def createAss():
     if request.method == "POST":
         host = request.form.get("host")
         host_name = request.form.get("hostname")
-        newModule = request.form.get("moudleName")
-        newAss = request.form.get("ass")
+        newModule = (request.form.get("moudleName") or "").strip()
+        newAss = (request.form.get("ass") or "").strip()
         newcreate = datetime.datetime.now()
         newddl = _parse_datetime(request.form.get("deadline"))
         newremind = _parse_datetime(request.form.get("remind"))
         newdescription = "Word hard, play hard."
-        newpri = request.form.get("priority")
+        newpri = _to_positive_int(request.form.get("priority"), 1)
+
+        if not newModule or not newAss:
+            flash("Module and assessment are required.", "error")
+            task_person = Task.query.filter_by(host=host).all()
+            return render_template("dolist.html", user=host_name, id=host, data=task_person)
 
         task_person = Task.query.filter_by(host=host).all()
         for ass in task_person:
@@ -191,13 +235,13 @@ def subEdit():
 
         aim_ass = Task.query.filter_by(taskID=edit_aim).first()
         aim_ass.taskID = edit_aim
-        aim_ass.module = request.form.get("editmoudle")
-        aim_ass.assessment = request.form.get("editass")
+        aim_ass.module = (request.form.get("editmoudle") or "").strip()
+        aim_ass.assessment = (request.form.get("editass") or "").strip()
         aim_ass.create_date = _parse_datetime(dummy) or aim_ass.create_date
         aim_ass.ddl = _parse_datetime(request.form.get("deadline"))
         aim_ass.remind = _parse_datetime(request.form.get("reminder"))
-        aim_ass.priority = request.form.get("priority")
-        aim_ass.status = request.form.get("status")
+        aim_ass.priority = _to_positive_int(request.form.get("priority"), aim_ass.priority or 1)
+        aim_ass.status = _to_positive_int(request.form.get("status"), aim_ass.status or 0)
         aim_ass.host = user_id
         aim_ass.description = request.form.get("descri")
 
@@ -288,11 +332,13 @@ def searchaName():
 @task_bp.route("/searchOverdue")
 def searchOverdue():
     user = request.args.get("user_name")
-    uid = request.args.get("user_id")
+    uid = _to_int_or_none(request.args.get("user_id"))
+    if uid is None:
+        return render_template("error.html", errormessage="Invalid user id.")
     now_time = datetime.datetime.now()
     time_str = now_time.strftime("%Y-%m-%d %H:%M:%S")
     today = datetime.datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S")
-    return_data = Task.query.filter(Task.ddl < today).all()
+    return_data = Task.query.filter(Task.host == uid, Task.ddl < today).all()
     title = "Overdue Assessments"
     flash("These assessments are overdue!!! Pay more attetion next time", "error")
     return render_template("dolist.html", user=user, id=uid, tag=title, data=return_data)
@@ -301,8 +347,10 @@ def searchOverdue():
 @task_bp.route("/searchUpcoming")
 def searchUpcoming():
     user = request.args.get("user_name")
-    uid = request.args.get("user_id")
-    days = int(request.args.get("days", 7))
+    uid = _to_int_or_none(request.args.get("user_id"))
+    if uid is None:
+        return render_template("error.html", errormessage="Invalid user id.")
+    days = min(_to_positive_int(request.args.get("days"), 7), 90)
     now = datetime.datetime.now()
     end = now + datetime.timedelta(days=days)
     return_data = Task.query.filter(Task.host == uid, Task.ddl >= now, Task.ddl <= end).all()
@@ -313,7 +361,9 @@ def searchUpcoming():
 
 @task_bp.route("/exportTasks")
 def exportTasks():
-    uid = request.args.get("user_id")
+    uid = _to_int_or_none(request.args.get("user_id"))
+    if uid is None:
+        return jsonify({"error": "user_id is required"}), 400
     user = request.args.get("user_name", "user")
     task_person = Task.query.filter_by(host=uid).all()
 
@@ -343,36 +393,114 @@ def exportTasks():
 
 @task_bp.route("/api/tasks")
 def tasks_api():
-    uid = request.args.get("user_id")
+    uid = _to_int_or_none(request.args.get("user_id"))
+    if uid is None:
+        return jsonify({"error": "user_id is required"}), 400
+
     task_person = Task.query.filter_by(host=uid).all()
-    payload = [
-        {
-            "taskID": task.taskID,
-            "module": task.module,
-            "assessment": task.assessment,
-            "create_date": str(task.create_date),
-            "deadline": str(task.ddl),
-            "remind": str(task.remind),
-            "priority": task.priority,
-            "status": task.status,
-            "description": task.description,
-            "host": task.host,
-        }
-        for task in task_person
-    ]
+    payload = [_serialize_task(task) for task in task_person]
     return jsonify(payload)
 
 
 @task_bp.route("/api/summary")
 def tasks_summary_api():
-    uid = request.args.get("user_id")
+    uid = _to_int_or_none(request.args.get("user_id"))
+    if uid is None:
+        return jsonify({"error": "user_id is required"}), 400
+
     task_person = Task.query.filter_by(host=uid).all()
+    now = datetime.datetime.now()
     total = len(task_person)
     completed = len([task for task in task_person if task.status == 1])
     pending = len([task for task in task_person if task.status == 0])
+    overdue = len([task for task in task_person if task.ddl and task.ddl < now and task.status == 0])
+    upcoming_7_days = len(
+        [
+            task
+            for task in task_person
+            if task.ddl and now <= task.ddl <= (now + datetime.timedelta(days=7)) and task.status == 0
+        ]
+    )
     return jsonify({
         "total": total,
         "completed": completed,
         "pending": pending,
+        "overdue": overdue,
+        "upcoming_7_days": upcoming_7_days,
         "progress": int((completed * 100) / total) if total else 0,
     })
+
+
+@task_bp.route("/api/insights")
+def tasks_insights_api():
+    uid = _to_int_or_none(request.args.get("user_id"))
+    if uid is None:
+        return jsonify({"error": "user_id is required"}), 400
+
+    now = datetime.datetime.now()
+    task_person = Task.query.filter_by(host=uid).all()
+    total = len(task_person)
+    completed = len([task for task in task_person if task.status == 1])
+    pending_tasks = [task for task in task_person if task.status == 0]
+    overdue = len([task for task in pending_tasks if task.ddl and task.ddl < now])
+    urgent_open = len([task for task in pending_tasks if (task.priority or 0) >= 4])
+    upcoming_7 = len(
+        [task for task in pending_tasks if task.ddl and now <= task.ddl <= (now + datetime.timedelta(days=7))]
+    )
+
+    module_counter = Counter([task.module for task in task_person if task.module])
+    priority_labels = {1: "Low", 2: "Medium", 3: "Significant", 4: "Urgent"}
+    priority_counter = Counter([priority_labels.get(task.priority, "Unknown") for task in task_person])
+
+    completion_rate = round((completed / total) * 100, 2) if total else 0.0
+    stability_rate = round(((len(pending_tasks) - overdue) / len(pending_tasks)) * 100, 2) if pending_tasks else 100.0
+    productivity_score = round((completion_rate * 0.65) + (stability_rate * 0.35), 2)
+
+    return jsonify(
+        {
+            "kpis": {
+                "total": total,
+                "completed": completed,
+                "pending": len(pending_tasks),
+                "overdue": overdue,
+                "upcoming_7_days": upcoming_7,
+                "urgent_open": urgent_open,
+                "completion_rate": completion_rate,
+                "stability_rate": stability_rate,
+                "productivity_score": productivity_score,
+            },
+            "priority_distribution": dict(priority_counter),
+            "module_distribution": dict(module_counter),
+        }
+    )
+
+
+@task_bp.route("/api/timeline")
+def tasks_timeline_api():
+    uid = _to_int_or_none(request.args.get("user_id"))
+    if uid is None:
+        return jsonify({"error": "user_id is required"}), 400
+
+    days = min(_to_positive_int(request.args.get("days"), 14), 120)
+    now = datetime.datetime.now()
+    end = now + datetime.timedelta(days=days)
+
+    timeline_tasks = Task.query.filter(
+        Task.host == uid,
+        Task.ddl.isnot(None),
+        Task.ddl >= now,
+        Task.ddl <= end,
+    ).order_by(Task.ddl.asc()).all()
+
+    buckets = {}
+    for task in timeline_tasks:
+        bucket_key = task.ddl.strftime("%Y-%m-%d")
+        buckets[bucket_key] = buckets.get(bucket_key, 0) + 1
+
+    return jsonify(
+        {
+            "window_days": days,
+            "total_deadlines": len(timeline_tasks),
+            "timeline": [{"date": date_key, "count": count} for date_key, count in sorted(buckets.items())],
+        }
+    )

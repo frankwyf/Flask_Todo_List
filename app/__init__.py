@@ -1,15 +1,25 @@
 import os
 
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_mail import Mail
-from app.config import DevelopmentConfig
+from app.config import DevelopmentConfig, ProductionConfig, TestingConfig
+
+
+def _resolve_config_class():
+    app_env = os.getenv("APP_ENV", "development").lower()
+    mapping = {
+        "development": DevelopmentConfig,
+        "testing": TestingConfig,
+        "production": ProductionConfig,
+    }
+    return mapping.get(app_env, DevelopmentConfig)
 
 app = Flask(__name__, instance_relative_config=True)
-app.config.from_object(DevelopmentConfig)
+app.config.from_object(_resolve_config_class())
 os.makedirs(app.instance_path, exist_ok=True)
 
 db = SQLAlchemy(app)
@@ -33,6 +43,28 @@ def inject_runtime_config():
         "weather_widget_enabled": bool(weather_key),
         "weather_widget_key": weather_key,
     }
+
+
+@app.after_request
+def add_security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
+    response.headers[
+        "Content-Security-Policy"
+    ] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' https://widget.qweather.net; "
+        "style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data: https:; "
+        "font-src 'self' data:; "
+        "connect-src 'self'; "
+        "frame-src 'self'"
+    )
+    if request.is_secure:
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    return response
 
 
 from app.routes import auth_bp, task_bp, chart_bp
