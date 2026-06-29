@@ -1,6 +1,5 @@
 import datetime as dt
 
-from app import db
 from app.model import Task, Todoers
 
 

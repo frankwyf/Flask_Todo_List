@@ -13,7 +13,7 @@ class Todoers(db.Model):
     def __int__(self, username, Email, status, password):
         self.username = username
         self.Email = Email
-        self.status = stauts
+        self.status = status
         self.password = password
 
 
