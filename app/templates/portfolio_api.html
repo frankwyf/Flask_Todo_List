@@ -291,7 +291,7 @@
                     <button class="copy-btn" data-copy-value="GET /api/tasks?user_id=<id>">Copy</button>
                 </div>
                 <p class="endpoint-path">/api/tasks</p>
-                <p class="endpoint-desc">Return full task list payload in JSON.</p>
+                <p class="endpoint-desc">Return full task list payload with generated_at, total, and items envelope.</p>
                 <p class="endpoint-meta">Category: public API</p>
             </article>
 
@@ -332,7 +332,7 @@
                 </div>
                 <p class="endpoint-path">/api/* (error contract)</p>
                 <p class="endpoint-desc">When required query params are missing, APIs return HTTP 400 with error and error_detail fields.</p>
-                <p class="endpoint-meta">Example: {"error":"user_id is required","error_detail":{"code":"bad_request","message":"user_id is required"}}</p>
+                <p class="endpoint-meta">Example: {"error":"user_id is required","error_detail":{"code":"missing_user_id","message":"user_id is required"}}</p>
             </article>
 
             <h3 id="cat-chart" class="category-heading">Chart Views</h3>

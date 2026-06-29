@@ -386,7 +386,7 @@ def searchUpcoming():
 def exportTasks():
     uid = _to_int_or_none(request.args.get("user_id"))
     if uid is None:
-        return _api_error("user_id is required")
+        return _api_error("user_id is required", code="missing_user_id")
     user = request.args.get("user_name", "user")
     task_person = Task.query.filter_by(host=uid).all()
 
@@ -418,18 +418,28 @@ def exportTasks():
 def tasks_api():
     uid = _to_int_or_none(request.args.get("user_id"))
     if uid is None:
-        return _api_error("user_id is required")
+        return _api_error("user_id is required", code="missing_user_id")
 
     task_person = Task.query.filter_by(host=uid).all()
     payload = [_serialize_task(task) for task in task_person]
-    return jsonify(payload)
+    generated_at = (
+        datetime.datetime.now(datetime.timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z")
+    )
+    return jsonify({
+        "generated_at": generated_at,
+        "total": len(payload),
+        "items": payload,
+    })
 
 
 @task_bp.route("/api/summary")
 def tasks_summary_api():
     uid = _to_int_or_none(request.args.get("user_id"))
     if uid is None:
-        return _api_error("user_id is required")
+        return _api_error("user_id is required", code="missing_user_id")
 
     task_person = Task.query.filter_by(host=uid).all()
     now = datetime.datetime.now()
@@ -467,7 +477,7 @@ def tasks_summary_api():
 def tasks_insights_api():
     uid = _to_int_or_none(request.args.get("user_id"))
     if uid is None:
-        return _api_error("user_id is required")
+        return _api_error("user_id is required", code="missing_user_id")
 
     now = datetime.datetime.now()
     task_person = Task.query.filter_by(host=uid).all()
@@ -519,7 +529,7 @@ def tasks_insights_api():
 def tasks_timeline_api():
     uid = _to_int_or_none(request.args.get("user_id"))
     if uid is None:
-        return _api_error("user_id is required")
+        return _api_error("user_id is required", code="missing_user_id")
 
     days = min(_to_positive_int(request.args.get("days"), 14), 120)
     start_date = datetime.date.today()

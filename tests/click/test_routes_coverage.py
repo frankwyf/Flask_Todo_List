@@ -120,7 +120,9 @@ def test_search_export_and_api_summary(client):
     tasks_api = client.get(f"/api/tasks?user_id={user_id}")
     assert tasks_api.status_code == 200
     payload = tasks_api.get_json()
-    assert len(payload) == 2
+    assert payload["total"] == 2
+    assert payload["generated_at"].endswith("Z")
+    assert len(payload["items"]) == 2
 
     summary_api = client.get(f"/api/summary?user_id={user_id}")
     assert summary_api.status_code == 200
@@ -139,13 +141,13 @@ def test_summary_and_tasks_api_require_user_id(client):
     summary = client.get("/api/summary")
     assert summary.status_code == 400
     assert summary.get_json()["error"] == "user_id is required"
-    assert summary.get_json()["error_detail"]["code"] == "bad_request"
+    assert summary.get_json()["error_detail"]["code"] == "missing_user_id"
     assert summary.get_json()["error_detail"]["message"] == "user_id is required"
 
     tasks = client.get("/api/tasks")
     assert tasks.status_code == 400
     assert tasks.get_json()["error"] == "user_id is required"
-    assert tasks.get_json()["error_detail"]["code"] == "bad_request"
+    assert tasks.get_json()["error_detail"]["code"] == "missing_user_id"
 
     insights = client.get("/api/insights")
     assert insights.status_code == 400
@@ -155,11 +157,12 @@ def test_summary_and_tasks_api_require_user_id(client):
     timeline = client.get("/api/timeline")
     assert timeline.status_code == 400
     assert timeline.get_json()["error"] == "user_id is required"
-    assert timeline.get_json()["error_detail"]["code"] == "bad_request"
+    assert timeline.get_json()["error_detail"]["code"] == "missing_user_id"
 
     export_csv = client.get("/exportTasks")
     assert export_csv.status_code == 400
     assert export_csv.get_json()["error"] == "user_id is required"
+    assert export_csv.get_json()["error_detail"]["code"] == "missing_user_id"
     assert export_csv.get_json()["error_detail"]["message"] == "user_id is required"
 
 
@@ -481,7 +484,7 @@ def test_portfolio_api_page_has_filterable_endpoint_cards(client):
     assert b"generated_at" in page.data
     assert b"window_start/window_end" in page.data
     assert b"error_detail" in page.data
-    assert b"bad_request" in page.data
+    assert b"missing_user_id" in page.data
     assert b"portfolio-pages.css" in page.data
     assert b"portfolio-pages.js" in page.data
 

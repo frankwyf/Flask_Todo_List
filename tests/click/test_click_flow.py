@@ -93,7 +93,10 @@ def test_user_click_flow_end_to_end(client):
     response = client.get(f"/api/tasks?user_id={uid}")
     assert response.status_code == 200
     assert response.is_json
-    assert len(response.get_json()) >= 1
+    tasks_payload = response.get_json()
+    assert tasks_payload["total"] >= 1
+    assert tasks_payload["generated_at"].endswith("Z")
+    assert isinstance(tasks_payload["items"], list)
 
     response = client.get(f"/api/summary?user_id={uid}")
     assert response.status_code == 200
