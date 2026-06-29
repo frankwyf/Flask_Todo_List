@@ -240,6 +240,10 @@ def test_dashboard_contains_touch_target_classes(client):
     assert b"Open Tasks API" not in dashboard.data
     assert b"bootstrap.min.js" not in dashboard.data
     assert b"bootstrap.js" not in dashboard.data
+    assert b"Performance Intelligence Board" in dashboard.data
+    assert b"data-insight-board" in dashboard.data
+    assert b"insight-priority-chart" in dashboard.data
+    assert b"insight-timeline-chart" in dashboard.data
 
 
 def test_login_contains_developer_zone_links(client):

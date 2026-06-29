@@ -70,6 +70,40 @@
             <a href="{{ url_for('task.searchUpcoming', user_id=id, user_name=user, days=7) }}">Upcoming 7 Days</a>
             <a href="{{ url_for('task.exportTasks', user_id=id, user_name=user) }}">Export CSV</a>
         </section>
+        <section class="insight-lab" data-insight-board data-user-id="{{ id }}" aria-live="polite">
+            <div class="insight-lab-head">
+                <h4>Performance Intelligence Board</h4>
+                <p id="insight-status">Loading strategic metrics...</p>
+            </div>
+            <div class="insight-kpis">
+                <article class="insight-kpi-card">
+                    <span class="insight-kpi-label">Productivity Score</span>
+                    <strong id="insight-productivity">--</strong>
+                </article>
+                <article class="insight-kpi-card">
+                    <span class="insight-kpi-label">Stability Rate</span>
+                    <strong id="insight-stability">--</strong>
+                </article>
+                <article class="insight-kpi-card">
+                    <span class="insight-kpi-label">Urgent Open Tasks</span>
+                    <strong id="insight-urgent">--</strong>
+                </article>
+                <article class="insight-kpi-card">
+                    <span class="insight-kpi-label">Upcoming 7 Days</span>
+                    <strong id="insight-upcoming">--</strong>
+                </article>
+            </div>
+            <div class="insight-chart-grid">
+                <article class="insight-chart-card">
+                    <h5>Priority Pulse</h5>
+                    <div id="insight-priority-chart" class="insight-chart-canvas" aria-label="Priority distribution mini chart"></div>
+                </article>
+                <article class="insight-chart-card">
+                    <h5>Deadline Timeline</h5>
+                    <div id="insight-timeline-chart" class="insight-chart-canvas" aria-label="Deadline timeline mini chart"></div>
+                </article>
+            </div>
+        </section>
     </div>
     <div class="container-fluid" ng-app="myapp" ng-controller="dolist">
         <div class="row">
@@ -565,6 +599,20 @@
 </div>
 <script>
     window.WEATHER_WIDGET_KEY = "{{ weather_widget_key }}";
+    if (window.WEATHER_WIDGET_KEY) {
+        window.WIDGET = {
+            "CONFIG": {
+                "layout": "1",
+                "width": "400",
+                "height": "120",
+                "background": "1",
+                "dataColor": "FFFFFF",
+                "language": "en",
+                "borderRadius": "5",
+                "key": window.WEATHER_WIDGET_KEY
+            }
+        };
+    }
 </script>
 <p id="chart-key-help" class="sr-only">Use left and right arrow keys to scroll chart content on small screens.</p>
 {% if weather_widget_enabled %}

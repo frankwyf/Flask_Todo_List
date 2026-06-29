@@ -1,105 +1,267 @@
-//deal with the deadline date
-var today = new Date();
-var year = today.getFullYear();
-var month = today.getMonth() + 1;
-var date = today.getDate();
-var hour = today.getHours();
-var min = today.getMinutes();
-
-//make up for month and date if it is not two-digits
+// Deal with datetime defaults for task forms.
 function addZero(num) {
-    return num < 10 ? '0' + num : num;
+    return num < 10 ? "0" + num : String(num);
 }
 
-$(document).ready(function () {
-    document.getElementById('setdead').setAttribute("value",
-        year + "-" + addZero(month) + "-" + addZero(date) + "T" + addZero(hour) + ":" + addZero(min));
-    document.getElementById('setremind').setAttribute("value",
-        year + "-" + addZero(month) + "-" + addZero(date) + "T" + addZero(hour) + ":" + addZero(min));
-});
+function setNowForTaskInputs() {
+    var now = new Date();
+    var datetimeValue =
+        now.getFullYear() +
+        "-" +
+        addZero(now.getMonth() + 1) +
+        "-" +
+        addZero(now.getDate()) +
+        "T" +
+        addZero(now.getHours()) +
+        ":" +
+        addZero(now.getMinutes());
 
-//front end check for new assessment adding
-const form = document.getElementById('form');
-const module = document.getElementById('create-list-input');
-const assessment = document.getElementById('create-task-input');
+    var deadlineInput = document.getElementById("setdead");
+    var remindInput = document.getElementById("setremind");
 
-
-if (form && module && assessment) {
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        const modulevalue = module.value.trim();
-        const assvalue = assessment.value.trim();
-        if (modulevalue === '') {
-            setError(module, "Module must be entered!");
-        } else if (assvalue === '') {
-            setError(assessment, "Assessment must be entered!");
-        } else {
-            form.submit();
-        }
-    })
-}
-const setError = (element, message) => {
-    const inputControl = element.parentElement;
-    const errorDisplay = inputControl.querySelector('.error-message');
-    errorDisplay.innerText = message;
-    inputControl.classList.add('error-message');
-}
-
-// Configure weather widget only if a key is provided by backend config.
-if (window.WEATHER_WIDGET_KEY) {
-    WIDGET = {
-        "CONFIG": {
-            "layout": "1",
-            "width": "400",
-            "height": "120",
-            "background": "1",
-            "dataColor": "FFFFFF",
-            "language": "en",
-            "borderRadius": "5",
-            "key": window.WEATHER_WIDGET_KEY
-        }
+    if (deadlineInput) {
+        deadlineInput.setAttribute("value", datetimeValue);
+    }
+    if (remindInput) {
+        remindInput.setAttribute("value", datetimeValue);
     }
 }
 
-
-//log out a user
-function logout() {
-    //sent a modal to tell the user that he/she has been logged out
-    window.location.href = "http://127.0.0.1:5000/newlogin"
+function setError(element, message) {
+    var inputControl = element.parentElement;
+    var errorDisplay = inputControl.querySelector(".error-message");
+    if (!errorDisplay) {
+        return;
+    }
+    errorDisplay.innerText = message;
+    inputControl.classList.add("error-message");
 }
 
-//show toast for more message
-var liveToastBtn = document.querySelector("#liveToastBtn");
-if (liveToastBtn) {
-    liveToastBtn.onclick = function () {
-        var toastEl = document.querySelector('.toast');
-        if (!toastEl) {
+function clearError(element) {
+    var inputControl = element.parentElement;
+    var errorDisplay = inputControl.querySelector(".error-message");
+    if (!errorDisplay) {
+        return;
+    }
+    errorDisplay.innerText = "";
+    inputControl.classList.remove("error-message");
+}
+
+function bindCreateTaskValidation() {
+    var form = document.getElementById("form");
+    var moduleInput = document.getElementById("create-list-input");
+    var assessmentInput = document.getElementById("create-task-input");
+
+    if (!form || !moduleInput || !assessmentInput) {
+        return;
+    }
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        clearError(moduleInput);
+        clearError(assessmentInput);
+
+        var moduleValue = moduleInput.value.trim();
+        var assessmentValue = assessmentInput.value.trim();
+
+        if (!moduleValue) {
+            setError(moduleInput, "Module must be entered!");
             return;
         }
-        new bootstrap.Toast(toastEl).show();
-        window.setTimeout(function () {
-            $(".toast").removeClass("show");
-        }, 5000);
-    }
-}
 
-var inTaskButtons = document.querySelectorAll(".in-task-link");
-if (inTaskButtons.length > 0) {
-    inTaskButtons.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            var toastEl = document.querySelector('.toast');
-            if (!toastEl) {
-                return;
-            }
-            new bootstrap.Toast(toastEl).show();
-        });
+        if (!assessmentValue) {
+            setError(assessmentInput, "Assessment must be entered!");
+            return;
+        }
+
+        form.submit();
     });
 }
 
-//log out popover
-var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-return new bootstrap.Popover(popoverTriggerEl)
-})
+function logout() {
+    window.location.href = window.location.origin + "/newlogin";
+}
+
+function showToastIfPresent() {
+    var toastEl = document.querySelector(".toast");
+    if (!toastEl || !window.bootstrap || !window.bootstrap.Toast) {
+        return;
+    }
+
+    new bootstrap.Toast(toastEl).show();
+    window.setTimeout(function () {
+        toastEl.classList.remove("show");
+    }, 5000);
+}
+
+function bindToastActions() {
+    var createBtn = document.querySelector("#liveToastBtn");
+    if (createBtn) {
+        createBtn.addEventListener("click", showToastIfPresent);
+    }
+
+    var inTaskButtons = document.querySelectorAll(".in-task-link");
+    inTaskButtons.forEach(function (btn) {
+        btn.addEventListener("click", showToastIfPresent);
+    });
+}
+
+function bindPopovers() {
+    if (!window.bootstrap || !window.bootstrap.Popover) {
+        return;
+    }
+
+    var popoverTriggerList = Array.prototype.slice.call(
+        document.querySelectorAll('[data-bs-toggle="popover"]')
+    );
+    popoverTriggerList.forEach(function (popoverTriggerEl) {
+        new bootstrap.Popover(popoverTriggerEl);
+    });
+}
+
+function setMetricValue(elementId, value, suffix) {
+    var target = document.getElementById(elementId);
+    if (!target) {
+        return;
+    }
+
+    var finalSuffix = suffix || "";
+    target.textContent = String(value) + finalSuffix;
+}
+
+function renderPriorityMiniChart(priorityDistribution) {
+    var chartEl = document.getElementById("insight-priority-chart");
+    if (!chartEl || !window.echarts) {
+        return;
+    }
+
+    var chartData = [];
+    Object.keys(priorityDistribution || {}).forEach(function (key) {
+        chartData.push({ name: key, value: priorityDistribution[key] });
+    });
+
+    var chart = echarts.init(chartEl);
+    chart.setOption({
+        tooltip: { trigger: "item" },
+        legend: { bottom: 0, icon: "circle" },
+        series: [
+            {
+                type: "pie",
+                radius: ["42%", "72%"],
+                itemStyle: { borderRadius: 6, borderColor: "#fff", borderWidth: 2 },
+                data: chartData,
+            },
+        ],
+    });
+
+    window.addEventListener("resize", function () {
+        chart.resize();
+    });
+}
+
+function renderTimelineMiniChart(timelineItems) {
+    var chartEl = document.getElementById("insight-timeline-chart");
+    if (!chartEl || !window.echarts) {
+        return;
+    }
+
+    var xAxisData = [];
+    var yAxisData = [];
+    (timelineItems || []).forEach(function (item) {
+        xAxisData.push(item.date.slice(5));
+        yAxisData.push(item.count);
+    });
+
+    var chart = echarts.init(chartEl);
+    chart.setOption({
+        tooltip: { trigger: "axis" },
+        grid: { left: 30, right: 16, top: 20, bottom: 30 },
+        xAxis: {
+            type: "category",
+            data: xAxisData,
+            axisLabel: { fontSize: 10 },
+        },
+        yAxis: {
+            type: "value",
+            minInterval: 1,
+        },
+        series: [
+            {
+                type: "line",
+                smooth: true,
+                data: yAxisData,
+                areaStyle: { opacity: 0.15 },
+                lineStyle: { width: 3 },
+                symbolSize: 8,
+            },
+        ],
+    });
+
+    window.addEventListener("resize", function () {
+        chart.resize();
+    });
+}
+
+function initInsightsBoard() {
+    var board = document.querySelector("[data-insight-board]");
+    if (!board) {
+        return;
+    }
+
+    var userId = board.getAttribute("data-user-id");
+    if (!userId) {
+        return;
+    }
+
+    var statusLabel = document.getElementById("insight-status");
+    if (statusLabel) {
+        statusLabel.textContent = "Computing performance intelligence...";
+    }
+
+    var insightsUrl = "/api/insights?user_id=" + encodeURIComponent(userId);
+    var timelineUrl = "/api/timeline?user_id=" + encodeURIComponent(userId) + "&days=14";
+
+    Promise.all([fetch(insightsUrl), fetch(timelineUrl)])
+        .then(function (responses) {
+            return Promise.all(
+                responses.map(function (response) {
+                    if (!response.ok) {
+                        throw new Error("Failed to load dashboard insights.");
+                    }
+                    return response.json();
+                })
+            );
+        })
+        .then(function (payloads) {
+            var insights = payloads[0];
+            var timeline = payloads[1];
+            var kpis = insights.kpis || {};
+
+            setMetricValue("insight-productivity", Number(kpis.productivity_score || 0).toFixed(2));
+            setMetricValue("insight-stability", Number(kpis.stability_rate || 0).toFixed(2), "%");
+            setMetricValue("insight-urgent", kpis.urgent_open || 0);
+            setMetricValue("insight-upcoming", kpis.upcoming_7_days || 0);
+
+            renderPriorityMiniChart(insights.priority_distribution || {});
+            renderTimelineMiniChart(timeline.timeline || []);
+
+            if (statusLabel) {
+                statusLabel.textContent = "Live metrics synced successfully.";
+            }
+        })
+        .catch(function () {
+            if (statusLabel) {
+                statusLabel.textContent = "Unable to load live metrics right now.";
+            }
+        });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    setNowForTaskInputs();
+    bindCreateTaskValidation();
+    bindToastActions();
+    bindPopovers();
+    initInsightsBoard();
+});
 
 
