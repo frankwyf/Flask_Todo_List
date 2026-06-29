@@ -901,6 +901,24 @@ button[type="reset"],
   font-weight: 600;
 }
 
+#todo_list .insight-summary {
+  margin: 4px 0 0;
+  color: #355f78;
+  font-size: 0.81rem;
+  font-weight: 700;
+}
+
+#todo_list .insight-sync {
+  margin: 2px 0 0;
+  color: #4a6678;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+#todo_list .insight-sync.is-degraded {
+  color: #91503f;
+}
+
 #todo_list .insight-kpis {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1716,12 +1734,19 @@ body.dark textarea::placeholder {
 }
 
 [data-theme="dark"] #todo_list #insight-status,
+[data-theme="dark"] #todo_list .insight-summary,
+[data-theme="dark"] #todo_list .insight-sync,
 [data-theme="dark"] #todo_list .insight-kpi-label,
 [data-theme="dark"] #todo_list .insight-chart-card h5,
 [data-theme="dark"] #todo_list .insight-ops-card h5,
 [data-theme="dark"] #todo_list .insight-ops-sub,
 [data-theme="dark"] #todo_list .insight-subhead {
   color: #b8d2e8;
+}
+
+[data-theme="dark"] #todo_list .insight-sync.is-degraded,
+body.dark #todo_list .insight-sync.is-degraded {
+  color: #ffb49f;
 }
 
 [data-theme="dark"] #todo_list .insight-kpi-card strong {

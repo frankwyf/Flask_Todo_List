@@ -289,6 +289,13 @@ body::before {
   font-weight: 700;
 }
 
+.copy-feedback {
+  margin: 0 0 8px;
+  color: #2f5d77;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
 .endpoint-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -459,10 +466,12 @@ body.dark .chip-btn.is-active {
 [data-theme="dark"] .endpoint-meta,
 [data-theme="dark"] .category-heading,
 [data-theme="dark"] .arch-note-list,
+[data-theme="dark"] .copy-feedback,
 body.dark .endpoint-desc,
 body.dark .endpoint-meta,
 body.dark .category-heading,
-body.dark .arch-note-list {
+body.dark .arch-note-list,
+body.dark .copy-feedback {
   color: #b4cce0;
 }
 

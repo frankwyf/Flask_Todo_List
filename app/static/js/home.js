@@ -154,6 +154,24 @@ function setInsightSummary(kpis) {
         "%.";
 }
 
+function setInsightSyncStamp(isSuccess) {
+    var syncLine = document.getElementById("insight-last-sync");
+    if (!syncLine) {
+        return;
+    }
+
+    var now = new Date();
+    var stamp =
+        addZero(now.getHours()) +
+        ":" +
+        addZero(now.getMinutes()) +
+        ":" +
+        addZero(now.getSeconds());
+
+    syncLine.textContent = "Last synced: " + stamp + (isSuccess ? "" : " (degraded)");
+    syncLine.classList.toggle("is-degraded", !isSuccess);
+}
+
 var priorityChartInstance = null;
 var timelineChartInstance = null;
 var chartResizeBound = false;
@@ -527,6 +545,7 @@ function loadInsightsBoard(board, userId) {
             if (statusLabel) {
                 statusLabel.textContent = "Live metrics synced successfully.";
             }
+            setInsightSyncStamp(true);
         })
         .catch(function () {
             setHealthBadge({ completion_rate: 0, overdue_rate: 100 });
@@ -535,6 +554,7 @@ function loadInsightsBoard(board, userId) {
             if (statusLabel) {
                 statusLabel.textContent = "Unable to load live metrics right now.";
             }
+            setInsightSyncStamp(false);
         })
         .finally(function () {
             isInsightsLoading = false;

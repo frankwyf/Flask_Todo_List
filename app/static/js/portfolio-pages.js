@@ -199,6 +199,7 @@
 
     function bindCopyButtons() {
         var buttons = document.querySelectorAll("[data-copy-value]");
+        var feedback = document.getElementById("copy-feedback");
         if (!buttons.length) {
             return;
         }
@@ -227,12 +228,18 @@
                 copyPromise
                     .then(function () {
                         button.textContent = "Copied";
+                        if (feedback) {
+                            feedback.textContent = "Copied: " + value;
+                        }
                         window.setTimeout(function () {
                             button.textContent = initialText;
                         }, 900);
                     })
                     .catch(function () {
                         button.textContent = "Copy failed";
+                        if (feedback) {
+                            feedback.textContent = "Copy failed. Please copy manually.";
+                        }
                         window.setTimeout(function () {
                             button.textContent = initialText;
                         }, 1200);
