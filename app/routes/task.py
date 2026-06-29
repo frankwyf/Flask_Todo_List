@@ -440,12 +440,14 @@ def tasks_summary_api():
             if task.ddl and now <= task.ddl <= (now + datetime.timedelta(days=7)) and task.status == 0
         ]
     )
+    progress_rate = round((completed * 100.0) / total, 2) if total else 0.0
     return jsonify({
         "total": total,
         "completed": completed,
         "pending": pending,
         "overdue": overdue,
         "upcoming_7_days": upcoming_7_days,
+        "progress_rate": progress_rate,
         "progress": int((completed * 100) / total) if total else 0,
     })
 
