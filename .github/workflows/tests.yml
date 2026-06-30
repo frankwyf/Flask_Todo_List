@@ -71,7 +71,7 @@ jobs:
           python -m pip install -r requirements-dev.txt
 
       - name: Run tests with coverage
-        run: python -m pytest --cov=app --cov-report=term --cov-report=xml -q
+        run: python -m pytest --cov=app --cov-report=term --cov-report=xml --cov-fail-under=80 -q
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
@@ -107,3 +107,20 @@ jobs:
         with:
           name: pip-audit-report
           path: pip-audit-report.json
+
+  docker:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build Docker image
+        run: docker build -t flask-todo-list:ci .
+
+      - name: Start container and smoke test
+        run: |
+          docker run -d --name flask-todo-smoke -p 5000:5000 \
+            -e APP_ENV=testing -e SECRET_KEY=ci-test flask-todo-list:ci
+          sleep 5
+          curl -f http://localhost:5000/ || exit 1
+          docker stop flask-todo-smoke
