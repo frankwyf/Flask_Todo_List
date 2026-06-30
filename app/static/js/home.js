@@ -580,9 +580,9 @@ function loadInsightsBoard(board, userId) {
         statusLabel.textContent = "Computing performance intelligence...";
     }
 
-    var insightsUrl = "/api/insights?user_id=" + encodeURIComponent(userId);
-    var timelineUrl = "/api/timeline?user_id=" + encodeURIComponent(userId) + "&days=14";
-    var summaryUrl = "/api/summary?user_id=" + encodeURIComponent(userId);
+    var insightsUrl = "/api/insights";
+    var timelineUrl = "/api/timeline?days=14";
+    var summaryUrl = "/api/summary";
 
     Promise.all([fetch(insightsUrl), fetch(timelineUrl), fetch(summaryUrl)])
         .then(function (responses) {
@@ -674,6 +674,55 @@ document.addEventListener("DOMContentLoaded", function () {
     bindToastActions();
     bindPopovers();
     initInsightsBoard();
+    renderRelativeDeadlines();
+    autoHideAlertToasts();
 });
+
+// ── Relative deadline display ────────────────────────────────────
+function renderRelativeDeadlines() {
+    var elements = document.querySelectorAll(".deadline-display[data-deadline]");
+    var now = new Date();
+    elements.forEach(function (el) {
+        var iso = el.getAttribute("data-deadline");
+        if (!iso) return;
+        var dt = new Date(iso);
+        if (isNaN(dt.getTime())) return;
+
+        var diffMs = dt - now;
+        var diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+        var label;
+
+        if (diffMs < 0) {
+            var overDays = Math.abs(Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+            label = overDays === 0 ? "Overdue today" : "Overdue by " + overDays + "d";
+            el.classList.add("deadline-overdue");
+        } else if (diffDays <= 3) {
+            label = diffDays === 0 ? "Due today" : "In " + diffDays + " day" + (diffDays > 1 ? "s" : "");
+            el.classList.add("deadline-soon");
+        } else {
+            label = "In " + diffDays + " days";
+            el.classList.add("deadline-ok");
+        }
+
+        el.setAttribute("title", el.textContent.trim());
+        el.textContent = label;
+    });
+}
+
+// ── Auto-hide alert toasts after 6 seconds ───────────────────────
+function autoHideAlertToasts() {
+    var toasts = document.querySelectorAll(".alert-toast");
+    toasts.forEach(function (toast) {
+        setTimeout(function () {
+            toast.style.transition = "opacity 0.6s ease";
+            toast.style.opacity = "0";
+            setTimeout(function () { toast.remove(); }, 650);
+        }, 6000);
+    });
+}
+
+// ── Update insight API calls to use session (no user_id param) ──
+var insightsUrl = "/api/insights";
+var timelineUrl = "/api/timeline?days=14";
 
 

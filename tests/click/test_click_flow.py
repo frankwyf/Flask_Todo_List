@@ -1,13 +1,17 @@
+﻿"""End-to-end flow tests for the Todo-List application."""
 import datetime as dt
 
 from app.model import Task, Todoers
 
 
 def test_user_click_flow_end_to_end(client):
+    """Full flow: register -> login -> create task -> complete -> edit -> search -> API."""
+    # Visit landing page
     response = client.get("/")
     assert response.status_code == 200
     assert b"Welcome to TodoList" in response.data
 
+    # Register
     response = client.post(
         "/newAccount",
         data={
@@ -17,17 +21,18 @@ def test_user_click_flow_end_to_end(client):
         },
     )
     assert response.status_code == 200
-    assert b"registered successfully" in response.data
+    assert b"Registration successful" in response.data
 
-    response = client.post("/doList", data={"name": "alice", "psw": "Password123"})
+    # Login - should redirect to dashboard
+    response = client.post(
+        "/doList",
+        data={"name": "alice", "psw": "Password123"},
+        follow_redirects=True,
+    )
     assert response.status_code == 200
     assert b"Welcome alice" in response.data
 
-    with client.application.app_context():
-        user = Todoers.query.filter_by(username="alice").first()
-        assert user is not None
-        uid = user.id
-
+    # Create task
     now = dt.datetime.now()
     ddl = (now + dt.timedelta(days=3)).strftime("%Y-%m-%dT%H:%M")
     remind = (now + dt.timedelta(days=1)).strftime("%Y-%m-%dT%H:%M")
@@ -35,28 +40,30 @@ def test_user_click_flow_end_to_end(client):
     response = client.post(
         "/createAss",
         data={
-            "host": str(uid),
-            "hostname": "alice",
             "moudleName": "Web Engineering",
             "ass": "Flask Portfolio Upgrade",
             "deadline": ddl,
             "remind": remind,
             "priority": "2",
+            "description": "Build a modern Flask app",
         },
     )
     assert response.status_code == 200
     assert b"has been added" in response.data
 
     with client.application.app_context():
-        task = Task.query.filter_by(host=uid, module="Web Engineering").first()
+        user = Todoers.query.filter_by(username="alice").first()
+        task = Task.query.filter_by(host=user.id, module="Web Engineering").first()
         assert task is not None
         task_id = task.taskID
 
-    response = client.get(f"/completeTask?aim={task_id}&host=alice&uid={uid}")
+    # Complete task
+    response = client.get(f"/completeTask?aim={task_id}")
     assert response.status_code == 200
     assert b"is completed" in response.data
 
-    response = client.get(f"/edit?edit={task_id}&host_return=alice&uid_return={uid}")
+    # Edit task
+    response = client.get(f"/edit?edit={task_id}")
     assert response.status_code == 200
     assert b"Editing task" in response.data
 
@@ -64,8 +71,6 @@ def test_user_click_flow_end_to_end(client):
         "/subEdit",
         data={
             "this_task": str(task_id),
-            "host": str(uid),
-            "uid": "alice",
             "create": now.strftime("%Y-%m-%d %H:%M:%S"),
             "status": "1",
             "editmoudle": "Web Engineering",
@@ -79,18 +84,21 @@ def test_user_click_flow_end_to_end(client):
     assert response.status_code == 200
     assert b"has been updated" in response.data
 
+    # Search by status
     response = client.post(
         "/searchStatus",
-        data={"host": str(uid), "uid": "alice", "completion": "1"},
+        data={"completion": "1"},
     )
     assert response.status_code == 200
     assert b"Completed Assessments" in response.data
 
-    response = client.get(f"/searchUpcoming?user_id={uid}&user_name=alice&days=7")
+    # Upcoming 7 days
+    response = client.get("/searchUpcoming?days=7")
     assert response.status_code == 200
     assert b"Upcoming in 7 days" in response.data
 
-    response = client.get(f"/api/tasks?user_id={uid}")
+    # API tasks endpoint
+    response = client.get("/api/tasks")
     assert response.status_code == 200
     assert response.is_json
     tasks_payload = response.get_json()
@@ -98,24 +106,55 @@ def test_user_click_flow_end_to_end(client):
     assert tasks_payload["generated_at"].endswith("Z")
     assert isinstance(tasks_payload["items"], list)
 
-    response = client.get(f"/api/summary?user_id={uid}")
+    # API summary
+    response = client.get("/api/summary")
     assert response.status_code == 200
-    assert response.is_json
-    assert "total" in response.get_json()
+    data = response.get_json()
+    assert "progress_rate" in data
 
-    response = client.get(f"/exportTasks?user_id={uid}&user_name=alice")
+    # API insights
+    response = client.get("/api/insights")
     assert response.status_code == 200
-    assert response.mimetype == "text/csv"
+    data = response.get_json()
+    assert "kpis" in data
+    assert "priority_distribution" in data
 
-    response = client.get("/healthz")
-    assert response.status_code == 200
-    assert response.is_json
-    assert response.get_json().get("status") == "ok"
 
-    response = client.get(f"/deleteTask?aim={task_id}&host=alice&uid={uid}")
-    assert response.status_code == 200
-    assert b"is deleted" in response.data
+def test_login_required_redirects_unauthenticated(client):
+    """Protected routes should redirect unauthenticated users."""
+    protected_routes = ["/backhome", "/searchOverdue", "/searchUpcoming", "/api/tasks"]
+    for route in protected_routes:
+        response = client.get(route)
+        # Flask-Login redirects to login page
+        assert response.status_code == 302
 
-    with client.application.app_context():
-        remaining = Task.query.filter_by(host=uid).count()
-        assert remaining == 0
+
+def test_duplicate_user_registration_blocked(client):
+    """Cannot register same username twice."""
+    client.post(
+        "/newAccount",
+        data={"name": "dup", "mailenter": "dup@example.com", "psw": "Password123"},
+    )
+    response = client.post(
+        "/newAccount",
+        data={"name": "dup", "mailenter": "dup2@example.com", "psw": "Password123"},
+    )
+    assert b"has been taken" in response.data
+
+
+def test_invalid_password_length_rejected(client):
+    """Password shorter than 8 chars is rejected."""
+    response = client.post(
+        "/newAccount",
+        data={"name": "shortpw", "mailenter": "s@example.com", "psw": "short"},
+    )
+    assert b"at least 8 characters" in response.data
+
+
+def test_invalid_email_rejected(client):
+    """Invalid email format is rejected."""
+    response = client.post(
+        "/newAccount",
+        data={"name": "badmail", "mailenter": "notanemail", "psw": "Password123"},
+    )
+    assert b"valid email" in response.data

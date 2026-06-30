@@ -1,8 +1,10 @@
+from flask_login import UserMixin
+
 from app import db
 
 
 # defining objects for database
-class Todoers(db.Model):
+class Todoers(UserMixin, db.Model):
     __tablename__ = "todoers"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

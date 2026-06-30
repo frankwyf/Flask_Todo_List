@@ -35,12 +35,7 @@
             <div class="error-message"></div>
         </div>
         <div class="password-section">
-            {% if password %}
-                <input type="password" class="password-text" id=password name="psw" placeholder="Password"
-                       value={{ password }}>
-            {% else %}
-                <input type="password" class="password-text" id=password name="psw" placeholder="Password">
-            {% endif %}
+            <input type="password" class="password-text" id=password name="psw" placeholder="Password">
             <img src="../static/img/password.png" alt="Password">
             <div class="error-message"></div>
         </div>
@@ -72,8 +67,8 @@
         <div id="toggle">
             <i class="button"></i>
         </div>
-        {% for message in get_flashed_messages() %}
-            <div class="flash">{{ message }}</div>
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+            <div class="flash flash--{{ category }}">{{ message }}</div>
         {% endfor %}
     </form>
     <div class="square">

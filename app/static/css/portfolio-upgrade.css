@@ -2429,3 +2429,189 @@ body.dark #todo_list .insight-health-badge {
     scroll-behavior: auto !important;
   }
 }
+
+/* ── Priority & Status Badges ────────────────────────────────── */
+.task-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 4px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border: 1px solid transparent;
+}
+
+.badge-status.badge-pending {
+  background: rgba(203, 63, 87, 0.12);
+  border-color: rgba(203, 63, 87, 0.35);
+  color: #8b1a2e;
+}
+
+.badge-status.badge-done {
+  background: rgba(15, 141, 132, 0.12);
+  border-color: rgba(15, 141, 132, 0.35);
+  color: #0a5f58;
+}
+
+.badge-priority.badge-low {
+  background: rgba(39, 174, 96, 0.1);
+  border-color: rgba(39, 174, 96, 0.35);
+  color: #1a6b3a;
+}
+
+.badge-priority.badge-medium {
+  background: rgba(52, 152, 219, 0.12);
+  border-color: rgba(52, 152, 219, 0.35);
+  color: #1a5e82;
+}
+
+.badge-priority.badge-significant {
+  background: rgba(243, 156, 18, 0.15);
+  border-color: rgba(243, 156, 18, 0.4);
+  color: #7a4e00;
+}
+
+.badge-priority.badge-urgent {
+  background: rgba(231, 76, 60, 0.14);
+  border-color: rgba(231, 76, 60, 0.42);
+  color: #8b1a1a;
+  animation: urgentPulse 2.2s ease-in-out infinite;
+}
+
+@keyframes urgentPulse {
+  0%, 100% { box-shadow: none; }
+  50% { box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2); }
+}
+
+/* ── Alert Toast Notifications ───────────────────────────────── */
+.alert-toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  border: 1px solid transparent;
+  animation: riseIn 300ms ease both;
+}
+
+.alert-toast--success {
+  background: rgba(39, 174, 96, 0.12);
+  border-color: rgba(39, 174, 96, 0.35);
+  color: #1a6b3a;
+}
+
+.alert-toast--error {
+  background: rgba(203, 63, 87, 0.12);
+  border-color: rgba(203, 63, 87, 0.35);
+  color: #8b1a2e;
+}
+
+.alert-toast--warning {
+  background: rgba(243, 156, 18, 0.14);
+  border-color: rgba(243, 156, 18, 0.38);
+  color: #7a4e00;
+}
+
+.alert-toast--info {
+  background: rgba(52, 152, 219, 0.11);
+  border-color: rgba(52, 152, 219, 0.32);
+  color: #1a5e82;
+}
+
+/* Flash in login/register pages */
+.flash--success { color: #1a6b3a; font-weight: 700; }
+.flash--error   { color: #8b1a2e; font-weight: 700; }
+.flash--warning { color: #7a4e00; font-weight: 700; }
+.flash--info    { color: #1a5e82; font-weight: 700; }
+
+/* ── Profile Page ────────────────────────────────────────────── */
+.profile-card {
+  max-width: 560px;
+  margin: 0 auto;
+  background: var(--ui-panel-strong);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  box-shadow: var(--ui-shadow-soft);
+  animation: riseIn 420ms ease both;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.profile-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ui-brand), var(--ui-brand-2));
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.profile-subtitle {
+  margin: 4px 0 0;
+  color: var(--ui-muted);
+  font-size: 0.88rem;
+}
+
+.profile-section {
+  border-top: 1px solid var(--ui-border);
+  padding-top: 20px;
+}
+
+.profile-field {
+  margin-bottom: 16px;
+}
+
+.profile-field label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ui-ink);
+  margin-bottom: 6px;
+}
+
+.profile-field .input {
+  width: 100%;
+  padding: 10px 14px;
+  height: 44px;
+}
+
+/* ── Deadline relative display ───────────────────────────────── */
+.deadline-display[data-deadline] {
+  cursor: help;
+}
+
+.deadline-overdue {
+  color: #8b1a2e;
+  font-weight: 700;
+}
+
+.deadline-soon {
+  color: #7a4e00;
+  font-weight: 700;
+}
+
+.deadline-ok {
+  color: #1a6b3a;
+}

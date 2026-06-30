@@ -3,7 +3,8 @@ import csv
 from collections import Counter
 from io import StringIO
 
-from flask import Blueprint, Response, current_app, flash, jsonify, render_template, request
+from flask import Blueprint, Response, abort, current_app, flash, jsonify, render_template, request
+from flask_login import current_user, login_required
 from flask_mail import Message
 
 from app import db, mail
@@ -81,13 +82,11 @@ def _api_error(message, status_code=400, code="bad_request"):
 
 
 @task_bp.route("/sendReminders")
+@login_required
 def sendReminders():
-    user = request.args.get("user_name")
-    uid = _to_int_or_none(request.args.get("user_id"))
-    user_record = Todoers.query.filter_by(username=user).first()
-    if not user_record or uid is None:
-        flash("Unable to find the user email address.", "error")
-        return render_template("error.html", errormessage="User account is not available.")
+    uid = current_user.id
+    user = current_user.username
+    user_record = Todoers.query.get(uid)
 
     today = datetime.date.today()
     send = Task.query.filter(Task.host == uid).all()
@@ -95,52 +94,50 @@ def sendReminders():
         if not task_today.create_date or task_today.create_date.date() != today:
             continue
         msg = Message(
-            subject="Todolist Reminder!",
+            subject="Todo-List Reminder!",
             sender=current_app.config.get("MAIL_DEFAULT_SENDER"),
             recipients=[user_record.Email],
         )
-        msg.body = "This is a kindly remind of your Assement today: " + task_today.module + " : " + task_today.assessment
+        msg.body = f"Reminder for your assessment today: {task_today.module} : {task_today.assessment}"
         mail.send(msg)
 
-    flash("Check you E-mail box for remind messages! If none, then take your time!", "error")
+    flash("Check your email for reminder messages!", "success")
     task_person = Task.query.filter_by(host=uid).all()
     return render_template("dolist.html", user=user, id=uid, data=task_person)
 
 
 @task_bp.route("/backhome")
+@login_required
 def backhome():
-    user_name = request.args.get("user_name")
-    user_id = _to_int_or_none(request.args.get("user_id"))
-    if user_id is None:
-        return render_template("error.html", errormessage="Invalid user id.")
-    task_person = Task.query.filter_by(host=user_id).all()
-    return render_template("dolist.html", user=user_name, id=user_id, data=task_person)
+    uid = current_user.id
+    task_person = Task.query.filter_by(host=uid).all()
+    return render_template("dolist.html", user=current_user.username, id=uid, data=task_person)
 
 
 @task_bp.route("/createAss", methods=["POST", "GET"])
+@login_required
 def createAss():
     if request.method == "POST":
-        host = request.form.get("host")
-        host_name = request.form.get("hostname")
+        uid = current_user.id
+        username = current_user.username
         newModule = (request.form.get("moudleName") or "").strip()
         newAss = (request.form.get("ass") or "").strip()
         newcreate = datetime.datetime.now()
         newddl = _parse_datetime(request.form.get("deadline"))
         newremind = _parse_datetime(request.form.get("remind"))
-        newdescription = "Word hard, play hard."
+        newdescription = (request.form.get("description") or "").strip()
         newpri = _to_positive_int(request.form.get("priority"), 1)
 
         if not newModule or not newAss:
-            flash("Module and assessment are required.", "error")
-            task_person = Task.query.filter_by(host=host).all()
-            return render_template("dolist.html", user=host_name, id=host, data=task_person)
+            flash("Module and assessment name are required.", "error")
+            task_person = Task.query.filter_by(host=uid).all()
+            return render_template("dolist.html", user=username, id=uid, data=task_person)
 
-        task_person = Task.query.filter_by(host=host).all()
+        task_person = Task.query.filter_by(host=uid).all()
         for ass in task_person:
             if ass.module == newModule and ass.assessment == newAss:
-                alert = newModule + " -- " + newAss + " already exixts!"
-                flash(alert, "error")
-                return render_template("dolist.html", user=host_name, id=host, data=task_person)
+                flash(f"{newModule} -- {newAss} already exists!", "error")
+                return render_template("dolist.html", user=username, id=uid, data=task_person)
 
         aim = Task()
         aim.module = newModule
@@ -150,19 +147,17 @@ def createAss():
         aim.remind = newremind
         aim.priority = newpri
         aim.description = newdescription
-        aim.host = host
+        aim.host = uid
         try:
             db.session.add(aim)
             db.session.commit()
-            tip = "New assessment: " + aim.module + "---" + aim.assessment + " has been added!"
+            flash(f"New assessment: {aim.module} — {aim.assessment} has been added!", "success")
         except Exception:
             db.session.rollback()
-            tip = "Oops... something wrong with adding new assessment!"
-            return render_template("error.html", errormessage=tip)
+            return render_template("error.html", errormessage="Failed to add assessment. Please try again.")
 
-        task_person = Task.query.filter_by(host=host).all()
-        flash(tip, "error")
-        return render_template("dolist.html", user=host_name, id=host, data=task_person)
+        task_person = Task.query.filter_by(host=uid).all()
+        return render_template("dolist.html", user=username, id=uid, data=task_person)
 
     if request.method == "GET":
         return render_template("error.html", errormessage="Direct URL visit is not allowed!")
@@ -171,77 +166,80 @@ def createAss():
 
 
 @task_bp.route("/completeTask")
+@login_required
 def completeTask():
     target = request.args.get("aim")
-    host_name = request.args.get("host")
-    user_id = request.args.get("uid")
-    task_aim = Task.query.filter_by(taskID=target).first()
+    uid = current_user.id
+    task_aim = Task.query.filter_by(taskID=target, host=uid).first()
+    if task_aim is None:
+        abort(403)
     task_aim.status = 1
     try:
         db.session.commit()
-        alert = "Assessemnet: " + task_aim.module + "--" + task_aim.assessment + " is completed!"
+        flash(f"Assessment: {task_aim.module} — {task_aim.assessment} is completed!", "success")
     except Exception:
         db.session.rollback()
-        alert = "Oops... something wrong with completeing this assessment!"
-        return render_template("error.html", errormessage=alert)
+        return render_template("error.html", errormessage="Failed to complete assessment.")
 
-    task_person = Task.query.filter_by(host=user_id).all()
-    flash(alert, "error")
-    return render_template("dolist.html", user=host_name, id=user_id, data=task_person)
+    task_person = Task.query.filter_by(host=uid).all()
+    return render_template("dolist.html", user=current_user.username, id=uid, data=task_person)
 
 
 @task_bp.route("/undoTask")
+@login_required
 def undoTask():
     target = request.args.get("aim")
-    host_name = request.args.get("host")
-    user_id = request.args.get("uid")
-    task_aim = Task.query.filter_by(taskID=target).first()
+    uid = current_user.id
+    task_aim = Task.query.filter_by(taskID=target, host=uid).first()
+    if task_aim is None:
+        abort(403)
     task_aim.status = 0
     try:
         db.session.commit()
-        alert = "Assessemnet: " + task_aim.module + "--" + task_aim.assessment + " completion is undone!"
+        flash(f"Assessment: {task_aim.module} — {task_aim.assessment} completion undone.", "info")
     except Exception:
         db.session.rollback()
-        alert = "Oops... something wrong with undoing this assessment's completion!"
-        return render_template("error.html", errormessage=alert)
+        return render_template("error.html", errormessage="Failed to undo completion.")
 
-    task_person = Task.query.filter_by(host=user_id).all()
-    flash(alert, "error")
-    return render_template("dolist.html", user=host_name, id=user_id, data=task_person)
+    task_person = Task.query.filter_by(host=uid).all()
+    return render_template("dolist.html", user=current_user.username, id=uid, data=task_person)
 
 
 @task_bp.route("/deleteTask")
+@login_required
 def deleteTask():
     target = request.args.get("aim")
-    host_name = request.args.get("host")
-    user_id = request.args.get("uid")
-    task_aim = Task.query.filter_by(taskID=target).first()
+    uid = current_user.id
+    task_aim = Task.query.filter_by(taskID=target, host=uid).first()
+    if task_aim is None:
+        abort(403)
+    module, assessment = task_aim.module, task_aim.assessment
     try:
         db.session.delete(task_aim)
         db.session.commit()
-        alert = "Assessemnet: " + task_aim.module + "--" + task_aim.assessment + " is deleted!"
+        flash(f"Assessment: {module} — {assessment} has been removed.", "success")
     except Exception:
         db.session.rollback()
-        alert = "Oops... something wrong with deleteing the assessment!"
-        return render_template("error.html", errormessage=alert)
+        return render_template("error.html", errormessage="Failed to delete assessment.")
 
-    task_person = Task.query.filter_by(host=user_id).all()
-    flash(alert, "error")
-    return render_template("dolist.html", user=host_name, id=user_id, data=task_person)
+    task_person = Task.query.filter_by(host=uid).all()
+    return render_template("dolist.html", user=current_user.username, id=uid, data=task_person)
 
 
 @task_bp.route("/edit")
+@login_required
 def edit():
     target = request.args.get("edit")
-    host_name = request.args.get("host_return")
-    user_id = request.args.get("uid_return")
-    task_aim = Task.query.filter_by(taskID=target).all()
-    deadline = datetime.datetime.strftime(task_aim[0].ddl, "%Y-%m-%dT%H:%M")
-    remindtime = datetime.datetime.strftime(task_aim[0].remind, "%Y-%m-%dT%H:%M")
+    uid = current_user.id
+    task_aim = Task.query.filter_by(taskID=target, host=uid).all()
+    if not task_aim:
+        abort(403)
+    deadline = datetime.datetime.strftime(task_aim[0].ddl, "%Y-%m-%dT%H:%M") if task_aim[0].ddl else ""
+    remindtime = datetime.datetime.strftime(task_aim[0].remind, "%Y-%m-%dT%H:%M") if task_aim[0].remind else ""
     return render_template(
         "edit.html",
-        user=host_name,
-        id=user_id,
+        user=current_user.username,
+        id=uid,
         data=task_aim,
         target_ddl=deadline,
         target_remind=remindtime,
@@ -249,37 +247,36 @@ def edit():
 
 
 @task_bp.route("/subEdit", methods=["POST", "GET"])
+@login_required
 def subEdit():
     if request.method == "POST":
         edit_aim = request.form.get("this_task")
-        user_id = request.form.get("host")
-        host_name = request.form.get("uid")
-        dummy = request.form.get("create")
+        uid = current_user.id
 
-        aim_ass = Task.query.filter_by(taskID=edit_aim).first()
-        aim_ass.taskID = edit_aim
+        aim_ass = Task.query.filter_by(taskID=edit_aim, host=uid).first()
+        if aim_ass is None:
+            abort(403)
+
         aim_ass.module = (request.form.get("editmoudle") or "").strip()
         aim_ass.assessment = (request.form.get("editass") or "").strip()
-        aim_ass.create_date = _parse_datetime(dummy) or aim_ass.create_date
+        create_raw = request.form.get("create")
+        aim_ass.create_date = _parse_datetime(create_raw) or aim_ass.create_date
         aim_ass.ddl = _parse_datetime(request.form.get("deadline"))
         aim_ass.remind = _parse_datetime(request.form.get("reminder"))
         aim_ass.priority = _to_positive_int(request.form.get("priority"), aim_ass.priority or 1)
         aim_ass.status = _to_positive_int(request.form.get("status"), aim_ass.status or 0)
-        aim_ass.host = user_id
-        aim_ass.description = request.form.get("descri")
+        aim_ass.description = (request.form.get("descri") or "").strip()
 
         try:
             db.session.add(aim_ass)
             db.session.commit()
-            mess = request.form.get("editmoudle") + " -- " + request.form.get("editass") + " has been updated!"
+            flash(f"{aim_ass.module} — {aim_ass.assessment} has been updated!", "success")
         except Exception:
             db.session.rollback()
-            mess = "Oops... Edit not successful with some database error"
-            return render_template("error.html", errormessage=mess)
+            return render_template("error.html", errormessage="Update failed. Please try again.")
 
-        flash(mess, "error")
-        task_person = Task.query.filter_by(host=user_id).all()
-        return render_template("dolist.html", user=host_name, id=user_id, data=task_person)
+        task_person = Task.query.filter_by(host=uid).all()
+        return render_template("dolist.html", user=current_user.username, id=uid, data=task_person)
 
     if request.method == "GET":
         return render_template("error.html", errormessage="Direct URL visit is not allowed!")
@@ -288,28 +285,23 @@ def subEdit():
 
 
 @task_bp.route("/discard")
+@login_required
 def discard():
-    host_name = request.args.get("host")
-    user_id = request.args.get("uid")
-    task_person = Task.query.filter_by(host=user_id).all()
-    return render_template("dolist.html", user=host_name, id=user_id, data=task_person)
+    uid = current_user.id
+    task_person = Task.query.filter_by(host=uid).all()
+    return render_template("dolist.html", user=current_user.username, id=uid, data=task_person)
 
 
 @task_bp.route("/searchStatus", methods=["POST", "GET"])
+@login_required
 def searchStatus():
     if request.method == "POST":
-        user_id = request.form.get("host")
-        host_name = request.form.get("uid")
+        uid = current_user.id
         state = request.form.get("completion")
-        title = ""
-        if state == "1":
-            title = "Completed Assessments"
-        elif state == "0":
-            title = "Undergoing tasks"
-
-        return_tasks = Task.query.filter_by(host=user_id, status=state).all()
-        flash(title + " is shown", "error")
-        return render_template("dolist.html", user=host_name, id=user_id, data=return_tasks, tag=title)
+        title = "Completed Assessments" if state == "1" else "Pending Assessments"
+        return_tasks = Task.query.filter_by(host=uid, status=state).all()
+        flash(f"{title} shown.", "info")
+        return render_template("dolist.html", user=current_user.username, id=uid, data=return_tasks, tag=title)
 
     if request.method == "GET":
         return render_template("error.html", errormessage="Direct URL visit is not allowed!")
@@ -318,15 +310,14 @@ def searchStatus():
 
 
 @task_bp.route("/searchmName", methods=["POST", "GET"])
+@login_required
 def searchmName():
     if request.method == "POST":
-        user_id = request.form.get("host")
-        host_name = request.form.get("uid")
-        moduleTitle = request.form.get("listName")
-
-        return_tasks = Task.query.filter_by(host=user_id, module=moduleTitle).all()
-        flash(moduleTitle + "'s assessments is shown", "error")
-        return render_template("dolist.html", user=host_name, id=user_id, data=return_tasks, tag=moduleTitle)
+        uid = current_user.id
+        moduleTitle = (request.form.get("listName") or "").strip()
+        return_tasks = Task.query.filter_by(host=uid, module=moduleTitle).all()
+        flash(f"Module '{moduleTitle}' assessments shown.", "info")
+        return render_template("dolist.html", user=current_user.username, id=uid, data=return_tasks, tag=moduleTitle)
 
     if request.method == "GET":
         return render_template("error.html", errormessage="Direct URL visit is not allowed!")
@@ -335,16 +326,15 @@ def searchmName():
 
 
 @task_bp.route("/searchaName", methods=["POST", "GET"])
+@login_required
 def searchaName():
     if request.method == "POST":
-        user_id = request.form.get("host")
-        host_name = request.form.get("uid")
-        assTitle = request.form.get("listName")
-
-        return_tasks = Task.query.filter_by(host=user_id, assessment=assTitle).all()
-        title = '"' + assTitle + '" in all Module'
-        flash('"' + assTitle + '" in all module is shown', "error")
-        return render_template("dolist.html", user=host_name, id=user_id, data=return_tasks, tag=title)
+        uid = current_user.id
+        assTitle = (request.form.get("listName") or "").strip()
+        return_tasks = Task.query.filter_by(host=uid, assessment=assTitle).all()
+        title = f'"{assTitle}" across all modules'
+        flash(f'Assessment "{assTitle}" search results shown.', "info")
+        return render_template("dolist.html", user=current_user.username, id=uid, data=return_tasks, tag=title)
 
     if request.method == "GET":
         return render_template("error.html", errormessage="Direct URL visit is not allowed!")
@@ -353,41 +343,34 @@ def searchaName():
 
 
 @task_bp.route("/searchOverdue")
+@login_required
 def searchOverdue():
-    user = request.args.get("user_name")
-    uid = _to_int_or_none(request.args.get("user_id"))
-    if uid is None:
-        return render_template("error.html", errormessage="Invalid user id.")
+    uid = current_user.id
     now_time = datetime.datetime.now()
-    time_str = now_time.strftime("%Y-%m-%d %H:%M:%S")
-    today = datetime.datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S")
-    return_data = Task.query.filter(Task.host == uid, Task.ddl < today).all()
+    return_data = Task.query.filter(Task.host == uid, Task.ddl < now_time, Task.status == 0).all()
     title = "Overdue Assessments"
-    flash("These assessments are overdue!!! Pay more attetion next time", "error")
-    return render_template("dolist.html", user=user, id=uid, tag=title, data=return_data)
+    flash("Overdue assessments are shown. Plan ahead!", "warning")
+    return render_template("dolist.html", user=current_user.username, id=uid, tag=title, data=return_data)
 
 
 @task_bp.route("/searchUpcoming")
+@login_required
 def searchUpcoming():
-    user = request.args.get("user_name")
-    uid = _to_int_or_none(request.args.get("user_id"))
-    if uid is None:
-        return render_template("error.html", errormessage="Invalid user id.")
+    uid = current_user.id
     days = min(_to_positive_int(request.args.get("days"), 7), 90)
     now = datetime.datetime.now()
     end = now + datetime.timedelta(days=days)
-    return_data = Task.query.filter(Task.host == uid, Task.ddl >= now, Task.ddl <= end).all()
+    return_data = Task.query.filter(Task.host == uid, Task.ddl >= now, Task.ddl <= end, Task.status == 0).all()
     title = f"Upcoming in {days} days"
-    flash("Upcoming deadline list generated.", "error")
-    return render_template("dolist.html", user=user, id=uid, tag=title, data=return_data)
+    flash(f"Upcoming deadline list for next {days} days.", "info")
+    return render_template("dolist.html", user=current_user.username, id=uid, tag=title, data=return_data)
 
 
 @task_bp.route("/exportTasks")
+@login_required
 def exportTasks():
-    uid = _to_int_or_none(request.args.get("user_id"))
-    if uid is None:
-        return _api_error("user_id is required", code="missing_user_id")
-    user = request.args.get("user_name", "user")
+    uid = current_user.id
+    user = current_user.username
     task_person = Task.query.filter_by(host=uid).all()
 
     output = StringIO()
@@ -415,11 +398,9 @@ def exportTasks():
 
 
 @task_bp.route("/api/tasks")
+@login_required
 def tasks_api():
-    uid = _to_int_or_none(request.args.get("user_id"))
-    if uid is None:
-        return _api_error("user_id is required", code="missing_user_id")
-
+    uid = current_user.id
     task_person = Task.query.filter_by(host=uid).all()
     payload = [_serialize_task(task) for task in task_person]
     generated_at = (
@@ -436,11 +417,9 @@ def tasks_api():
 
 
 @task_bp.route("/api/summary")
+@login_required
 def tasks_summary_api():
-    uid = _to_int_or_none(request.args.get("user_id"))
-    if uid is None:
-        return _api_error("user_id is required", code="missing_user_id")
-
+    uid = current_user.id
     task_person = Task.query.filter_by(host=uid).all()
     now = datetime.datetime.now()
     total = len(task_person)
@@ -474,10 +453,9 @@ def tasks_summary_api():
 
 
 @task_bp.route("/api/insights")
+@login_required
 def tasks_insights_api():
-    uid = _to_int_or_none(request.args.get("user_id"))
-    if uid is None:
-        return _api_error("user_id is required", code="missing_user_id")
+    uid = current_user.id
 
     now = datetime.datetime.now()
     task_person = Task.query.filter_by(host=uid).all()
@@ -526,10 +504,9 @@ def tasks_insights_api():
 
 
 @task_bp.route("/api/timeline")
+@login_required
 def tasks_timeline_api():
-    uid = _to_int_or_none(request.args.get("user_id"))
-    if uid is None:
-        return _api_error("user_id is required", code="missing_user_id")
+    uid = current_user.id
 
     days = min(_to_positive_int(request.args.get("days"), 14), 120)
     start_date = datetime.date.today()
@@ -567,3 +544,40 @@ def tasks_timeline_api():
             "timeline": dense_timeline,
         }
     )
+
+
+@task_bp.route("/api/batch", methods=["POST"])
+@login_required
+def tasks_batch_api():
+    uid = current_user.id
+    payload = request.get_json(silent=True) or {}
+    action = payload.get("action")
+    task_ids = payload.get("task_ids", [])
+
+    if action not in ("complete", "delete", "undo"):
+        return _api_error("Invalid action. Use 'complete', 'delete', or 'undo'.", code="invalid_action")
+
+    if not task_ids or not isinstance(task_ids, list):
+        return _api_error("task_ids must be a non-empty list.", code="missing_ids")
+
+    # Limit batch size to prevent abuse
+    task_ids = [int(tid) for tid in task_ids[:50] if str(tid).isdigit()]
+
+    tasks = Task.query.filter(Task.taskID.in_(task_ids), Task.host == uid).all()
+    affected = 0
+
+    try:
+        for task in tasks:
+            if action == "complete":
+                task.status = 1
+            elif action == "undo":
+                task.status = 0
+            elif action == "delete":
+                db.session.delete(task)
+            affected += 1
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        return _api_error("Batch operation failed.", 500, code="batch_error")
+
+    return jsonify({"action": action, "affected": affected})

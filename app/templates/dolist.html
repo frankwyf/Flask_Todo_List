@@ -67,8 +67,8 @@
             </section>
         {% endif %}
         <section class="portfolio-links">
-            <a href="{{ url_for('task.searchUpcoming', user_id=id, user_name=user, days=7) }}">Upcoming 7 Days</a>
-            <a href="{{ url_for('task.exportTasks', user_id=id, user_name=user) }}">Export CSV</a>
+            <a href="{{ url_for('task.searchUpcoming', days=7) }}">Upcoming 7 Days</a>
+            <a href="{{ url_for('task.exportTasks') }}">Export CSV</a>
         </section>
         <section class="insight-lab" data-insight-board data-user-id="{{ id }}" aria-live="polite">
             <div class="insight-lab-head">
@@ -134,9 +134,9 @@
                     </ul>
                     <h5 class="insight-subhead">Quick Actions</h5>
                     <div class="insight-quick-actions">
-                        <a href="{{ url_for('task.searchOverdue', user_id=id, user_name=user) }}">Open Overdue Queue</a>
-                        <a href="{{ url_for('task.searchUpcoming', user_id=id, user_name=user, days=7) }}">Review 7-Day Plan</a>
-                        <a href="{{ url_for('chart.visualCompletion', name=user, uid=id) }}">Open Completion Chart</a>
+                        <a href="{{ url_for('task.searchOverdue') }}">Open Overdue Queue</a>
+                        <a href="{{ url_for('task.searchUpcoming', days=7) }}">Review 7-Day Plan</a>
+                        <a href="{{ url_for('chart.visualCompletion') }}">Open Completion Chart</a>
                     </div>
                 </article>
             </div>
@@ -226,6 +226,15 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label>Description (optional)</label>
+                                                <div class="form-input-grp">
+                                                    <textarea id="create-desc-input" class="input" name="description"
+                                                              placeholder="Notes about this assessment..." rows="2"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="row" id="pro">
                                             <div class="col">
                                                 <label>Set priority</label>
@@ -253,7 +262,7 @@
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#flush-collapseTwo" aria-expanded="false"
                                     aria-controls="flush-collapseTwo">
-                                <h4>Assessemnt Search</h4>
+                                <h4>Assessment Search</h4>
                             </button>
                         </h2>
                         <div id="flush-collapseTwo" class="accordion-collapse collapse"
@@ -265,8 +274,6 @@
                                         <div class="col">
                                             <div class="form-input-grp">
                                                 <form action="/searchStatus" method="post">
-                                                    <input id="dummy" value="{{ id }}" name="host">
-                                                    <input id="dummy" value="{{ user }}" name="uid">
                                                     <select class="input" name="completion" id="completion-select">
                                                         <option value="1">Completed Assessments</option>
                                                         <option value="0">Undergoing Assessments</option>
@@ -283,8 +290,6 @@
                                     <div class="row">
                                         <div class="col">
                                             <form id="create-list-form" action="/searchmName" method="post">
-                                                <input id="dummy" value="{{ id }}" name="host">
-                                                <input id="dummy" value="{{ user }}" name="uid">
                                                 <div class="form-input-grp">
                                                     <input id="search-input" class="input" type="text"
                                                            name="listName" placeholder="Enter module">
@@ -302,8 +307,6 @@
                                     <div class="row">
                                         <div class="col">
                                             <form id="create-list-form" action="/searchaName" method="post">
-                                                <input id="dummy" value="{{ id }}" name="host">
-                                                <input id="dummy" value="{{ user }}" name="uid">
                                                 <div class="form-input-grp">
                                                     <input id="search-input" class="input" type="text"
                                                            name="listName" placeholder="Enter assessment">
@@ -320,16 +323,22 @@
                                     </div>
                                     <div class="row">
                                         <div class="col">
+                                            <a class="btn btn-outline-secondary touch-action-btn btn-link-action" aria-label="Profile and password settings"
+                                               href="{{ url_for('auth.profile') }}">My Profile</a>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
                                             <a class="btn btn-warning touch-action-btn btn-link-action" aria-label="Show overdue assessments"
-                                               href="{{ url_for('task.searchOverdue',user_id=id, user_name=user) }}">Show
+                                               href="{{ url_for('task.searchOverdue') }}">Show
                                                 Overdue Assessments</a>
                                         </div>
                                     </div>
                                      <div class="row">
                                         <div class="col">
                                             <a class="btn btn-warning touch-action-btn btn-link-action" aria-label="Send reminder emails for today"
-                                               href="{{ url_for('task.sendReminders',user_id=id, user_name=user) }}">
-                                                Send today's Remind E-mails</a>
+                                               href="{{ url_for('task.sendReminders') }}">
+                                                Send Today's Reminder Emails</a>
                                         </div>
                                     </div>
                                 </div>
@@ -352,11 +361,11 @@
                                     <div class="row">
                                         <div class="col">
                                                           <a class="btn btn-green touch-action-btn btn-link-action" id="daily-graph" aria-label="Open completion chart"
-                                                              href="{{ url_for('chart.visualCompletion',name=user,uid=id) }}">Completion</a>
+                                                              href="{{ url_for('chart.visualCompletion') }}">Completion</a>
                                                           <a class="btn btn-green touch-action-btn btn-link-action" id="priority-graph" aria-label="Open priority chart"
-                                                              href="{{ url_for('chart.visualPri',name=user,uid=id) }}">Priority</a>
+                                                              href="{{ url_for('chart.visualPri') }}">Priority</a>
                                                           <a class="btn btn-green touch-action-btn btn-link-action" id="module-graph" aria-label="Open module chart"
-                                                              href="{{ url_for('chart.visualModule',name=user,uid=id) }}">Module</a>
+                                                              href="{{ url_for('chart.visualModule') }}">Module</a>
                                         </div>
                                     </div>
                                 </div>
@@ -364,19 +373,10 @@
                         </div>
                     </div>
                 </div>
-                {% for message in get_flashed_messages() %}
+                {% for message in get_flashed_messages(with_categories=true) %}
                     <!--message box-->
-                    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                        <div id="liveToast" class="toast hide" role="alert" aria-live="assertive"
-                             aria-atomic="true">
-                            <div class="toast-header">
-                                <strong class="me-auto">Sytem Message</strong>
-                                <small>now</small>
-                            </div>
-                            <div class="toast-body">
-                                <div class="flash">{{ message }}</div>
-                            </div>
-                        </div>
+                    <div class="alert-toast alert-toast--{{ category }}" role="alert" aria-live="assertive">
+                        {{ message }}
                     </div>
                 {% endfor %}
             </div>
@@ -391,10 +391,10 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="content-wrap">
-                                        <h4>Moudle: {{ task.module }}</h4>
+                                        <h4>Module: {{ task.module }}</h4>
                                         <p id="assess">Assessment: {{ task.assessment }}</p>
                                         <a title="Edit Task" class="edit btn-link-action" id="commit"
-                                           href="{{ url_for('task.edit',edit=task.taskID,host_return=user,uid_return=id) }}">
+                                           href="{{ url_for('task.edit', edit=task.taskID) }}">
                                                 <svg class="w-6 h-6" fill="none" stroke="currentColor"
                                                      viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -404,59 +404,48 @@
                                                 </svg>
                                         </a>
                                         <div class="date-time">
-                                            <small class="setdate">Created at: {{ task.create_date }}</small>
+                                            <small class="setdate">Created: <time datetime="{{ task.create_date }}">{{ task.create_date.strftime('%Y-%m-%d %H:%M') if task.create_date else 'N/A' }}</time></small>
                                             <small class="ddl">
-                                                <small id="dead">Deadline is: {{ task.ddl }}</small>
+                                                <small id="dead">Deadline: <time class="deadline-display" data-deadline="{{ task.ddl.isoformat() if task.ddl else '' }}">{{ task.ddl.strftime('%Y-%m-%d %H:%M') if task.ddl else 'Not set' }}</time></small>
                                             </small>
                                             <br>
                                             <small class="remin">
-                                                <small id="remind">Reminder date: {{ task.remind }}</small>
+                                                <small id="remind">Reminder: <time datetime="{{ task.remind }}">{{ task.remind.strftime('%Y-%m-%d %H:%M') if task.remind else 'Not set' }}</time></small>
                                             </small>
                                         </div>
                                         <br>
                                         <!--show priority bar-->
-                                        <ul class="list-group" id="priority">
+                                        <div class="task-badges">
                                             <!--show completion status-->
                                             {% if task.status == 0 %}
-                                                <li id="showsta" class="list-group-item list-group-item-danger">
-                                                    Uncompleted
-                                                </li>
+                                                <span class="badge badge-status badge-pending">Pending</span>
                                             {% elif task.status == 1 %}
-                                                <li id="showsta" class="list-group-item list-group-item-success">
-                                                    Completed
-                                                </li>
+                                                <span class="badge badge-status badge-done">✓ Done</span>
                                             {% endif %}
-                                            &nbsp;
-                                            <!--priority of the task-->
+                                            <!--priority badge-->
                                             {% if task.priority == 1 %}
-                                                <li id="showsta" class="list-group-item list-group-item-success">Low
-                                                </li>
+                                                <span class="badge badge-priority badge-low">Low</span>
                                             {% elif task.priority == 2 %}
-                                                <li id="showsta" class="list-group-item list-group-item-primary">
-                                                    Medium
-                                                </li>
+                                                <span class="badge badge-priority badge-medium">Medium</span>
                                             {% elif task.priority == 3 %}
-                                                <li id="showsta" class="list-group-item list-group-item-warning">
-                                                    Significant
-                                                </li>
+                                                <span class="badge badge-priority badge-significant">Significant</span>
                                             {% elif task.priority == 4 %}
-                                                <li id="showsta" class="list-group-item list-group-item-danger">Urgent
-                                                </li>
+                                                <span class="badge badge-priority badge-urgent">🔥 Urgent</span>
                                             {% endif %}
-                                        </ul>
+                                        </div>
                                         <textarea id="showdes">{{ task.description }}</textarea>
                                     </div>
                                 </div>
                                 <div class="col align-vertical-center">
                                     <div class="inTask-button">
                                                      <a class="btn btn-danger in-task-link btn-link-action"
-                                                         href="{{ url_for('task.deleteTask',aim=task.taskID,host=user,uid=id) }}">Remove</a>
+                                                         href="{{ url_for('task.deleteTask', aim=task.taskID) }}">Remove</a>
                                         {% if task.status == 0 %}
                                                           <a class="btn btn-primary in-task-link btn-link-action"
-                                                              href="{{ url_for('task.completeTask',aim=task.taskID,host=user,uid=id) }}">Complete</a>
+                                                              href="{{ url_for('task.completeTask', aim=task.taskID) }}">Complete</a>
                                         {% else %}
                                                           <a class="btn btn-warning in-task-link btn-link-action"
-                                                              href="{{ url_for('task.undoTask',aim=task.taskID,host=user,uid=id) }}">Undo complete</a>
+                                                              href="{{ url_for('task.undoTask', aim=task.taskID) }}">Undo complete</a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -629,7 +618,7 @@
             </div>
             <div class="modal-footer">
                      <a class="btn btn-info btn-link-action" data-bs-dismiss="modal"
-                         href="{{ url_for('auth.logout',id=id) }}">Confirm</a>
+                         href="{{ url_for('auth.logout') }}">Confirm</a>
             </div>
         </div>
     </div>

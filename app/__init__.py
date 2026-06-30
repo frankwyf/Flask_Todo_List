@@ -3,6 +3,8 @@ import os
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_mail import Mail
@@ -24,7 +26,16 @@ os.makedirs(app.instance_path, exist_ok=True)
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)  # object to hash the password
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://",
+)
 login_manager = LoginManager(app)  # validation during log in
+login_manager.login_view = "auth.welcome"
+login_manager.login_message = "Please log in to access this page."
+login_manager.login_message_category = "warning"
 mail = Mail(app)
 migrate = Migrate(app, db)
 

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile — Todo-List</title>
+    <link rel="Shortcut Icon" href="../static/icon/Todolist.ico" type="image/x-icon"/>
+    <link rel="stylesheet" href="../static/css/Googlefonts.css">
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/portfolio-upgrade.css">
+</head>
+<body id="todo_list">
+<main>
+    <div class="container dashboard-top no-weather">
+        <h1 class="text-center title">My Profile</h1>
+        <div class="theme-toolbar">
+            <button id="theme-toggle" class="btn btn-outline-secondary" type="button" aria-label="Toggle color theme">Switch Theme</button>
+        </div>
+        <section class="portfolio-links">
+            <a href="{{ url_for('task.backhome') }}">← Back to Dashboard</a>
+            <a href="{{ url_for('auth.logout') }}">Log Out</a>
+        </section>
+
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+            <div class="alert-toast alert-toast--{{ category }}" role="alert">{{ message }}</div>
+        {% endfor %}
+
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar" aria-label="User avatar">{{ user[0].upper() }}</div>
+                <div>
+                    <h2>{{ user }}</h2>
+                    <p class="profile-subtitle">Todo-List member</p>
+                </div>
+            </div>
+
+            <section class="profile-section">
+                <h3>Change Password</h3>
+                <form action="{{ url_for('auth.profile') }}" method="post" id="profile-form">
+                    <div class="profile-field">
+                        <label for="current_password">Current Password</label>
+                        <input type="password" id="current_password" name="current_password"
+                               class="input" placeholder="Enter current password" required>
+                    </div>
+                    <div class="profile-field">
+                        <label for="new_password">New Password</label>
+                        <input type="password" id="new_password" name="new_password"
+                               class="input" placeholder="At least 8 characters" required minlength="8">
+                    </div>
+                    <div class="profile-field">
+                        <label for="confirm_password">Confirm New Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password"
+                               class="input" placeholder="Repeat new password" required minlength="8">
+                        <div class="error-message" id="pw-match-error"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Password</button>
+                </form>
+            </section>
+        </div>
+    </div>
+</main>
+<script type="text/javascript" src="../static/js/theme.js"></script>
+<script>
+    const form = document.getElementById('profile-form');
+    form.addEventListener('submit', function(e) {
+        const np = document.getElementById('new_password').value;
+        const cp = document.getElementById('confirm_password').value;
+        const err = document.getElementById('pw-match-error');
+        if (np !== cp) {
+            e.preventDefault();
+            err.textContent = 'Passwords do not match.';
+        } else {
+            err.textContent = '';
+        }
+    });
+</script>
+</body>
+</html>
